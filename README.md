@@ -1,36 +1,27 @@
-# KADISK Corporate Repository
+# Virtual Desk Repository
 
 ## Configuração
 Para que os componente desse repositório possa ser usado é preciso que seja registrado no ecosistema que ele sera usado
  ```bash
-repo register source KADISKCorpRepo LOCAL_FS --localPath ~/KADISKCorpRepo
+repo register source VirtuakDeskRepo LOCAL_FS --localPath ~/VirtualDeskRepo
  ```
 
-
 ## Instando os aplicativos no ecosistema
-Instalando o website corporativo da *Kadisk Engenharia de Software*
-```bash
-repo install KADISKCorpRepo LOCAL_FS --executables "kadisk-com"
-```
 
 Instalando o serviço corporativo *Virtual Desk* e sobre a front-end
 ```bash
-repo install KADISKCorpRepo LOCAL_FS --executables "virtual-desk" "service-orchestrator" "repository-storage-manager"
+repo install VirtuakDeskRepo LOCAL_FS --executables "virtual-desk" "service-orchestrator" "repository-storage-manager"
 ```
 
-Instalando o serviço de proxy corporativo
-```bash
-repo install KADISKCorpRepo LOCAL_FS --executables "kadisk-transit-proxy" "kadisk-domain-router-proxy"
-```
 
 ## Atualizando o repositório no ecosistema
 
 ```bash
-repo update KADISKCorpRepo
+repo update VirtuakDeskRepo
 ```
 
 ## Instalando local
 
 ```bash
-repo install KADISKCorpRepo LOCAL_FS --executables "virtual-desk" "service-orchestrator" "repository-storage-manager" "kadisk-com" "kadisk-transit-proxy" "local-domain-router-proxy"
+repo install VirtuakDeskRepo LOCAL_FS --executables "virtual-desk" "service-orchestrator" "repository-storage-manager" "kadisk-transit-proxy" "local-domain-router-proxy"
 ```

@@ -13,23 +13,10 @@
     },
     {
         "appType":"APP",
-        "executable":"kadisk-transit-proxy",
-        "packageNamespace":"VirtualDesk.Module/Applications.layer/transit-proxy.app",
-        "supervisorSocketFileName":"kadisk-transit-proxy.sock"
-    },
-    {
-        "appType":"APP",
         "executable":"local-transit-proxy",
         "packageNamespace":"VirtualDesk.Module/Applications.layer/local-transit-proxy.app",
         "supervisorSocketFileName":"local-transit-proxy.sock"
     },
-    {   
-        "appType":"APP",
-        "executable":"kadisk-domain-router-proxy",
-        "packageNamespace":"VirtualDesk.Module/Applications.layer/domain-router-proxy.app",
-        "supervisorSocketFileName":"kadisk-domain-router-proxy.sock"
-    },
-    
     {
         "appType":"APP",
         "executable":"local-domain-router-proxy",
@@ -54,7 +41,4 @@
         "packageNamespace":"VirtualDesk.Module/PlatformApplications.layer/repository-storage-manager.app",
         "supervisorSocketFileName":"repository-storage-manager.sock"
     }
-
-
-    
 ]
