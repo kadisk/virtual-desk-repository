@@ -1,0 +1,12 @@
+{
+	"executables": [
+		{
+			"dependency": "@//command-group",
+			"executableName": "my-services",
+            "bound-params": {
+                "commandExecutorLib": "@/command-executor.lib",
+				"jsonFileUtilitiesLib": "@/json-file-utilities.lib"
+            }
+		}
+	]
+}

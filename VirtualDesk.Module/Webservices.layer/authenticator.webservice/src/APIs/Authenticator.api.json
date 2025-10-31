@@ -1,0 +1,24 @@
+{
+	"name": "Authenticator",
+	"endpoints": [
+		{
+			"path": "/token",
+			"method": "POST",
+			"summary": "GetToken",
+			"parameters": [
+				{
+					"name": "username",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "password",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		}
+	]
+}

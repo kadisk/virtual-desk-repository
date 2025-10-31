@@ -1,0 +1,17 @@
+{
+    "entryPort": "7000",
+    "routeMappingTable": [
+        {
+            "host": "kadisk.com.local",
+            "target": "http://localhost:7002"
+        },
+        {
+            "host": "worms.solutions.local",
+            "target": "http://localhost:7003"
+        },
+        {
+            "host": "virtualdesk.app.local",
+            "target": "http://localhost:7001"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+[
+    {
+        "namespace": "InstanceMonitoringManager",
+        "path": "Managers/InstanceMonitoring.manager",
+        "bound-params":[ 
+            "ecosystemdataHandlerService", 
+            "supervisorLib", 
+            "jsonFileUtilitiesLib"
+        ],
+        "params": ["ecosystemDefaultsFileRelativePath", "storageFilePath" ]
+    }
+]

@@ -1,0 +1,7 @@
+[
+    {
+        "namespace":"EventHubService",
+        "path":"Services/EventHub.service",
+        "params": ["storageFilePath"]
+    }
+]

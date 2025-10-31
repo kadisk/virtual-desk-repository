@@ -1,0 +1,17 @@
+[
+    {
+        "namespace": "MyWorkspaceManager",
+        "path": "Managers/MyWorkspace.manager",
+        "params": [ 
+            "ecosystemDefaultsFileRelativePath" , 
+            "repositoryStorageSocketPath", 
+            "repositoryStorageServerManagerUrl" 
+        ],
+        "bound-params":  [ 
+            "jsonFileUtilitiesLib", 
+            "loadMetatadaDirLib" , 
+            "ecosystemdataHandlerService",
+            "commandExecutorLib"
+        ]
+    }
+]

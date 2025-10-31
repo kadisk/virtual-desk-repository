@@ -1,0 +1,42 @@
+{
+    "bound-params":[
+        "serverService", 
+        "eventHubService",
+        "instanceMonitoringManagerService"
+    ],
+    "params": [ "ecosystemDefaultsFileRelativePath", "needsAuth" ],
+    "endpoints": [
+        {
+            "url": "/notifications",
+            "type": "controller",
+            "params": {
+                "needsAuth": "needsAuth",
+                "api-template": "APIs/EventHistory.api.json",
+                "controller": "Controllers/EventHistory.controller"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "eventHubService": "eventHubService"
+                }
+            }
+        },{
+            "url":"/instance-monitoring",
+            "type":"controller",
+            "params":{
+                "needsAuth": "needsAuth",
+                "api-template": "APIs/InstanceMonitoring.api.json",
+                "controller": "Controllers/InstanceMonitoring.controller",
+                "controller-params":{
+                    "ecosystemDefaultsFileRelativePath": "{{ecosystemDefaultsFileRelativePath}}"
+                }
+            },
+            "bound-params":{
+                "serverService":"serverService",
+                "controller-params":{
+                    "instanceMonitoringManagerService":"instanceMonitoringManagerService"
+                }
+            }
+        }
+    ]
+}

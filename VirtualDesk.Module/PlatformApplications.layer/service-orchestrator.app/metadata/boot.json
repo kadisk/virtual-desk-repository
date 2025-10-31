@@ -1,0 +1,52 @@
+{
+    "params" : [
+        "socket", 
+        "serverName",
+        "serviceStorageFilePath",
+        "servicesInstanceDataDirPath"
+    ],
+    "services": [
+        {
+            "namespace": "@@/server-service",
+            "dependency": "@/server-manager.service/services/HTTPServerService",
+            "params":{
+                "name":"{{serverName}}",
+                "port": "{{socket}}"
+            }
+        },
+        {
+            "namespace": "@@/container-manager-service",
+            "dependency": "@/container-manager.service/services/ContainerManager"
+        },
+        {
+            "namespace": "@@/service-orchestrator-service",
+            "dependency": "@/service-orchestrator.service/services/ServiceOrchestratorManager",
+            "bound-params":{
+                "containerManagerService":"@@/container-manager-service"
+            },
+            "params":{
+                "serviceStorageFilePath": "{{serviceStorageFilePath}}",
+                "instanceDataDirPath": "{{servicesInstanceDataDirPath}}"
+            }
+        }
+    ],
+    "endpoints": [
+        {
+            "dependency": "@/server-manager.webservice/endpoint-group",
+            "bound-params":{
+               "serverServiceForController":"@@/server-service",
+               "serverService": "@@/server-service"
+            }
+        },
+        {
+            "dependency": "@//endpoint-group",
+            "bound-params":{
+                "serverService": "@@/server-service",
+                "servicesOrchestratorService": "@@/service-orchestrator-service"
+            },
+            "params":{
+                "needsAuth": true
+            }
+        }
+    ]
+}

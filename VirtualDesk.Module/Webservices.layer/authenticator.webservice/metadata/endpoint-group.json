@@ -1,0 +1,35 @@
+{
+    "params": ["needsAuth"],
+    "bound-params":["serverService", "userManagementService"],
+    "endpoints": [
+        {
+            "url": "/authenticator",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/Authenticator.api.json",
+                "controller": "Controllers/Authenticator.controller"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "userManagementService":"userManagementService"
+                }
+            }
+        },
+        {
+            "url": "/user-info",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/UserInformation.api.json",
+                "controller": "Controllers/UserInformation.controller",
+                "needsAuth": "needsAuth"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "userManagementService":"userManagementService"
+                }
+            }
+        }
+    ]
+}

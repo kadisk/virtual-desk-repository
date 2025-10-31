@@ -1,0 +1,102 @@
+{
+	"bound-params":[ "jsonFileUtilitiesLib", "commandExecutorLib" ],
+	"commands": [
+		{
+			"namespace": "ListServices",
+			"path": "Commands/ListServices.command",
+			"command": "services",
+			"description": "Lista todos os serviços provisionados",
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "GetServiceData",
+			"path": "Commands/GetServiceData.command",
+			"command": "service [serviceId]",
+			"description": "Mostra informações de um serviço específico",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "StartService",
+			"path": "Commands/StartService.command",
+			"command": "start [serviceId]",
+			"description": "Iniciar um serviço parado",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "StopService",
+			"path": "Commands/StopService.command",
+			"command": "stop [serviceId]",
+			"description": "Para um serviço que esta em execução",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ProvisionService",
+			"path": "Commands/ProvisionService.command",
+			"command": "provision [provisionFilePath]",
+			"description": "Provisiona um novo serviço",
+			"parameters": [
+				{
+					"key": "provisionFilePath",
+					"paramType": "positional",
+					"valueType": "string",
+					"describe": "Arquivo JSON de provisionamento do serviço *.provision.json"
+				}
+			],
+            "parametersToLoad": [ "jsonFileUtilitiesLib", "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ListInstance",
+			"path": "Commands/ListInstance.command",
+			"command": "instances [serviceId]",
+			"description": "Lista todas as instancias de um serviço",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ListImageBuildHistory",
+			"path": "Commands/ListImageBuildHistory.command",
+			"command": "builds  [serviceId]",
+			"description": "Mostra os histórico de construção de imagens",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		}
+	]
+}

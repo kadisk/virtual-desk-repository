@@ -1,0 +1,36 @@
+{
+	"name": "InstanceMonitoring",
+	"endpoints": [
+		{
+			"path": "/instances-overview",
+			"method": "GET",
+			"summary": "GetInstancesOverview"
+		},
+		{
+			"path": "/instance-data/:socketFileId",
+			"method": "GET",
+			"summary": "GetInstanceMonitorData",
+			"parameters": [
+				{
+					"name": "socketFileId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"summary": "LogStreaming",
+			"method": "WS",
+			"path": "/instance-log-streaming/:socketFileId",
+			"parameters": [
+				{
+					"name": "socketFileId",
+					"in": "path",
+					"type": "number",
+					"required": true
+				}
+			]
+		}
+	]
+}

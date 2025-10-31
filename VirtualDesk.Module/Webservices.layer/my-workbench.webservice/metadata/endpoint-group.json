@@ -1,0 +1,52 @@
+{
+    "bound-params":[
+        "serverService",
+        "myWorkspaceManagerService",
+        "containerManagerService",
+        "commandExecutorLib"
+    ],
+    "params": [ 
+        "needsAuth", 
+        "uploadDirPath", 
+        "repositoryStorageSocketPath", 
+        "repositoryStorageServerManagerUrl" 
+    ],
+    "endpoints": [
+        {
+            "url": "/my-workspace",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/MyWorkspace.api.json",
+                "controller": "Controllers/MyWorkspace.controller",
+                "needsAuth": "needsAuth",
+                "controller-params":{
+                    "uploadDirPath": "{{uploadDirPath}}",
+                    "repositoryStorageSocketPath":"{{repositoryStorageSocketPath}}",
+                    "repositoryStorageServerManagerUrl":"{{repositoryStorageServerManagerUrl}}"
+                }
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "myWorkspaceManagerService": "myWorkspaceManagerService",
+                    "commandExecutorLib": "commandExecutorLib"
+                }
+            }
+        },
+        {
+            "url": "/my-ecosystem-console",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/MyEcosystemConsole.api.json",
+                "controller": "Controllers/MyEcosystemConsole.controller",
+                "needsAuth": "needsAuth"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "containerManagerService": "containerManagerService"
+                }
+            }
+        }
+    ]
+}

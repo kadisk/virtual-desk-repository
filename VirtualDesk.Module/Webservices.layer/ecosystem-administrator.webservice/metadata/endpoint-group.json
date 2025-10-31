@@ -1,0 +1,68 @@
+{
+    "params": ["ecosystemDefaultsFileRelativePath", "needsAuth"],
+    "bound-params":[
+        "serverService", 
+        "ecosystemdataHandlerService",
+        "jsonFileUtilitiesLib",
+        "ecosystemInstallUtilitiesLib",
+        "eventHubService",
+        "containerManagerService"
+    ],
+    "endpoints": [
+        {
+            "url": "/default-params",
+            "type": "controller",
+            "params": {
+                "needsAuth": "needsAuth",
+                "api-template": "APIs/DefaultParameters.api.json",
+                "controller": "Controllers/DefaultParameters.controller",
+                "controller-params":{
+                    "ecosystemDefaultsFileRelativePath": "{{ecosystemDefaultsFileRelativePath}}"
+                }
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "jsonFileUtilitiesLib": "jsonFileUtilitiesLib",
+                    "ecosystemdataHandlerService": "ecosystemdataHandlerService"
+                }
+            }
+        },
+        {
+            "url": "/repository-settings",
+            "type": "controller",
+            "params": {
+                "needsAuth": "needsAuth",
+                "api-template": "APIs/RepositorySettings.api.json",
+                "controller": "Controllers/RepositorySettings.controller",
+                "controller-params":{
+                    "ecosystemDefaultsFileRelativePath": "{{ecosystemDefaultsFileRelativePath}}"
+                }
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "jsonFileUtilitiesLib": "jsonFileUtilitiesLib", 
+                    "ecosystemdataHandlerService": "ecosystemdataHandlerService",
+                    "ecosystemInstallUtilitiesLib": "ecosystemInstallUtilitiesLib",
+                    "eventHubService": "eventHubService"
+                }
+            }
+        },
+        {
+            "url": "/container-manager",
+            "type": "controller",
+            "params": {
+                "needsAuth": "needsAuth",
+                "api-template": "APIs/ContainerManager.api.json",
+                "controller": "Controllers/ContainerManager.controller"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "containerManagerService":"containerManagerService"
+                }
+            }
+        }
+    ]
+}

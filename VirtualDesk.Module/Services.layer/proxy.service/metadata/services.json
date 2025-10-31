@@ -1,0 +1,12 @@
+[
+    {
+        "namespace": "TransitProxyService",
+        "path": "Services/TransitProxy.service",
+        "params": ["entryPort", "targetHost"]
+    },
+    {
+        "namespace": "DomainRouterProxyService",
+        "path": "Services/DomainRouterProxy.service",
+        "params": ["entryPort", "routeMappingTable"]
+    }
+]

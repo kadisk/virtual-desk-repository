@@ -1,0 +1,22 @@
+{
+    "bound-params":[
+        "serverService",
+        "servicesOrchestratorService"
+    ],
+    "endpoints": [
+        {
+            "url": "/manager",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/ServiceManagerInterface.api.json",
+                "controller": "Controllers/ServiceManagerInterface.controller"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "servicesOrchestratorService":"servicesOrchestratorService"
+                }
+            }
+        }
+    ]
+}

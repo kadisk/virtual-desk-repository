@@ -1,0 +1,14 @@
+[
+    {
+        "namespace": "ServiceOrchestratorManager",
+        "path": "Managers/ServiceOrchestrator.manager",
+        "params": [ 
+            "serviceStorageFilePath", 
+            "instanceDataDirPath"
+        ],
+        "bound-params":  [
+            "containerManagerService"
+        ]
+        
+    }
+]

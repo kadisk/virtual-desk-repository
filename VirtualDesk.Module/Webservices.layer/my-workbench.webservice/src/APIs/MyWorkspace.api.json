@@ -1,0 +1,178 @@
+{
+	"name": "MyWorkspace",
+	"endpoints": [
+		{
+			"path": "/namespaces",
+			"method": "GET",
+			"summary": "ListRepositoryNamespace"
+		},
+		{
+			"path": "/repositories",
+			"method": "GET",
+			"summary": "ListRepositories",
+			"parameters": [
+				{
+					"name": "namespaceId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/repository/create",
+			"method": "POST",
+			"summary": "CreateNewRepository",
+			"parameters": [
+				{
+					"name": "repositoryNamespace",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/repository/import",
+			"method": "POST",
+			"summary": "ImportRepository",
+			"parameters": [
+				{
+					"name": "repositoryNamespace",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "sourceCodeURL",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/repository/upload",
+			"method": "POST",
+			"summary": "UploadRepository",
+			"isMultipartFormData": true,
+			"forwardRawRequest": true,
+			"parameters": [
+				{
+					"in": "body",
+					"name": "repositoryNamespace",
+					"type": "string",
+					"required": true
+				},
+				{
+					"in": "body",
+					"name": "repositoryFile",
+					"type": "file",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/repository-editor/hierarchy/:repositoryId",
+			"method": "GET",
+			"summary": "GetItemHierarchy",
+			"parameters": [
+				{
+					"name": "repositoryId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/repository-editor/information/repository/:repositoryId",
+			"method": "GET",
+			"summary": "GetRepositoryGeneralInformation",
+			"parameters": [
+				{
+					"name": "repositoryId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+			
+		},
+		{
+			"path": "/repository-editor/information/item/:itemId",
+			"method": "GET",
+			"summary": "GetItemInformation",
+			"parameters": [
+				{
+					"name": "itemId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+			
+		},
+		{
+			"path": "/repository-editor/package/source-code-tree/:itemId",
+			"method": "GET",
+			"summary": "GetPackageSourceTree",
+			"parameters": [
+				{
+					"name": "itemId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+			
+		},
+		{
+			"path": "/repository-editor/package/metadata/:itemId",
+			"method": "GET",
+			"summary": "GetPackageMetadata",
+			"parameters": [
+				{
+					"name": "itemId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+			
+		},
+		{
+			"path": "/repository-editor/package/source-file-content/:itemId",
+			"method": "GET",
+			"summary": "GetPackageSourceFileContent",
+			"parameters": [
+				{
+					"name": "itemId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "sourceFilePath",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/repository-editor/applications-metadata/:repositoryId",
+			"method": "GET",
+			"summary": "GetApplicationsRepositoryMetatadata",
+			"parameters": [
+				{
+					"name": "repositoryId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+			
+		}
+	]
+}

@@ -1,0 +1,59 @@
+{
+	"name": "ContainerManager",
+	"endpoints": [
+		{
+			"path": "/containers",
+			"method": "GET",
+			"summary": "ListContainers"
+		},
+		{
+			"path": "/images",
+			"method": "GET",
+			"summary": "ListImages"
+		},
+		{
+			"path": "/networks",
+			"method": "GET",
+			"summary": "ListNetworks"
+		},
+		{
+			"summary": "RemoveContainer",
+			"method": "POST",
+			"path": "/remove-container",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "containerIdOrName",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"summary": "StartContainer",
+			"method": "POST",
+			"path": "/start-container",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "containerIdOrName",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"summary": "StopContainer",
+			"method": "POST",
+			"path": "/stop-container",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "containerIdOrName",
+					"type": "string",
+					"required": true
+				}
+			]
+		}
+	]
+}
