@@ -145,6 +145,15 @@ const ServiceProvisioningModal = ({
         setStartupParamsData(response.data)
     }
 
+    const GetProvisionPayload = () => ({
+        packageId: selectedPackageData?.id,
+        serviceName,
+        serviceDescription,
+        startupParams,
+        ports,
+        networkmode: networkSelected?.description
+    })
+
 
     const handlePackageSelection = (packageData) => setSelectedPackageData(packageData)
 
@@ -154,14 +163,7 @@ const ServiceProvisioningModal = ({
         const { ProvisionService } = _GetMyServicesManagerAPI()
 
         try {
-            await ProvisionService({
-                packageId: selectedPackageData.id,
-                serviceName,
-                serviceDescription,
-                startupParams,
-                ports,
-                networkmode: networkSelected.description
-            })
+            await ProvisionService(GetProvisionPayload())
             changeTypeMode(PROVISIONING_COMPLETION_MODE)
         } catch (error) {
             console.log(error)
@@ -225,14 +227,92 @@ const ServiceProvisioningModal = ({
                                 </div>
 
                             }
+
                             {
-                                (typeMode === SELECT_PACKAGE_MODE)
-                                && <div className="card-body">
-                                    <div>
+                                (typeMode === CONFIRMATION_SERVICE_MODE)
+                                && <div className="card-body bg-azure-lt text-azure-lt-fg">
+                                    <p className="text-secondary mb-4">
+                                        Review the configuration details below before provisioning this service.
+                                    </p>
+                                    <div className="card shadow-sm mb-4">
+                                        <div className="card-body">
+                                            <div className="row g-3">
+                                                <div className="col-md-6">
+                                                    <div className="mb-2">
+                                                        <div className="text-secondary small">Package ID</div>
+                                                        <div className="fw-bold fs-5">{selectedPackageData?.id}</div>
+                                                    </div>
+                                                    <div className="mb-2">
+                                                        <div className="text-secondary small">Package Name</div>
+                                                        <div className="fw-bold">{selectedPackageData?.itemName}.{selectedPackageData?.itemType}</div>
+                                                    </div>
+                                                    <div className="mb-2">
+                                                        <div className="text-secondary small">Service Name</div>
+                                                        <div className="fw-bold">{serviceName}</div>
+                                                    </div>
+                                                    <div className="mb-2">
+                                                        <div className="text-secondary small">Description</div>
+                                                        <div className="fw-bold">{serviceDescription}</div>
+                                                    </div>
+                                                    <div className="mb-2">
+                                                        <div className="text-secondary small">Network Mode</div>
+                                                        <div className="fw-bold">{networkSelected?.description}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-md-6">
+                                                    {ports?.length > 0 && (
+                                                        <div className="mb-3">
+                                                            <div className="text-secondary small mb-1">Ports</div>
+                                                            <div className="border rounded p-2 bg-white">
+                                                                {ports.map((p, i) => (
+                                                                    <div key={i} className="d-flex justify-content-between border-bottom py-1">
+                                                                        <span><strong>{p.servicePort}</strong>/tcp</span>
+                                                                        <span>→ <strong>{p.hostPort}</strong>/tcp</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {startupParams && Object.keys(startupParams).length > 0 && (
+                                        <div className="card shadow-sm mb-4">
+                                            <div className="card-header fw-bold">Startup Parameters</div>
+                                            <div className="card-body p-0">
+                                                <pre style={{
+                                                    backgroundColor: "#0f172a",
+                                                    color: "#e2e8f0",
+                                                    fontSize: "0.9rem",
+                                                    padding: "16px",
+                                                    margin: 0,
+                                                    borderRadius: "0 0 8px 8px",
+                                                    maxHeight: "300px",
+                                                    overflowY: "auto"
+                                                }}>
+                                                    {JSON.stringify(startupParams, null, 2)}
+                                                </pre>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            }
+
+
+                            {
+                                (typeMode === SELECT_PACKAGE_MODE) && (
+                                    <div className="card-body" style={{ maxHeight: "500px", overflowY: "auto" }}>
                                         <div className="list-group list-group-flush list-group-hoverable">
                                             {
-                                                packageList.map((pkg) =>
-                                                    <div className={`list-group-item ${selectedPackageData?.id === pkg.id ? "active" : ""}`}>
+                                                packageList.map((pkg) => 
+                                                    <div
+                                                        key={pkg.id}
+                                                        className={`list-group-item ${selectedPackageData?.id === pkg.id ? "active" : ""}`}
+                                                        style={{ cursor: "pointer" }}
+                                                        onClick={() => handlePackageSelection(pkg)}>
                                                         <div className="row align-items-center">
                                                             <div className="col-auto">
                                                                 <input
@@ -245,17 +325,21 @@ const ServiceProvisioningModal = ({
                                                                 />
                                                             </div>
                                                             <div className="col text-truncate">
-                                                                <a className="text-reset d-block"><strong>{pkg.itemName}</strong>.{pkg.itemType}</a>
-                                                                <div className="d-block text-secondary text-truncate mt-n1"><strong>{pkg["Repository.namespace"]}</strong></div>
+                                                                <div className="text-secondary text-truncate"><strong>{pkg.repositoryNamespace}</strong></div>
+                                                                <div className="text-reset d-block" style={{"fontSize": "x-large"}}>
+                                                                    <strong>{pkg.itemName}</strong>.{pkg.itemType}
+                                                                </div>
+                                                                 <div className="text-secondary small text-truncate">
+                                                                    <code>{pkg.itemPath}</code>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>)
-                                            }
+                                                }
                                         </div>
                                     </div>
-                                </div>
+                                )
                             }
-
                             {
                                 (typeMode === SERVICE_SETUP_MODE)
                                 && <div className="card-body bg-cyan-lt text-cyan-lt-fg">
