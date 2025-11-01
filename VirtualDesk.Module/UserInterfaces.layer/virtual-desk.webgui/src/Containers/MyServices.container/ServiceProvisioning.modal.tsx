@@ -46,6 +46,9 @@ const NETWORK_DATA_LIST = [
     }
 ]
 
+const ARROW_NARROW_LEFT = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-left me-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l4 4" /><path d="M5 12l4 -4" /></svg>
+const ARROW_NARROW_RIGHT = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+
 const ServiceProvisioningModal = ({
     onClose,
     HTTPServerManager
@@ -396,55 +399,78 @@ const ServiceProvisioningModal = ({
                     </div>
                 </div>
 
-                <div className="modal-footer">
-                    <button className="btn btn-link link-secondary" onClick={onClose}>
-                        Cancel
-                    </button>
-
-                    {
-                        (typeMode === SERVICE_SETUP_MODE)
-                        && <button
-                                disabled={!serviceName.trim() || !serviceDescription.trim()}
-                                className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(SELECT_PACKAGE_MODE)}>
-                                Select package
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-                            </button>
-                    }
-                    {
-                        (typeMode === SELECT_PACKAGE_MODE)
-                        && <button
-                                disabled={!selectedPackageData}
-                                className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(PACKAGE_SETUP_MODE)}>
-                                Package setup
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-                            </button>
-                    }
-                    {
-                        (typeMode === PACKAGE_SETUP_MODE)
-                        && <button
-                                disabled={!isStartupParamsValid}
-                                className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(NETWORK_SETUP_MODE)}>
-                                Network setup
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-                            </button>
-                    }
-                    {
-                        (typeMode === NETWORK_SETUP_MODE)
-                        && <button
-                                disabled={!((networkSelected === NONE_NETWORK_OPTION || networkSelected === HOST_NETWORK_OPTION) || ((networkSelected === DEFAULT_BRIDGE_NETWORK_OPTION || networkSelected === MYSERVICES_NETWORK_OPTION) && !(servicePortForAdd && hostPortForAdd)))}
-                                className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(CONFIRMATION_SERVICE_MODE)}>
-                                Confirmation
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-                            </button>
-                    }
-                    {
-                        typeMode === CONFIRMATION_SERVICE_MODE
-                        && <button
-                                className="btn btn-cyan ms-auto" onClick={handleProvision}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M21 12a9 9 0 1 0 -9 9" /><path d="M3.6 9h16.8" /><path d="M3.6 15h8.4" /><path d="M11.578 3a17 17 0 0 0 0 18" /><path d="M12.5 3c1.719 2.755 2.5 5.876 2.5 9" /><path d="M18 21v-7m3 3l-3 -3l-3 3" /></svg>
-                                Provision
-                            </button>
-                    }
+                <div className="modal-footer d-flex justify-content-between">
+                    <div>
+                        <button className="btn btn-link link-secondary" onClick={onClose}>
+                            Cancel
+                        </button>
+                    </div>
+                    <div className="d-flex gap-2">
+                        {
+                            ( typeMode === SELECT_PACKAGE_MODE )
+                            && <button
+                                    className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(SERVICE_SETUP_MODE)}>
+                                    {typeMode === SELECT_PACKAGE_MODE && ARROW_NARROW_LEFT}
+                                    Service setup
+                                </button>
+                        }
+                        {
+                            (
+                                typeMode === SERVICE_SETUP_MODE
+                                || typeMode === PACKAGE_SETUP_MODE
+                            )
+                            && <button
+                                    disabled={!serviceName.trim() || !serviceDescription.trim()}
+                                    className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(SELECT_PACKAGE_MODE)}>
+                                    {typeMode === PACKAGE_SETUP_MODE && ARROW_NARROW_LEFT}
+                                    Select package
+                                    {typeMode === SERVICE_SETUP_MODE && ARROW_NARROW_RIGHT}
+                                </button>
+                        }
+                        {
+                            (
+                                typeMode === SELECT_PACKAGE_MODE
+                                || typeMode === NETWORK_SETUP_MODE
+                            )
+                            && <button
+                                    disabled={!selectedPackageData}
+                                    className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(PACKAGE_SETUP_MODE)}>
+                                    {typeMode === NETWORK_SETUP_MODE && ARROW_NARROW_LEFT}
+                                    Package setup
+                                    {typeMode === SELECT_PACKAGE_MODE && ARROW_NARROW_RIGHT}
+                                </button>
+                        }
+                        {
+                            (
+                                typeMode === PACKAGE_SETUP_MODE
+                                || typeMode === CONFIRMATION_SERVICE_MODE
+                            )
+                            && <button
+                                    disabled={!isStartupParamsValid}
+                                    className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(NETWORK_SETUP_MODE)}>
+                                    {typeMode === CONFIRMATION_SERVICE_MODE && ARROW_NARROW_LEFT}
+                                    Network setup
+                                    {typeMode === PACKAGE_SETUP_MODE && ARROW_NARROW_RIGHT}
+                                </button>
+                        }
+                        {
+                            (typeMode === NETWORK_SETUP_MODE)
+                            && <button
+                                    disabled={!((networkSelected === NONE_NETWORK_OPTION || networkSelected === HOST_NETWORK_OPTION) || ((networkSelected === DEFAULT_BRIDGE_NETWORK_OPTION || networkSelected === MYSERVICES_NETWORK_OPTION) && !(servicePortForAdd && hostPortForAdd)))}
+                                    className="btn btn-cyan ms-auto" onClick={() => changeTypeMode(CONFIRMATION_SERVICE_MODE)}>
+                                    Confirmation
+                                    {typeMode === NETWORK_SETUP_MODE && ARROW_NARROW_RIGHT}
+                                </button>
+                        }
+                        {
+                            typeMode === CONFIRMATION_SERVICE_MODE
+                            && <button
+                                    className="btn btn-cyan ms-auto" onClick={handleProvision}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M21 12a9 9 0 1 0 -9 9" /><path d="M3.6 9h16.8" /><path d="M3.6 15h8.4" /><path d="M11.578 3a17 17 0 0 0 0 18" /><path d="M12.5 3c1.719 2.755 2.5 5.876 2.5 9" /><path d="M18 21v-7m3 3l-3 -3l-3 3" /></svg>
+                                    Provision
+                                </button>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
