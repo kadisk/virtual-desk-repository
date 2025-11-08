@@ -1,0 +1,10 @@
+[
+    {
+        "namespace": "IdentityAndAccessManager",
+        "path": "Managers/IdentityAndAccess.manager",
+        "params": [ 
+            "storageFilePath"
+        ]
+        
+    }
+]

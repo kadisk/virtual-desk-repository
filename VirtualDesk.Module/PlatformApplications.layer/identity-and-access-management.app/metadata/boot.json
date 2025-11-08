@@ -1,0 +1,14 @@
+{
+    "params" : [
+        "storageFilePath"
+    ],
+    "services": [
+        {
+            "namespace": "@@/iam-manager-service",
+            "dependency": "@//services/IdentityAndAccessManager",
+            "params":{
+                "storageFilePath": "{{storageFilePath}}"
+            }
+        }
+    ]
+}
