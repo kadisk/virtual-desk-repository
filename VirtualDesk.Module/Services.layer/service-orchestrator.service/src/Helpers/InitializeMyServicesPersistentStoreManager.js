@@ -15,8 +15,7 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         },
         serviceName: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+            allowNull: false
         },
         serviceDescription: {
             type: DataTypes.STRING,
@@ -54,6 +53,15 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        isDecommissioned: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        },
+        decommissionedAt: {
+            type: DataTypes.DATE,
+            allowNull: true
+        }
     })
     
     const InstanceModel = sequelize.define("Instance", {
