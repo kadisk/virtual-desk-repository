@@ -1,0 +1,27 @@
+{
+	"bound-params":[ "jsonFileUtilitiesLib", "commandExecutorLib" ],
+	"commands": [
+		{
+			"namespace": "CreateOrganization",
+			"path": "Commands/CreateOrganization.command",
+			"command": "create organization [serviceId]",
+			"description": "Cria uma nova organização",
+			"parameters": [
+				{
+					"key": "name",
+					"paramType": "positional",
+					"valueType": "string",
+					"describe": "Nome da organização a ser criada"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ListOrganization",
+			"path": "Commands/ListOrganization.command",
+			"command": "list organization",
+			"description": "Lista todas as organizações",
+            "parametersToLoad": [ "commandExecutorLib" ]
+		}
+	]
+}

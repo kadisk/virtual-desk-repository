@@ -1,0 +1,12 @@
+{
+	"executables": [
+		{
+			"dependency": "@//command-group",
+			"executableName": "ima-tools",
+            "bound-params": {
+                "commandExecutorLib": "@/command-executor.lib",
+				"jsonFileUtilitiesLib": "@/json-file-utilities.lib"
+            }
+		}
+	]
+}

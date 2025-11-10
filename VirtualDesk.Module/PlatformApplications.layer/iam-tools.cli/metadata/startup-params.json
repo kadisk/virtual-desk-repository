@@ -1,0 +1,4 @@
+{
+    "iamManagerSocketPath" : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
+    "iamManagerServerManagerUrl" : "/server-manager/status"
+}
