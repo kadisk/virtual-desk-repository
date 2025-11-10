@@ -1,3 +1,5 @@
 {
+    "socket"          : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
+    "serverName"      : "IAMAppInstance",
     "storageFilePath" : "~/virtual-desk-state/local-databases/iam-manager-service.sqlite"
 }

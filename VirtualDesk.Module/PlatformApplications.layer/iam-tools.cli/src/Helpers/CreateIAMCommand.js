@@ -6,7 +6,7 @@ const CreateIAMCommand = ({
         const APICommandFunction = async ({ APIs }) => {
             const API = APIs
             .IAMAppInstance
-            .ServiceManagerInterface
+            .IdentityManagement
             return await CommandFunction(API)
         }
 

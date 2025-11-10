@@ -1,7 +1,7 @@
 
 const CreateIAMCommand = require('./CreateIAMCommand')
 
-const MountServiceOrchestratorCommand = ({ startupParams, params }) =>  {
+const MountIAMCommand = ({ startupParams, params }) =>  {
 
     const {
         iamManagerSocketPath,
@@ -21,4 +21,4 @@ const MountServiceOrchestratorCommand = ({ startupParams, params }) =>  {
     })
 }
 
-module.exports = MountServiceOrchestratorCommand
+module.exports = MountIAMCommand
