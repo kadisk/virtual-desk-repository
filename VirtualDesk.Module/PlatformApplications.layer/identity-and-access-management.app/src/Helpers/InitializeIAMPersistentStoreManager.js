@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require("sequelize")
+const { Sequelize, DataTypes, Deferrable } = require("sequelize")
 
 const InitializeIAMPersistentStoreManager = (storage) => {
 

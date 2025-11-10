@@ -40,5 +40,11 @@
         "executable":"repository-storage-manager",
         "packageNamespace":"VirtualDesk.Module/PlatformApplications.layer/repository-storage-manager.app",
         "supervisorSocketFileName":"repository-storage-manager.sock"
+    },
+    {
+        "appType":"APP",
+        "executable":"iam-manager",
+        "packageNamespace":"VirtualDesk.Module/PlatformApplications.layer/identity-and-access-management.app",
+        "supervisorSocketFileName":"iam-manager.sock"
     }
 ]
