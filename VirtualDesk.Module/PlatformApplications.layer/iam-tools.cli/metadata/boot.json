@@ -2,7 +2,7 @@
 	"executables": [
 		{
 			"dependency": "@//command-group",
-			"executableName": "ima-tools",
+			"executableName": "my-iam",
             "bound-params": {
                 "commandExecutorLib": "@/command-executor.lib",
 				"jsonFileUtilitiesLib": "@/json-file-utilities.lib"

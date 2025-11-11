@@ -265,7 +265,7 @@ const ServiceOrchestratorManager = (params) => {
     }) => {
 /*
         try {
-            const provisionDataDir = "/home/kadisk/Workspaces/Organizations/Kadisk/KADISKCorpRepo/provisioning-data"
+            const provisionDataDir = "/home/kadisk/Workspaces/Organizations/Kadisk/VirtualDeskRepo/provisioning-data"
 
 
             if (!fs.existsSync(provisionDataDir)) {

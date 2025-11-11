@@ -1,19 +1,19 @@
-const ServiceManagerInterfaceController = (params) => {
+const IdentityManagementController = (params) => {
 
     const {
-        iamManagerService
+        iamManagerService: {
+            CreateOrganization,
+            ListOrganizations
+        }
     } = params
 
-    const CreateOrganization = (name) => {
-        return iamManagerService.CreateOrganization(name)
-    }
-
     const controllerServiceObject = {
-        controllerName: "ServiceManagerInterfaceController",
-        CreateOrganization
+        controllerName: "IdentityManagementController",
+        CreateOrganization,
+        ListOrganizations
     }
-
+    
     return Object.freeze(controllerServiceObject)
 }
 
-module.exports = ServiceManagerInterfaceController
+module.exports = IdentityManagementController

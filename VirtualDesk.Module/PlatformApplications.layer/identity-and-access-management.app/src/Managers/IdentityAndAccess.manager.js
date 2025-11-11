@@ -44,6 +44,7 @@ const IdentityAndAccessManager = (params) => {
 
     return {
         CreateOrganization: IAMDomainService.CreateOrganization,
+        ListOrganizations: IAMDomainService.ListOrganizations
     }
 
 }

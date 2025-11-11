@@ -4,7 +4,7 @@
 		{
 			"namespace": "CreateOrganization",
 			"path": "Commands/CreateOrganization.command",
-			"command": "create organization [serviceId]",
+			"command": "create organization [name]",
 			"description": "Cria uma nova organização",
 			"parameters": [
 				{
@@ -17,9 +17,9 @@
             "parametersToLoad": [ "commandExecutorLib" ]
 		},
 		{
-			"namespace": "ListOrganization",
-			"path": "Commands/ListOrganization.command",
-			"command": "list organization",
+			"namespace": "ListOrganizations",
+			"path": "Commands/ListOrganizations.command",
+			"command": "organizations",
 			"description": "Lista todas as organizações",
             "parametersToLoad": [ "commandExecutorLib" ]
 		}

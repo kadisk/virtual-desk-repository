@@ -11,9 +11,15 @@ const CreateIAMDomainService = ({
         const organization = await OrganizationModel.create({ name })
         return organization
     }
+
+    const ListOrganizations = async () => {
+        const organizations = await OrganizationModel.findAll()
+        return organizations
+    }
     
     return {
-        CreateOrganization
+        CreateOrganization,
+        ListOrganizations
     }
 }
 

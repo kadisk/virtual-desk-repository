@@ -13,6 +13,11 @@
 					"required": true
 				}
 			]
+		},
+		{
+			"path": "/organizations",
+			"method": "GET",
+			"summary": "ListOrganizations"
 		}
 	]
 }
