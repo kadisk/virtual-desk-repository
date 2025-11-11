@@ -7,7 +7,7 @@ const CreateIAMDomainService = ({
     }) => {
 
 
-    const CreateOrganization = async ({ name }) => {
+    const CreateOrganization = async (name) => {
         const organization = await OrganizationModel.create({ name })
         return organization
     }

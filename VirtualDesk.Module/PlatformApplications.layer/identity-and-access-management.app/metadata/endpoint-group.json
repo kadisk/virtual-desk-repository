@@ -1,0 +1,22 @@
+{
+    "bound-params":[
+        "serverService",
+        "iamManagerService"
+    ],
+    "endpoints": [
+        {
+            "url": "/identity-management",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/IdentityManagement.api.json",
+                "controller": "Controllers/IdentityManagement.controller"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "iamManagerService":"iamManagerService"
+                }
+            }
+        }
+    ]
+}
