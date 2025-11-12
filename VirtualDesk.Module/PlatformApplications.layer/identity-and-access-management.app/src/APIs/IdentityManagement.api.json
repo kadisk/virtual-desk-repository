@@ -2,12 +2,57 @@
 	"name": "IdentityManagement",
 	"endpoints": [
 		{
+			"path": "/organization/:organizationId",
+			"method": "GET",
+			"summary": "GetOrganization",
+			"parameters": [
+				{
+					"name": "organizationId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/organization",
 			"method": "POST",
 			"summary": "CreateOrganization",
 			"parameters": [
 				{
 					"name": "name",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/organization/name",
+			"method": "POST",
+			"summary": "UpdateOrganizationName",
+			"parameters": [
+				{
+					"name": "organizationId",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "name",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/organization/delete",
+			"method": "POST",
+			"summary": "DeleteOrganization",
+			"parameters": [
+				{
+					"name": "organizationId",
 					"in": "body",
 					"type": "string",
 					"required": true

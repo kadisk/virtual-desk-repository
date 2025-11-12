@@ -22,6 +22,36 @@
 			"command": "organizations",
 			"description": "Lista todas as organizações",
             "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ChangeOrganizationName",
+			"path": "Commands/ChangeOrganizationName.command",
+			"command": "change organization name [organizationId]",
+			"description": "Alterar o nome da organização atual",
+			"parameters": [
+				{
+					"key": "organizationId",
+					"paramType": "positional",
+					"valueType": "string",
+					"describe": "ID da organização a ser alterada"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "DeleteOrganization",
+			"path": "Commands/DeleteOrganization.command",
+			"command": "delete organization [organizationId]",
+			"description": "Remove o registro de uma organização",
+			"parameters": [
+				{
+					"key": "organizationId",
+					"paramType": "positional",
+					"valueType": "string",
+					"describe": "Nome da organização a ser removida"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
 		}
 	]
 }
