@@ -27,35 +27,6 @@ const InitializeIAMPersistentStoreManager = (storage) => {
         },
     })
 
-    const AccountModel = sequelize.define('Account', {
-        id: { 
-            type: DataTypes.UUID, 
-            primaryKey: true, 
-            defaultValue: DataTypes.UUIDV4     
-        },
-        organizationId: { 
-            type: DataTypes.UUID, 
-            allowNull: false, 
-            references: { model: 'organizations', key: 'id', deferrable: Deferrable.INITIALLY_IMMEDIATE } 
-        },
-        name: { 
-            type: DataTypes.STRING, 
-            allowNull: false
-        },
-        type: { 
-            type: DataTypes.ENUM('STANDARD','BRANCH','TEAM','PROJECT'), 
-            defaultValue: 'STANDARD' 
-        },
-        status: { 
-            type: DataTypes.ENUM('ACTIVE','INACTIVE'), 
-            defaultValue: 'ACTIVE' 
-        },
-        createdAt: { 
-            type: DataTypes.DATE, 
-            defaultValue: DataTypes.NOW 
-        }
-    })
-
     const UserModel = sequelize.define('User', {
         id: {
             type: DataTypes.UUID,
@@ -148,12 +119,11 @@ const InitializeIAMPersistentStoreManager = (storage) => {
             allowNull: true
         }
     })
-    
+
 
     return {
         models: {
             Organization: OrganizationModel,
-            Account: AccountModel,
             User: UserModel,
             ServiceIdentity: ServiceIdentityModel,
             Device: DeviceModel

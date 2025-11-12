@@ -21,7 +21,6 @@ const IdentityAndAccessManager = (params) => {
 
     const {
         Organization: OrganizationModel,
-        Account: AccountModel,
         User: UserModel,
         ServiceIdentity: ServiceIdentityModel,
         Device: DeviceModel
@@ -29,7 +28,6 @@ const IdentityAndAccessManager = (params) => {
 
     const IAMDomainService = CreateIAMDomainService({
         OrganizationModel,
-        AccountModel,
         UserModel,
         ServiceIdentityModel,
         DeviceModel
@@ -47,7 +45,9 @@ const IdentityAndAccessManager = (params) => {
         ListOrganizations      : IAMDomainService.ListOrganizations,
         GetOrganization        : IAMDomainService.GetOrganization,
         UpdateOrganizationName : IAMDomainService.UpdateOrganizationName,
-        DeleteOrganization     : IAMDomainService.DeleteOrganization
+        DeleteOrganization     : IAMDomainService.DeleteOrganization,
+        CreateUser             : IAMDomainService.CreateUser,
+        ListUsers              : IAMDomainService.ListUsers
     }
 
 }

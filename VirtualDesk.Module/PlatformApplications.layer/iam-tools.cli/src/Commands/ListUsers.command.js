@@ -1,24 +1,25 @@
 const MountIAMCommand = require('../Helpers/MountIAMCommand')
 const Table = require('cli-table')
 
-const ListOrganizationsCommand = async ({ startupParams, params }) => {
+const ListUsersCommand = async ({ startupParams, params }) => {
     const IAMCommand = MountIAMCommand({ startupParams, params })
-    const organizations = await IAMCommand((API) => API.ListOrganizations())
+    const users = await IAMCommand((API) => API.ListUsers())
 
-    if (!organizations || organizations.length === 0) {
-        console.log('\nNenhuma organização encontrada.\n')
+    if (!users || users.length === 0) {
+        console.log('\nNenhuma usuário encontrada.\n')
         return
     }
 
     const table = new Table({
-        head: ['ID', 'Nome', 'Status', 'Última atualização'],
+        head: ['ID', 'Nome', "E-mail", 'Status', 'Última atualização'],
         style: { head: ['green'] }
     })
 
-    organizations.forEach(org => {
+    users.forEach(org => {
         table.push([
             org.id,
             org.name,
+            org.email  ,
             org.status,
             org.updatedAt
         ])
@@ -29,4 +30,4 @@ const ListOrganizationsCommand = async ({ startupParams, params }) => {
     console.log('')
 }
 
-module.exports = ListOrganizationsCommand
+module.exports = ListUsersCommand

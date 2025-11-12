@@ -1,6 +1,7 @@
+const bcrypt = require('bcrypt')
+
 const CreateIAMDomainService = ({
         OrganizationModel,
-        AccountModel,
         UserModel,
         ServiceIdentityModel,
         DeviceModel
@@ -39,13 +40,26 @@ const CreateIAMDomainService = ({
         await organization.destroy()
         return true
     }
+
+    const CreateUser = async ({ name, email, password }) => {
+        const passwordHash = await bcrypt.hash(password, 10)
+        const user = await UserModel.create({ name, email, passwordHash })
+        return user
+    }
+
+    const ListUsers = async () => {
+        const users = await UserModel.findAll()
+        return users
+    }
     
     return {
         CreateOrganization,
         ListOrganizations,
         GetOrganization,
         UpdateOrganizationName,
-        DeleteOrganization
+        DeleteOrganization,
+        CreateUser,
+        ListUsers
     }
 }
 

@@ -28,6 +28,31 @@
 			]
 		},
 		{
+			"path": "/user",
+			"method": "POST",
+			"summary": "CreateUser",
+			"parameters": [
+				{
+					"name": "name",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "email",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "password",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/organization/name",
 			"method": "POST",
 			"summary": "UpdateOrganizationName",
@@ -63,6 +88,11 @@
 			"path": "/organizations",
 			"method": "GET",
 			"summary": "ListOrganizations"
+		},
+		{
+			"path": "/users",
+			"method": "GET",
+			"summary": "ListUsers"
 		}
 	]
 }

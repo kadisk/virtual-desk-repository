@@ -9,6 +9,8 @@ const IdentityManagementController = (params) => {
         GetOrganization        : iamManagerService.GetOrganization,
         UpdateOrganizationName : iamManagerService.UpdateOrganizationName,
         DeleteOrganization     : iamManagerService.DeleteOrganization,
+        CreateUser             : iamManagerService.CreateUser,
+        ListUsers              : iamManagerService.ListUsers
     }
     
     return Object.freeze(controllerServiceObject)

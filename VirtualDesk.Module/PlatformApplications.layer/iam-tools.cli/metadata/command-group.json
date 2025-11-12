@@ -17,10 +17,24 @@
             "parametersToLoad": [ "commandExecutorLib" ]
 		},
 		{
+			"namespace": "CreateUser",
+			"path": "Commands/CreateUser.command",
+			"command": "create user",
+			"description": "Cria um novo usuário",
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
 			"namespace": "ListOrganizations",
 			"path": "Commands/ListOrganizations.command",
 			"command": "organizations",
 			"description": "Lista todas as organizações",
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ListUsers",
+			"path": "Commands/ListUsers.command",
+			"command": "users",
+			"description": "Lista todas os usuários",
             "parametersToLoad": [ "commandExecutorLib" ]
 		},
 		{
