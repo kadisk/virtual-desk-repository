@@ -129,7 +129,7 @@
 			]
 		},
 		{
-			"path": "/user",
+			"path": "/user/information",
 			"method": "POST",
 			"summary": "GetUser",
 			"parameters": [

@@ -49,6 +49,7 @@ const IdentityAndAccessManager = (params) => {
         CreateUser               : IAMDomainService.CreateUser,
         ListUsers                : IAMDomainService.ListUsers,
         VerifyPasswordAndGetUser : IAMDomainService.VerifyPasswordAndGetUser,
+        GetUser                  : IAMDomainService.GetUser,
     }
 
 }
