@@ -21,17 +21,22 @@ const CreateUserCommand = async ({ startupParams, params }) => {
                 /\S+@\S+\.\S+/.test(input) || 'Digite um e-mail válido.'
         },
         {
+            type: 'input',
+            name: 'username',
+            message: 'Username:',
+            validate: (input) => input.trim().length > 0 || 'O Username não pode ser vazio.'
+        },
+        {
             type: 'password',
             name: 'password',
             message: 'Senha do usuário:',
-            mask: '*',
-            validate: (input) =>
-                input.trim().length >= 6 || 'A senha deve ter pelo menos 6 caracteres.'
+            mask: '*'
         }
     ])
 
     console.log('\n📋 Dados informados:')
     console.log(`   Nome: ${answers.name}`)
+    console.log(`   Username: ${answers.username}`)
     console.log(`   E-mail: ${answers.email}`)
     console.log(`   Senha: ${'*'.repeat(answers.password.length)} (oculta)\n`)
 
@@ -54,6 +59,7 @@ const CreateUserCommand = async ({ startupParams, params }) => {
     const createdUser = await IAMCommand((API) =>
         API.CreateUser({
             name: answers.name,
+            username: answers.username,
             email: answers.email,
             password: answers.password
         })

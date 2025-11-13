@@ -2,6 +2,7 @@
     {
         "namespace": "UserManagementService",
         "path": "Services/UserManagement.service",
-        "params": ["storageFilePath", "secretKey"]
+        "params": ["secretKey", "iamStorageSocketPath" , "iamStorageServerManagerUrl"],
+        "bound-params": ["commandExecutorLib"]
     }
 ]

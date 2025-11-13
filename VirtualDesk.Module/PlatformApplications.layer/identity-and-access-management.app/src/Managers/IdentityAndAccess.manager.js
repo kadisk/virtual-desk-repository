@@ -41,13 +41,14 @@ const IdentityAndAccessManager = (params) => {
     _Start()
 
     return {
-        CreateOrganization     : IAMDomainService.CreateOrganization,
-        ListOrganizations      : IAMDomainService.ListOrganizations,
-        GetOrganization        : IAMDomainService.GetOrganization,
-        UpdateOrganizationName : IAMDomainService.UpdateOrganizationName,
-        DeleteOrganization     : IAMDomainService.DeleteOrganization,
-        CreateUser             : IAMDomainService.CreateUser,
-        ListUsers              : IAMDomainService.ListUsers
+        CreateOrganization       : IAMDomainService.CreateOrganization,
+        ListOrganizations        : IAMDomainService.ListOrganizations,
+        GetOrganization          : IAMDomainService.GetOrganization,
+        UpdateOrganizationName   : IAMDomainService.UpdateOrganizationName,
+        DeleteOrganization       : IAMDomainService.DeleteOrganization,
+        CreateUser               : IAMDomainService.CreateUser,
+        ListUsers                : IAMDomainService.ListUsers,
+        VerifyPasswordAndGetUser : IAMDomainService.VerifyPasswordAndGetUser,
     }
 
 }

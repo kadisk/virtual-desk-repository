@@ -1,8 +1,6 @@
-const { Sequelize, DataTypes } = require('sequelize')
 const jwt = require('jsonwebtoken')
 const path = require("path")
 const os = require('os')
-const crypto = require('crypto')
 
 const ConvertPathToAbsolutPath = (_path) => path
     .join(_path)
@@ -11,53 +9,49 @@ const ConvertPathToAbsolutPath = (_path) => path
 // Constantes para o usuário padrão
 const DEFAULT_USER = 'su'
 const DEFAULT_PASSWORD = 'su'
+const DEFAULT_EMAIL = 'su@su'
 
 const UserManagementService = (params) => {
 
     const {
         secretKey,
         onReady,
-        storageFilePath
+        iamStorageSocketPath,
+        iamStorageServerManagerUrl,
+        commandExecutorLib
     } = params
 
-    const absolutStorageFilePath = ConvertPathToAbsolutPath(storageFilePath)
+    const CommandExecutor = commandExecutorLib.require("CommandExecutor")
 
-    const sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: absolutStorageFilePath
-    })
+    const IAMCommand = async (CommandFunction) => {
+        const APICommandFunction = async ({ APIs }) => {
+            const API = APIs
+            .IAMAppInstance
+            .IdentityManagement
+            return await CommandFunction(API)
+        }
 
-    const UserModel = sequelize.define('User', { 
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-            validate: {
-                is: /^[a-zA-Z][a-zA-Z0-9_]*$/
-            }
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
-        password: DataTypes.STRING
-    })
+        return await CommandExecutor({
+            serverResourceEndpointPath: iamStorageServerManagerUrl,
+            mainApplicationSocketPath: iamStorageSocketPath,
+            CommandFunction: APICommandFunction
+        })
+    }
+
 
     const _Start = async () => {
         try {
-            await sequelize.authenticate()
-            await sequelize.sync()
+            const users = await IAMCommand((API) => API.ListUsers())
 
-            const userCount = await UserModel.count()
-            if (userCount === 0) {
-                const hashedPassword = hashPassword(DEFAULT_PASSWORD)
-                await UserModel.create({ name: DEFAULT_USER, username: DEFAULT_USER, email: 'su@su', password: hashedPassword })
+            if (users.length === 0) {
+                await IAMCommand((API) =>
+                    API.CreateUser({
+                        name: DEFAULT_USER,
+                        username: DEFAULT_USER,
+                        email: DEFAULT_EMAIL,
+                        password: DEFAULT_PASSWORD
+                    })
+                )
             }
 
             onReady()
@@ -68,28 +62,13 @@ const UserManagementService = (params) => {
 
     _Start()
 
-    const _CheckUserExist = async ({ email , username }) => {
-        const existingUser = await UserModel.findOne({
-            where: {
-                [Sequelize.Op.or]: [{ email }, { username }]
-            }
-        })
-        return existingUser
-    }
-
-    const hashPassword = (password) => {
-        return crypto.createHash('sha256').update(password).digest('hex')
-    }
-
     const CreateNewUser = async ({ name, username, email, password }) => {
         try {
-            const existingUser = await _CheckUserExist({ email , username })
+            const existingUser = await IAMCommand((API) => API.CheckUserExist({ email , username }))
 
             if (existingUser) 
                 throw new Error('User with the same email or username already exists')
-
-            const hashedPassword = hashPassword(password)
-            const newUser = await UserModel.create({ name, username, email, password: hashedPassword })
+            const newUser = await IAMCommand((API) => API.CreateUser({ name, username, email, password }))
             return newUser
         } catch (error) {
             console.error('Error creating user:', error)
@@ -99,9 +78,7 @@ const UserManagementService = (params) => {
 
     const ListUsers = async () => {
         try {
-            const users = await UserModel.findAll({
-                attributes: { exclude: ['password'] }
-            })
+            const users = await IAMCommand((API) => API.ListUsers())
             return users
         } catch (error) {
             console.error('Error listing users:', error)
@@ -109,24 +86,8 @@ const UserManagementService = (params) => {
         }
     }
 
-    const VerifyPasswordAndGetUser = async ({ username, password }) => {
-        try {
-            const hashedPassword = hashPassword(password)
-            const user = await UserModel.findOne({ 
-                attributes: { exclude: ['password'] },
-                where: { username, password: hashedPassword }
-            })
-            return user
-        } catch (error) {
-            console.error('Error verifying password:', error)
-            throw error
-        }
-    }
-
     const SignToken = async ({ username, password }) => {
-        
-        const user = await VerifyPasswordAndGetUser({ username, password })
-
+        const user = await IAMCommand((API) => API.VerifyPasswordAndGetUser({ username, password }))
         if (user){
             const { id, username } = user
             const token = jwt.sign({ userId: id, username }, secretKey, { expiresIn: '1h' })
@@ -138,10 +99,7 @@ const UserManagementService = (params) => {
 
     const GetUser = async (id) => {
         try {
-            const user = await UserModel.findOne({
-                attributes: { exclude: ['password'] },
-                where: { id }
-            })
+            const user = await IAMCommand((API) => API.GetUser({ userId: id }))
             return user
         } catch (error) {
             console.error('Error getting user:', error)

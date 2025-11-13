@@ -5,7 +5,6 @@
         "serverManagerUrl",
         "RT_ENV_GENERATED_DIR_NAME",
         "isWatch",
-        "userManagementServiceStorageFilePath",
         "eventManagerServiceStorageFilePath",
         "instanceMonitoringManagerServiceStorageFilePath",
         "myWorkspaceManagerServiceStorageFilePath",
@@ -18,7 +17,9 @@
         "serviceOrchestratorSocketPath",
         "serviceOrchestratorServerManagerUrl",
         "repositoryStorageSocketPath",
-        "repositoryStorageServerManagerUrl"
+        "repositoryStorageServerManagerUrl",
+        "iamStorageSocketPath",
+        "iamStorageServerManagerUrl"
     ],
     "services": [
         {
@@ -36,12 +37,12 @@
                 "port": "{{port}}"
             },
             "bound-params":{
-                "authenticationService": "@@/jwt-authentication-service"
+                "middlewareService": "@@/jwt-verifier-middleware-service"
             }
         },
         {
-            "namespace": "@@/jwt-authentication-service",
-            "dependency": "@/server-manager.service/services/JWTAuthenticationService",
+            "namespace": "@@/jwt-verifier-middleware-service",
+            "dependency": "@/server-manager.service/services/JWTVerifierMiddlewareService",
             "params":{
                 "secretKey":"{{secretKey}}"
             }
@@ -50,8 +51,12 @@
             "namespace": "@@/user-management-service",
             "dependency": "@/user-management.service/services/UserManagementService",
             "params":{
-                "storageFilePath":"{{userManagementServiceStorageFilePath}}",
+                "iamStorageSocketPath": "{{iamStorageSocketPath}}",
+                "iamStorageServerManagerUrl": "{{iamStorageServerManagerUrl}}",
                 "secretKey":"{{secretKey}}"
+            },
+            "bound-params":{
+                "commandExecutorLib": "@/command-executor.lib"
             }
         },
         {

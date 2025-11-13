@@ -39,6 +39,12 @@
 					"required": true
 				},
 				{
+					"name": "username",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
 					"name": "email",
 					"in": "body",
 					"type": "string",
@@ -78,6 +84,57 @@
 			"parameters": [
 				{
 					"name": "organizationId",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/user/check-exist",
+			"method": "POST",
+			"summary": "CheckUserExist",
+			"parameters": [
+				{
+					"name": "username",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "email",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/user/verify-password",
+			"method": "POST",
+			"summary": "VerifyPasswordAndGetUser",
+			"parameters": [
+				{
+					"name": "username",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "password",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/user",
+			"method": "POST",
+			"summary": "GetUser",
+			"parameters": [
+				{
+					"name": "userId",
 					"in": "body",
 					"type": "string",
 					"required": true

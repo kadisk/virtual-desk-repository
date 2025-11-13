@@ -11,13 +11,14 @@ const ListUsersCommand = async ({ startupParams, params }) => {
     }
 
     const table = new Table({
-        head: ['ID', 'Nome', "E-mail", 'Status', 'Última atualização'],
+        head: ['ID', 'Username', 'Nome', "E-mail", 'Status', 'Última atualização'],
         style: { head: ['green'] }
     })
 
     users.forEach(org => {
         table.push([
             org.id,
+            org.username,
             org.name,
             org.email  ,
             org.status,
