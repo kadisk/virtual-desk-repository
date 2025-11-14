@@ -122,7 +122,7 @@ const CreateRepositoryStorageDomainService = ({
                             FROM "RepositoryImporteds" AS ri
                             INNER JOIN "RepositoryNamespaces" AS rn
                                 ON rn.id = ri."namespaceId"
-                            WHERE rn."userId" = ${userId}
+                            WHERE rn."userId" = "${userId}"
                             AND rn.id = "RepositoryImported"."namespaceId"
                         )`)
                     }
