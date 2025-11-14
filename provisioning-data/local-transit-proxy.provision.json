@@ -1,0 +1,19 @@
+{
+    "username": "su",
+    "serviceName": "local-transit-proxy",
+    "serviceDescription": "local-transit-proxy",
+    "originRepositoryId": 1,
+    "originRepositoryNamespace": "VirtualDeskRepo",
+    "originRepositoryCodePath": "/home/kadisk/virtual-desk-state/local-app-data/my-services-uploded-repositories/su770d1f79-07f6-4335-8916-eb4e0f8a4b87/VirtualDeskRepo-ymx58hlt42a1fl6zxvobcm",
+    "originPackageId": 12,
+    "originPackageName": "local-transit-proxy",
+    "originPackageType": "app",
+    "originPackagePath": "VirtualDesk.Module/Applications.layer/local-transit-proxy.app",
+    "startupParams": {
+        "entryPort": "9000",
+        "targetHost": "http://localhost:7000"
+    },
+    "ports": [],
+    "networkmode": "host",
+    "timestamp": "2025-11-14T00:07:35.208Z"
+}

@@ -1,0 +1,22 @@
+{
+    "username": "su",
+    "serviceName": "www-worms-solutions",
+    "serviceDescription": "www-worms-solutions",
+    "originRepositoryId": 3,
+    "originRepositoryNamespace": "WormsSolutions",
+    "originRepositoryCodePath": "/home/kadisk/virtual-desk-state/local-app-data/my-services-uploded-repositories/su770d1f79-07f6-4335-8916-eb4e0f8a4b87/WormsSolutions-idxttxsq6naakvax8lrds",
+    "originPackageId": 44,
+    "originPackageName": "www-worms-solutions",
+    "originPackageType": "webgui",
+    "originPackagePath": "Website.Module/Application.layer/www-worms-solutions.webgui",
+    "startupParams": {
+        "port": "7003",
+        "serverName": "WWWWormsSolutionsWebguiInstance",
+        "serverManagerUrl": "http://worms.solutions.local:9000/server-manager/status",
+        "RT_ENV_GENERATED_DIR_NAME": ".generated_data",
+        "isWatch": true
+    },
+    "ports": [],
+    "networkmode": "host",
+    "timestamp": "2025-11-14T00:16:41.206Z"
+}
