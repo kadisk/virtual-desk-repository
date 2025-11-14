@@ -1,14 +1,10 @@
 {
-    "username": "su",
     "serviceName": "local-domain-router-proxy",
     "serviceDescription": "local-domain-router-proxy",
-    "originRepositoryId": 1,
-    "originRepositoryNamespace": "VirtualDeskRepo",
-    "originRepositoryCodePath": "/home/kadisk/virtual-desk-state/local-app-data/my-services-uploded-repositories/su770d1f79-07f6-4335-8916-eb4e0f8a4b87/VirtualDeskRepo-ymx58hlt42a1fl6zxvobcm",
-    "originPackageId": 11,
-    "originPackageName": "local-domain-router-proxy",
-    "originPackageType": "app",
-    "originPackagePath": "VirtualDesk.Module/Applications.layer/local-domain-router-proxy.app",
+    "repositoryNamespace": "VirtualDeskRepo",
+    "packageName": "local-domain-router-proxy",
+    "packageType": "app",
+    "packagePath": "VirtualDesk.Module/Applications.layer/local-domain-router-proxy.app",
     "startupParams": {
         "entryPort": "7000",
         "routeMappingTable": [

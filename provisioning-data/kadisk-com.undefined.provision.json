@@ -1,10 +1,6 @@
 {
     "serviceName": "kadisk-com",
     "serviceDescription": "kadisk-com",
-    "repositoryNamespace": "KADISKCorpRepo",
-    "packageName": "kadisk-com",
-    "packageType": "webgui",
-    "packagePath": "Website.Module/Application.layer/kadisk-com.webgui",
     "startupParams": {
         "port": "7002",
         "serverName": "KadiskComWebguiInstance",
@@ -14,5 +10,5 @@
     },
     "ports": [],
     "networkmode": "host",
-    "timestamp": "2025-11-14T00:15:38.663Z"
+    "timestamp": "2025-11-14T15:01:23.835Z"
 }

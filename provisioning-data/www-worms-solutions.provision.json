@@ -1,14 +1,10 @@
 {
-    "username": "su",
     "serviceName": "www-worms-solutions",
     "serviceDescription": "www-worms-solutions",
-    "originRepositoryId": 3,
-    "originRepositoryNamespace": "WormsSolutions",
-    "originRepositoryCodePath": "/home/kadisk/virtual-desk-state/local-app-data/my-services-uploded-repositories/su770d1f79-07f6-4335-8916-eb4e0f8a4b87/WormsSolutions-idxttxsq6naakvax8lrds",
-    "originPackageId": 44,
-    "originPackageName": "www-worms-solutions",
-    "originPackageType": "webgui",
-    "originPackagePath": "Website.Module/Application.layer/www-worms-solutions.webgui",
+    "repositoryNamespace": "WormsSolutions",
+    "packageName": "www-worms-solutions",
+    "packageType": "webgui",
+    "packagePath": "Website.Module/Application.layer/www-worms-solutions.webgui",
     "startupParams": {
         "port": "7003",
         "serverName": "WWWWormsSolutionsWebguiInstance",
