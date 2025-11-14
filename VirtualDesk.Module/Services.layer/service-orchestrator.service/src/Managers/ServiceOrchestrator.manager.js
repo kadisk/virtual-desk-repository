@@ -263,7 +263,7 @@ const ServiceOrchestratorManager = (params) => {
         ports = [],
         networkmode= "bridge"
     }) => {
-/*
+
         try {
             const provisionDataDir = "/home/kadisk/Workspaces/Organizations/Kadisk/VirtualDeskRepo/provisioning-data"
 
@@ -298,7 +298,7 @@ const ServiceOrchestratorManager = (params) => {
         } catch (err) {
             console.error("❌ Failed to write provision data JSON:", err)
         }
-*/
+
         const serviceData = await CreateService({
                 username,
                 serviceName,

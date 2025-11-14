@@ -1,5 +1,6 @@
 const Table = require('cli-table')
-const MountServiceOrchestratorCommand = require('../Helpers/MountServiceOrchestratorCommand')
+
+const MountCommand = require('../Helpers/MountCommand')
 
 const formatStartupParams = (startupParams = {}) => {
     // Exclui campos já exibidos separadamente
@@ -10,8 +11,25 @@ const formatStartupParams = (startupParams = {}) => {
 }
 
 const ListInstanceCommand = async ({ args, startupParams, params }) => {
+
     const { serviceId } = args
-    const ServiceOrchestratorCommand = MountServiceOrchestratorCommand({ startupParams, params })
+
+    const { 
+        serviceOrchestratorServerManagerUrl,
+        serviceOrchestratorSocketPath
+    } = startupParams
+
+    const {
+        commandExecutorLib
+    } = params
+
+    const ServiceOrchestratorCommand = MountCommand({ 
+        serverManagerUrl: serviceOrchestratorServerManagerUrl,
+        socketPath: serviceOrchestratorSocketPath, 
+        commandExecutorLib,
+        ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
+    })
+
     const instanceList = await ServiceOrchestratorCommand((API) => API.ListInstances({ serviceId }))
 
     const table = new Table({

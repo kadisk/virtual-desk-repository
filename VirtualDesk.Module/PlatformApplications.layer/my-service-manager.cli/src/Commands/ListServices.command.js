@@ -1,10 +1,25 @@
 const Table = require('cli-table')
 
-const MountServiceOrchestratorCommand = require('../Helpers/MountServiceOrchestratorCommand')
+const MountCommand = require('../Helpers/MountCommand')
 
-const ListServicesCommand = async ({ args, startupParams, params }) => {
+const ListServicesCommand = async ({ startupParams, params }) => {
 
-    const ServiceOrchestratorCommand = MountServiceOrchestratorCommand({ startupParams, params })
+    const { 
+        serviceOrchestratorServerManagerUrl,
+        serviceOrchestratorSocketPath
+    } = startupParams
+
+    const {
+        commandExecutorLib
+    } = params
+
+    const ServiceOrchestratorCommand = MountCommand({ 
+        serverManagerUrl: serviceOrchestratorServerManagerUrl,
+        socketPath: serviceOrchestratorSocketPath, 
+        commandExecutorLib,
+        ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
+    })
+
     const serviceInfoList = await ServiceOrchestratorCommand((API) => API.ListServices())
 
     const table = new Table({

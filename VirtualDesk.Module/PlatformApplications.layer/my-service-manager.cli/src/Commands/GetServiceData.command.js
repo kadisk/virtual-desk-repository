@@ -1,5 +1,6 @@
 const colors = require('colors')
-const MountServiceOrchestratorCommand = require('../Helpers/MountServiceOrchestratorCommand')
+
+const MountCommand = require('../Helpers/MountCommand')
 
 const PrintServiceInfo = (info) => {
     const labelWidth = 26
@@ -32,8 +33,23 @@ const PrintServiceInfo = (info) => {
 }
 
 const GetServiceDataCommand = async ({ args, startupParams, params }) => {
-    const { serviceId } = args
-    const ServiceOrchestratorCommand = MountServiceOrchestratorCommand({ startupParams, params })
+
+    const { 
+        serviceOrchestratorServerManagerUrl,
+        serviceOrchestratorSocketPath
+    } = startupParams
+
+    const {
+        commandExecutorLib
+    } = params
+
+    const ServiceOrchestratorCommand = MountCommand({ 
+        serverManagerUrl: serviceOrchestratorServerManagerUrl,
+        socketPath: serviceOrchestratorSocketPath, 
+        commandExecutorLib,
+        ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
+    })
+
     const serviceInfo = await ServiceOrchestratorCommand((API) => API.GetService({ serviceId }))
     PrintServiceInfo(serviceInfo)
 }
