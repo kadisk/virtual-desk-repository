@@ -1,7 +1,5 @@
 const { join } = require("path")
 const os = require('os')
-const fs = require("fs")
-const path = require("path")
 
 const ConvertPathToAbsolutPath = (_path) => join(_path)
     .replace('~', os.homedir())
@@ -264,40 +262,6 @@ const ServiceOrchestratorManager = (params) => {
         networkmode= "bridge"
     }) => {
 
-        try {
-            const provisionDataDir = "/home/kadisk/Workspaces/Organizations/Kadisk/VirtualDeskRepo/provisioning-data"
-
-
-            if (!fs.existsSync(provisionDataDir)) {
-                fs.mkdirSync(provisionDataDir, { recursive: true })
-            }
-
-            const fileName = `${serviceName}.${username}.provision.json`
-            const filePath = path.join(provisionDataDir, fileName)
-
-            const jsonData = {
-                username,
-                serviceName,
-                serviceDescription,
-                originRepositoryId,
-                originRepositoryNamespace,
-                originRepositoryCodePath,
-                originPackageId,
-                originPackageName,
-                originPackageType,
-                originPackagePath,
-                startupParams,
-                ports,
-                networkmode,
-                timestamp: new Date().toISOString()
-            }
-
-            fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 4), "utf-8")
-
-            console.log(`✅ Provision data saved: ${filePath}`)
-        } catch (err) {
-            console.error("❌ Failed to write provision data JSON:", err)
-        }
 
         const serviceData = await CreateService({
                 username,

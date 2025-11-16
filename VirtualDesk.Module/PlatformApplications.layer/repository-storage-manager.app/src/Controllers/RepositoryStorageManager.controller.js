@@ -5,6 +5,7 @@ const RepositoryStorageManagerController = (params) => {
     } = params
 
     const {
+        GetPackageId,
         GetTotalNamespaceByUserId,
         ListRepositories,
         ListRepositoryNamespace,
@@ -17,7 +18,7 @@ const RepositoryStorageManagerController = (params) => {
         ListBootablePackages,
         ListRepositoriesByUserId,
         GetPackageById,
-        GetRepositoryImportedByNamespace,
+        GetRepositoriesImportedList,
         GetRepositoryImported,
         ListItemByRepositoryId,
         GetNamespaceByRepositoryId,
@@ -26,6 +27,7 @@ const RepositoryStorageManagerController = (params) => {
 
     const controllerServiceObject = {
         controllerName: "RepositoryStorageManagerController",
+        GetPackageId,
         GetTotalNamespaceByUserId,
         ListRepositories,
         ListRepositoryNamespace,
@@ -38,7 +40,7 @@ const RepositoryStorageManagerController = (params) => {
         ListBootablePackages,
         ListRepositoriesByUserId,
         GetPackageById,
-        GetRepositoryImportedByNamespace,
+        GetRepositoriesImportedList,
         ListItemByRepositoryId,
         GetNamespaceByRepositoryId,
         GetRepositoryImported,

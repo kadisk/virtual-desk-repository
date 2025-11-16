@@ -13,6 +13,5 @@
         "isWatch": true
     },
     "ports": [],
-    "networkmode": "host",
-    "timestamp": "2025-11-14T00:15:38.663Z"
+    "networkmode": "host"
 }

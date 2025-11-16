@@ -11,7 +11,11 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
 
     const { 
         serviceOrchestratorServerManagerUrl,
-        serviceOrchestratorSocketPath
+        serviceOrchestratorSocketPath,
+        iamManagerSocketPath,
+        iamManagerServerManagerUrl,
+        repositoryStorageSocketPath,
+        repositoryStorageServerManagerUrl
     } = startupParams
 
     const {
@@ -23,7 +27,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
     const absolutProvisionFilePath = resolve(process.cwd(), ConvertPathToAbsolutPath(provisionFilePath))
     const provisionData = await ReadJsonFile(absolutProvisionFilePath)
 
-    // Configuração de cores
     colors.setTheme({
         header: ['white', 'bold'],
         title: ['cyan', 'bold'],
@@ -39,7 +42,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
         path: ['cyan']
     })
 
-    // Exibir informações do serviço de forma profissional
     console.log('')
     console.log('='.repeat(70).header)
     console.log('PROVISIONAMENTO DE SERVIÇO'.padStart(45).title)
@@ -54,7 +56,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
     console.log(`${'Caminho:'.padEnd(15).label} ${(provisionData.packagePath || 'N/A').path}`)
     console.log(`${'Network Mode:'.padEnd(15).label} ${provisionData.networkmode.highlight}`)
     
-    // Exibir parâmetros de startup
     if (provisionData.startupParams) {
         console.log('')
         console.log('PARÂMETROS DE INICIALIZAÇÃO:'.title)
@@ -64,7 +65,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
                 let formattedValue
                 let color = 'value'
                 
-                // Aplicar cores baseadas no tipo de valor
                 if (typeof value === 'boolean') {
                     formattedValue = value.toString()
                     color = 'boolean'
@@ -84,7 +84,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
                 const valueStr = formattedValue
                 const keyLabel = `${key.padEnd(25)}`.label
                 
-                // Quebra de linha para valores longos
                 if (valueStr.length > 45) {
                     console.log(`${keyLabel} ${valueStr.substring(0, 45)[color]}`)
                     let remaining = valueStr.substring(45)
@@ -102,7 +101,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
     console.log('-'.repeat(70).label)
     console.log('')
 
-    // Solicitar credenciais
     console.log('AUTENTICAÇÃO REQUERIDA:'.title)
     console.log('-'.repeat(70).label)
     const credentials = await inquirer.prompt([
@@ -132,27 +130,73 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
         return
     }
 
-    // Adicionar credenciais aos dados de provisionamento
-    const provisionDataWithAuth = {
-        ...provisionData,
-        credentials: {
-            username: credentials.username,
-            password: credentials.password
-        }
-    }
-
-    console.log('')
-    console.log('Iniciando provisionamento...'.highlight)
-
-    const ServiceOrchestratorCommand = MountCommand({ 
-        serverManagerUrl: serviceOrchestratorServerManagerUrl,
-        socketPath: serviceOrchestratorSocketPath, 
+    const IAMCommand = MountCommand({ 
+        serverManagerUrl: iamManagerServerManagerUrl,
+        socketPath: iamManagerSocketPath, 
         commandExecutorLib,
-        ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
+        ExtractAPI: (APIs) => APIs.IAMAppInstance.IdentityManagement
     })
 
+    const { username, password } = credentials
+
+    const userInfo = await IAMCommand((API) => API.VerifyPasswordAndGetUser({ username, password }))
+
+    if (!userInfo) throw new Error('Falha na autenticação. Verifique suas credenciais e tente novamente.')
+
+    console.log('')
+    console.log(`Buscando dados de repositório de origem "${provisionData.repositoryNamespace}"...`.highlight)
+
+    const RepositoryStorageCommand = MountCommand({ 
+        serverManagerUrl: repositoryStorageServerManagerUrl,
+        socketPath: repositoryStorageSocketPath,
+        commandExecutorLib,
+        ExtractAPI: (APIs) => APIs.RepositoryStorageManagerAppInstance.RepositoryStorageManager
+    })
+
+    const repositoriesImportedList = 
+        await RepositoryStorageCommand((API) => API.GetRepositoriesImportedList({
+            userId: userInfo.id,
+            repositoryNamespace: provisionData.repositoryNamespace
+        }))
+
+
+    const repositoryInformation = repositoriesImportedList[0]
+
+    const packageId = await RepositoryStorageCommand((API) => API.GetPackageId({
+        repositoryId : repositoryInformation.id,
+        packageName  : provisionData.packageName,
+        packageType  : provisionData.packageType,
+        packagePath  : provisionData.packagePath
+    }))
+
     try {
-        await ServiceOrchestratorCommand((API) => API.ProvisionService(provisionDataWithAuth))
+
+        const ServiceOrchestratorCommand = MountCommand({ 
+            serverManagerUrl: serviceOrchestratorServerManagerUrl,
+            socketPath: serviceOrchestratorSocketPath, 
+            commandExecutorLib,
+            ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
+        })
+
+        console.log('')
+        console.log('Iniciando provisionamento...'.highlight)
+
+        await ServiceOrchestratorCommand((API) => API.ProvisionService({
+            originRepositoryId        : repositoryInformation.id,
+            originRepositoryCodePath  : repositoryInformation.repositoryCodePath,
+            originPackageId           : packageId,
+            originPackageName         : provisionData.packageName,
+            originPackageType         : provisionData.packageType,
+            originPackagePath         : provisionData.packagePath,
+            originRepositoryNamespace : provisionData.repositoryNamespace,
+            username                  : credentials.username,
+            serviceName               : provisionData.serviceName,
+            serviceDescription        : provisionData.serviceDescription,
+            startupParams             : provisionData.startupParams,
+            ports                     : provisionData.ports,
+            networkmode               : provisionData.networkmode,
+        }))
+
         console.log('Provisionamento concluído com sucesso!'.success)
     } catch (error) {
         console.error('Erro durante o provisionamento:'.error, error.message)

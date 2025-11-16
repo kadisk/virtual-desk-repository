@@ -47,6 +47,7 @@ const RepositoryStorageManagerService = (params) => {
     })
 
     const {
+        GetPackageId,
         GetPackageById,
         GetRepositoryNamespaceId,
         GetItemById,
@@ -59,7 +60,7 @@ const RepositoryStorageManagerService = (params) => {
         RegisterRepositoryImported,
         GetRepositoryImported,
         ListItemByRepositoryId,
-        GetRepositoryImportedByNamespace
+        GetRepositoriesImportedList
     } = RepositoryStorageDomainService
 
     const _MountPathImportedRepositoriesSourceCodeDirPath = ({username, repositoryNamespace}) => {
@@ -254,7 +255,7 @@ const RepositoryStorageManagerService = (params) => {
 
     return {
         GetTotalNamespaceByUserId, 
-
+        GetPackageId,
         RegisterNamespaceAndRepositoryUploadedAndExtract,
         ExtractAndRegisterRepository,
         RegisterImportedRepository,
@@ -269,7 +270,7 @@ const RepositoryStorageManagerService = (params) => {
         GetRepositoryImported,
         ListItemByRepositoryId,
         GetItemById,
-        GetRepositoryImportedByNamespace,
+        GetRepositoriesImportedList,
         GetNamespaceByRepositoryId
     }
 }

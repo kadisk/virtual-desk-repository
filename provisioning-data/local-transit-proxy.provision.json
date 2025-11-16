@@ -10,6 +10,5 @@
         "targetHost": "http://localhost:7000"
     },
     "ports": [],
-    "networkmode": "host",
-    "timestamp": "2025-11-14T00:07:35.208Z"
+    "networkmode": "host"
 }

@@ -34,6 +34,8 @@ const PrintServiceInfo = (info) => {
 
 const GetServiceDataCommand = async ({ args, startupParams, params }) => {
 
+    const { serviceId } = args
+
     const { 
         serviceOrchestratorServerManagerUrl,
         serviceOrchestratorSocketPath

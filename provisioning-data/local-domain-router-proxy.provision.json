@@ -23,6 +23,5 @@
         ]
     },
     "ports": [],
-    "networkmode": "host",
-    "timestamp": "2025-11-14T00:10:56.671Z"
+    "networkmode": "host"
 }

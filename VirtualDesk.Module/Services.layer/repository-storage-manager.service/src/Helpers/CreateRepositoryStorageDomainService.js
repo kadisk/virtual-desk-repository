@@ -54,7 +54,17 @@ const CreateRepositoryStorageDomainService = ({
 
     const GetRepositoryImported = (id) => RepositoryImportedModel.findOne({ where: { id } })
 
-    const GetRepositoryImportedByNamespace = (namespace) => RepositoryModel.findOne({ where: { namespace } })
+    const GetRepositoriesImportedList = ({ repositoryNamespace, userId }) => {
+        return RepositoryImportedModel.findAll({
+            attributes: { exclude: ['sourceParams'] },
+            include: [{
+                model: RepositoryNamespaceModel,
+                attributes: [],
+                where: { namespace: repositoryNamespace, userId }
+            }],
+            raw: true
+        })
+    }
 
     const RegisterRepositoryNamespace = ({ namespace , userId }) => 
         RepositoryNamespaceModel.create({ namespace, userId })
@@ -166,6 +176,25 @@ const CreateRepositoryStorageDomainService = ({
         }
     }
 
+    const GetPackageId = async ({
+        repositoryId,
+        packageName,
+        packageType,
+        packagePath
+    }) => {
+        const item = await RepositoryItemModel.findOne({
+            where: {
+                repositoryId ,
+                itemName : packageName,
+                itemType : packageType,
+                itemPath : packagePath,
+            } 
+        })
+
+        if (item) return item.id
+        return undefined
+    }
+
     const GetPackageById = async (id) => {
         const item = await RepositoryItemModel.findOne({
             include: [{
@@ -196,6 +225,7 @@ const CreateRepositoryStorageDomainService = ({
     
     
     return {
+        GetPackageId,
         RegisterRepositoryNamespace,
         RegisterRepositoryImported,
         ListRepositoryNamespace,
@@ -204,7 +234,7 @@ const CreateRepositoryStorageDomainService = ({
         GetRepositoryNamespaceId,
         GetRepositoryNamespaceByRepositoryId,
         GetRepositoryImported,
-        GetRepositoryImportedByNamespace,
+        GetRepositoriesImportedList,
         ListItemByRepositoryId,
         GetItemById,
         ListLatestPackageItemsByUserId,

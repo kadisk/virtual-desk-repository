@@ -2,6 +2,15 @@ const MountCommand = require('../Helpers/MountCommand')
 
 const StartServiceCommand = async ({ args, startupParams, params }) => {
 
+    const {
+        commandExecutorLib
+    } = params
+
+    const { 
+        serviceOrchestratorServerManagerUrl,
+        serviceOrchestratorSocketPath
+    } = startupParams
+
     const { serviceId } = args
 
     const ServiceOrchestratorCommand = MountCommand({ 

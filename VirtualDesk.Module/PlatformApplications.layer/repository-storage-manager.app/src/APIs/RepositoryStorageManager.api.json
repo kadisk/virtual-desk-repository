@@ -264,8 +264,14 @@
 		{
 			"path": "/repository",
 			"method": "GET",
-			"summary": "GetRepositoryImportedByNamespace",
+			"summary": "GetRepositoriesImportedList",
 			"parameters": [
+				{
+					"name": "userId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				},
 				{
 					"name": "repositoryNamespace",
 					"in": "query",
@@ -299,10 +305,37 @@
 					"required": true
 				}
 			]
+		},
+		{
+			"path": "/package-id",
+			"method": "GET",
+			"summary": "GetPackageId",
+			"parameters": [
+				{
+					"name": "repositoryId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "packageName",
+					"in": "query",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "packageType",
+					"in": "query",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "packagePath",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
 		}
-
-
-		
-		
 	]
 }

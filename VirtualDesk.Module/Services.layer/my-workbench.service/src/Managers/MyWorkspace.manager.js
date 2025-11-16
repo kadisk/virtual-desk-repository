@@ -45,7 +45,7 @@ const MyWorkspaceManager = (params) => {
     _Start()
 
     const CreateNewRepository = async ({userId, repositoryCodePath, repositoryNamespace}) => {
-        const existingNamespace = await RepositoryStorageCommand((API) => API.GetRepositoryImportedByNamespace({ repositoryNamespace }))
+        const existingNamespace = await RepositoryStorageCommand((API) => API.GetRepositoriesImportedList({ repositoryNamespace, userId }))
 
         if (existingNamespace) 
             throw new Error('Repository Namespace already exists')
