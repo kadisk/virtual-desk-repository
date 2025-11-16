@@ -1,6 +1,6 @@
 {
     "serviceName": "local-transit-proxy",
-    "serviceDescription": "local-transit-proxy",
+    "serviceDescription": "Proxy de trânsito local é responsavel por encaminhar de todas as requisições para o proxy de dominio",
     "repositoryNamespace": "VirtualDeskRepo",
     "packageName": "local-transit-proxy",
     "packageType": "app",

@@ -1,6 +1,6 @@
 {
     "serviceName": "www-worms-solutions",
-    "serviceDescription": "www-worms-solutions",
+    "serviceDescription": "Portal da Worms Solutions",
     "repositoryNamespace": "WormsSolutions",
     "packageName": "www-worms-solutions",
     "packageType": "webgui",

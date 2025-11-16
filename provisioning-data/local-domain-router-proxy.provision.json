@@ -1,6 +1,6 @@
 {
     "serviceName": "local-domain-router-proxy",
-    "serviceDescription": "local-domain-router-proxy",
+    "serviceDescription": "Proxy de domínio local é responsável por rotear as requisições para os serviços corretos",
     "repositoryNamespace": "VirtualDeskRepo",
     "packageName": "local-domain-router-proxy",
     "packageType": "app",

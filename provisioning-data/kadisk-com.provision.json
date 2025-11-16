@@ -1,6 +1,6 @@
 {
     "serviceName": "kadisk-com",
-    "serviceDescription": "kadisk-com",
+    "serviceDescription": "Portal da KADISK Engenharia de Software",
     "repositoryNamespace": "KADISKCorpRepo",
     "packageName": "kadisk-com",
     "packageType": "webgui",
