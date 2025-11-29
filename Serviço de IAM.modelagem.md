@@ -1,119 +1,224 @@
-# Modelo Avançado de Estrutura de Usuários para um Serviço de IAM (Identity and Access Management)
+Perfeito. Vou expandir o modelo para um **IAM ainda mais avançado**, levando em conta elementos utilizados em provedores modernos (AWS IAM, Azure Entra ID, GCP IAM), além de requisitos empresariais como **multi-tenant**, **delegação de acesso**, **políticas baseadas em condições**, **limites de sessão**, **auditoria profunda** e **ciclo de vida de identidades**.
 
-## Introdução
-Este documento descreve um modelo avançado para a estrutura de gerenciamento de identidades e acesso em um serviço equivalente ao IAM (Identity and Access Management) encontrado em provedores de nuvem como AWS, GCP e Azure. Ele pode ser utilizado como referência para a modelagem de um banco de dados para um serviço de autenticação, controle de acesso e auditoria.
+---
 
-## 1. Gerenciamento de Identidades
-O gerenciamento de identidades trata da criação, manutenção e exclusão de identidades digitais de usuários, serviços e dispositivos dentro de um ambiente de TI.
+# **Modelo IAM Avançado (Versão Estendida)**
 
-### Usuários e Grupos
-- Criação, modificação e exclusão de contas de usuário.
-- Organização de usuários em grupos para facilitar a aplicação de permissões.
+## **Objetivos do Modelo**
 
-### Identidades de Máquina
-- IAM não gerencia apenas identidades humanas, mas também serviços e aplicações que precisam de permissões para acessar recursos.
+* Suporte completo a **multi-tenancy** (várias contas/organizações).
+* Controle de acesso híbrido: **RBAC + ABAC + PBAC**.
+* Identidades humanas, de serviços e dispositivos.
+* Governança de identidades: ciclo de vida, recertificação e risco.
+* Compliance e auditoria de alto nível.
 
-### Sincronização de Diretórios
-- Integração com diretórios empresariais como Active Directory (AD) ou LDAP.
+---
 
-### Provisionamento e Desativação Automática
-- Integração com sistemas para criar ou remover contas automaticamente quando um funcionário entra ou sai da empresa.
+## **1. Estrutura Organizacional e Escopo**
 
-## 2. Autenticação
-A autenticação é o processo de verificar se um usuário ou serviço é quem diz ser antes de permitir o acesso.
+### **Organização (Organization)**
 
-### Principais Mecanismos de Autenticação
-- **Autenticação Baseada em Senha**: Exige regras de complexidade e troca periódica de senhas.
-- **Autenticação Multifator (MFA)**: Combinação de senha com outros fatores, como SMS, aplicativo autenticador ou biometria.
-- **Autenticação Federada (SSO - Single Sign-On)**: Login único para múltiplos sistemas (ex.: Google, Microsoft Entra ID, Okta, Keycloak).
-- **Autenticação Baseada em Certificados**: Uso de certificados digitais para autenticação segura.
+Representa o escopo maior, como uma empresa ou holding.
 
-## 3. Autorização e Controle de Acesso
-Depois da autenticação, um usuário ou serviço precisa de permissões para acessar determinados recursos.
+| Campo      | Tipo      | Descrição           |
+| ---------- | --------- | ------------------- |
+| id         | UUID      | Identificador único |
+| name       | String    | Nome da organização |
+| status     | Enum      | Ativa / Suspensa    |
+| created_at | Timestamp | Data de criação     |
 
-### Modelos de Controle de Acesso
-- **RBAC (Role-Based Access Control)**: Permissões atribuídas por função (ex.: "Administrador", "Desenvolvedor").
-- **ABAC (Attribute-Based Access Control)**: Permissões com base em atributos como cargo, localização e tipo de dispositivo.
-- **PBAC (Policy-Based Access Control)**: Definição de regras dinâmicas para controle de acesso.
-- **Princípio do Menor Privilégio**: Usuários devem ter apenas as permissões mínimas necessárias.
+### **Conta (Account / Tenant)**
 
-## 4. Gerenciamento de Credenciais
-IAM gerencia credenciais para evitar exposições desnecessárias.
+Cada conta é um espaço administrativo isolado dentro da organização.
 
-### Tipos de Credenciais
-- **Senhas**: Armazenadas com hash/salting.
-- **Chaves de API**: Utilizadas para autenticação de serviços automatizados.
-- **Certificados Digitais**: Usados para TLS/SSL.
-- **Tokens de Acesso e Refresh Tokens**: Permitem sessões seguras sem uso contínuo de senhas.
+| Campo           | Tipo      | Descrição                        |
+| --------------- | --------- | -------------------------------- |
+| id              | UUID      | Identificador único da conta     |
+| organization_id | UUID      | Referência à Organization        |
+| name            | String    | Nome da conta                    |
+| type            | Enum      | Padrão / Filial / Time / Projeto |
+| created_at      | Timestamp | Data de criação                  |
+| status          | Enum      | Ativa / Inativa                  |
 
-### Melhores Práticas
-- Rotação periódica de credenciais.
-- Armazenamento seguro de credenciais em cofres de segredos (ex.: AWS Secrets Manager, HashiCorp Vault).
-- Autenticação sem senha (Passwordless) usando biometria ou chaves FIDO2.
+---
 
-## 5. Auditoria e Monitoramento
-Monitoramento constante e registro de logs são essenciais para segurança IAM.
+## **2. Identidades**
 
-### Principais Funcionalidades
-- **Registro de Acessos**: Logs detalhados de autenticações e tentativas de login (ex.: AWS CloudTrail, Azure Monitor, Google Cloud Logging).
-- **Monitoramento de Permissões**: Detecção de permissões excessivas ou não utilizadas (ex.: AWS IAM Access Analyzer).
-- **Integração com SIEMs**: Soluções como Splunk, ELK e Datadog para análise de eventos IAM.
-- **Alertas de Atividades Suspeitas**: Notificação sobre acessos anômalos.
-- **Revisão de Permissões Periódica**: Identificação e remoção de contas inativas ou permissões desnecessárias.
+### **Usuário (User)** — Identidade Humana
 
-## Modelo de Dados para IAM
-### 1. Entidades e Relacionamentos
+| Campo         | Tipo                           |
+| ------------- | ------------------------------ |
+| id            | UUID                           |
+| account_id    | UUID                           |
+| name          | String                         |
+| email         | String (Único)                 |
+| phone         | String (Opcional)              |
+| password_hash | String                         |
+| mfa_enabled   | Boolean                        |
+| risk_level    | Enum (Baixo/Médio/Alto)        |
+| last_login    | Timestamp                      |
+| status        | Enum (Ativo/Inativo/Bloqueado) |
+| created_at    | Timestamp                      |
 
-#### **Conta (Account)**
-- **id**: UUID (Identificador único)
-- **name**: String (Nome da conta, único)
-- **created_at**: Timestamp (Data de criação)
-- **status**: Enum (Ativo/Inativo)
+### **Identidade de Serviço (ServiceIdentity)** — Aplicações/Automação
 
-#### **Usuário (User)**
-- **id**: UUID (Identificador único)
-- **account_id**: UUID (Referência à Account)
-- **name**: String (Nome do usuário)
-- **email**: String (Único, usado para login)
-- **password_hash**: String (Senha criptografada)
-- **mfa_enabled**: Boolean (Indica se MFA está ativado)
-- **last_login**: Timestamp (Último login do usuário)
-- **created_at**: Timestamp (Data de criação)
-- **status**: Enum (Ativo/Inativo)
+| Campo           | Tipo                                      |
+| --------------- | ----------------------------------------- |
+| id              | UUID                                      |
+| account_id      | UUID                                      |
+| name            | String                                    |
+| description     | String                                    |
+| credential_type | Enum (API_KEY / JWT / OIDC / CERTIFICATE) |
+| created_at      | Timestamp                                 |
+| status          | Enum                                      |
 
-#### **Grupo (Group)**
-- **id**: UUID (Identificador único)
-- **account_id**: UUID (Referência à Account)
-- **name**: String (Nome do grupo, único dentro da conta)
-- **created_at**: Timestamp (Data de criação)
+### **Dispositivo (Device)** — Para políticas de acesso condicionais
 
-#### **Permissão (Permission)**
-- **id**: UUID (Identificador único)
-- **name**: String (Nome da permissão, ex.: 'READ', 'WRITE')
-- **description**: String (Descrição da permissão)
+| Campo       | Tipo                               |
+| ----------- | ---------------------------------- |
+| id          | UUID                               |
+| user_id     | UUID                               |
+| fingerprint | String (unique hardware/device id) |
+| os_type     | Enum                               |
+| trust_state | Enum (Trusted / Unknown / Blocked) |
+| last_seen   | Timestamp                          |
 
-#### **Log de Auditoria (AuditLog)**
-- **id**: UUID (Identificador único)
-- **user_id**: UUID (Referência à User)
-- **action**: String (Ação executada)
-- **resource**: String (Recurso acessado/modificado)
-- **timestamp**: Timestamp (Momento da ação)
-- **ip_address**: String (Endereço IP do usuário)
+---
 
-### 2. Relacionamentos
+## **3. Controle de Acesso**
 
-#### **Usuário-Grupo (User_Group)**
-- **user_id**: UUID (Referência à User)
-- **group_id**: UUID (Referência à Group)
+### **Funções (Role) — RBAC**
 
-#### **Grupo-Permissão (Group_Permission)**
-- **group_id**: UUID (Referência à Group)
-- **permission_id**: UUID (Referência à Permission)
+| Campo       | Tipo      |
+| ----------- | --------- |
+| id          | UUID      |
+| account_id  | UUID      |
+| name        | String    |
+| description | String    |
+| created_at  | Timestamp |
 
-#### **Usuário-Permissão (User_Permission)**
-- **user_id**: UUID (Referência à User)
-- **permission_id**: UUID (Referência à Permission)
+### **Permissão (Permission)**
 
-## Conclusão
-Este modelo fornece uma estrutura avançada e robusta para o gerenciamento de identidades, autenticação, controle de acesso, auditoria e monitoramento. Ele pode ser adaptado para diferentes necessidades de segurança e conformidade, garantindo escalabilidade e proteção para aplicações empresariais.
+| Campo       | Tipo                                    |
+| ----------- | --------------------------------------- |
+| id          | UUID                                    |
+| namespace   | String (ex.: 'storage.bucket')          |
+| action      | String (ex.: 'read', 'write', 'delete') |
+| description | String                                  |
 
+> Observação: Dividimos permissão em **namespace + action**, padrão do GCP/AWS.
+
+### **Política (Policy) — PBAC + ABAC**
+
+Define regras condicionais.
+
+| Campo                | Tipo                                                                       |
+| -------------------- | -------------------------------------------------------------------------- |
+| id                   | UUID                                                                       |
+| name                 | String                                                                     |
+| effect               | Enum (Allow / Deny)                                                        |
+| resource_pattern     | String (ex.: `project/*/bucket/*`)                                         |
+| condition_expression | JSON (ex.: `device.trust_state == "Trusted" AND user.risk_level == "Low"`) |
+
+#### **Exemplos de condições**
+
+| Atributo                 | Exemplo                           |
+| ------------------------ | --------------------------------- |
+| Localização              | `location.country == "BR"`        |
+| Horário                  | `time.hour in [8..18]`            |
+| Segurança do dispositivo | `device.trust_state == "Trusted"` |
+| Risco de conta           | `user.risk_level == "Low"`        |
+
+---
+
+## **4. Governança e Ciclo de Vida**
+
+### **Workflow de Provisionamento (IdentityLifecycleEvent)**
+
+| Campo       | Tipo                                                | Descrição     |
+| ----------- | --------------------------------------------------- | ------------- |
+| id          | UUID                                                |               |
+| user_id     | UUID                                                |               |
+| event_type  | Enum (Provisioned, Suspended, Disabled, Reinstated) |               |
+| executed_by | UUID                                                | Quem executou |
+| timestamp   | Timestamp                                           |               |
+
+### **Recertificação de Acesso (AccessReview)**
+
+| Campo            | Tipo                      |
+| ---------------- | ------------------------- |
+| id               | UUID                      |
+| reviewer_user_id | UUID                      |
+| target_user_id   | UUID                      |
+| result           | Enum (Mantido / Revogado) |
+| timestamp        | Timestamp                 |
+
+---
+
+## **5. Auditoria, Segurança e Sessão**
+
+### **Sessão (Session)**
+
+| Campo        | Tipo      |
+| ------------ | --------- |
+| id           | UUID      |
+| user_id      | UUID      |
+| device_id    | UUID      |
+| ip_address   | String    |
+| expires_at   | Timestamp |
+| mfa_verified | Boolean   |
+| risk_flag    | Boolean   |
+
+### **Log de Auditoria (AuditLog)**
+
+| Campo       | Tipo                           |
+| ----------- | ------------------------------ |
+| id          | UUID                           |
+| actor_id    | UUID (User ou ServiceIdentity) |
+| action      | String                         |
+| resource    | String                         |
+| policy_used | UUID                           |
+| decision    | Enum (Allow / Deny)            |
+| reason      | String                         |
+| timestamp   | Timestamp                      |
+| ip_address  | String                         |
+
+---
+
+## **Relacionamentos Principais**
+
+```
+Organization 1---N Account
+Account 1---N User
+Account 1---N ServiceIdentity
+User N---M Group
+Group N---M Role
+Role N---M Permission
+Policy pode aplicar-se a User, Group, Role ou ServiceIdentity
+Session pertence a User
+AuditLog referencia Session e Policy
+Device pertence a User
+```
+
+---
+
+## **Principais Benefícios do Modelo Avançado**
+
+| Benefício                       | Por quê                                      |
+| ------------------------------- | -------------------------------------------- |
+| Escalável para grandes empresas | Suporte a múltiplas contas e times           |
+| Segurança contextual            | ABAC + políticas condicionais                |
+| Menor privilégio real           | Acesso dinâmico baseado em risco e contexto  |
+| Zero Trust Ready                | Verifica identidade + dispositivo + contexto |
+| Auditoria para compliance       | Rastreabilidade completa                     |
+
+---
+
+Se quiser, posso **gerar agora:**
+✅ **Diagrama ERD visual**
+✅ **Scripts SQL (PostgreSQL / MySQL / SQLite)**
+✅ **Modelos Sequelize / Prisma / TypeORM**
+✅ **API REST / GraphQL / gRPC para IAM**
+
+Só me diga:
+**Qual banco/ORM você quer usar?**
