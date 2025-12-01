@@ -9,7 +9,7 @@ import GetAPI from "../Utils/GetAPI"
 import logoVirtualDesk from "../../Assets/logo-virtual-desk.svg"
 
 //@ts-ignore
-import coverPicture from "../../Assets/pexels-anastasia-shuraeva-6966317.jpg"
+import coverPicture from "../../Assets/pexels-ibrahimboran-3582392.jpg"
 
 const LoginContainer = ({ HTTPServerManager }) => {
     

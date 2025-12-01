@@ -13,6 +13,12 @@
     },
     {
         "appType":"APP",
+        "executable":"virtual-desk-user-space-gui",
+        "packageNamespace":"VirtualDesk.Module/UserInterfaces.layer/virtual-desk-user-space.webgui",
+        "supervisorSocketFileName":"virtual-desk-user-space-gui.sock"
+    },
+    {
+        "appType":"APP",
         "executable":"local-transit-proxy",
         "packageNamespace":"VirtualDesk.Module/Applications.layer/local-transit-proxy.app",
         "supervisorSocketFileName":"local-transit-proxy.sock"
@@ -53,4 +59,5 @@
         "packageNamespace":"VirtualDesk.Module/PlatformApplications.layer/iam-tools.cli",
         "supervisorSocketFileName":"my-iam.sock"
     }
+
 ]
