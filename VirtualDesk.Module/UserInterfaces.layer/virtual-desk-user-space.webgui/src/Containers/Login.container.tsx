@@ -17,31 +17,11 @@ const LoginContainer = ({ HTTPServerManager }) => {
     const [password, setPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
-    const getAuthenticatorAPI = () =>
-        GetAPI({
-            apiName: "Authenticator",
-            serverManagerInformation: HTTPServerManager
-        })
-
-    const Authenticate = async () => {
-        const api = getAuthenticatorAPI()
-        try {
-            const response = await api.GetToken({ username, password })
-            const { token } = response.data
-            localStorage.setItem("token", token)
-            document.cookie = `token=${token}; path=/;`
-            window.location.href = "#my-services"
-        } catch (error) {
-            setErrorMessage("Authentication failed. Please check your credentials and try again.")
-        }
-    }
-
     const handleLogin = () => {
-        setErrorMessage("")
-        Authenticate()
+        window.location.href = "#user-panel"
     }
 
-    const isFormValid = username !== "" && password !== ""
+    const isFormValid = true
 
     return (
         <>
@@ -66,8 +46,7 @@ const LoginContainer = ({ HTTPServerManager }) => {
                                     className="form-control"
                                     placeholder="Username"
                                     value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                />
+                                    onChange={(e) => setUsername(e.target.value)}/>
                             </div>
                             <div className="mb-2">
                                 <label className="form-label">Password</label>
@@ -77,8 +56,7 @@ const LoginContainer = ({ HTTPServerManager }) => {
                                         className="form-control"
                                         placeholder="Your password"
                                         value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
+                                        onChange={(e) => setPassword(e.target.value)}/>
                                 </div>
                             </div>
                             <div className="form-footer">
@@ -86,8 +64,7 @@ const LoginContainer = ({ HTTPServerManager }) => {
                                     type="button"
                                     className="btn btn-primary w-100"
                                     onClick={handleLogin}
-                                    disabled={!isFormValid}
-                                >
+                                    disabled={!isFormValid}>
                                     Login
                                 </button>
                             </div>

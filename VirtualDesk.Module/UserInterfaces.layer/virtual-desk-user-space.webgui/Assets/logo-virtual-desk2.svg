@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="716.01697mm"
-   height="100.75591mm"
-   viewBox="0 0 716.01698 100.75591"
+   width="502.22543mm"
+   height="97.97953mm"
+   viewBox="0 0 502.22544 97.979528"
    version="1.1"
    id="svg5"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   sodipodi:docname="logo-virtual-desk2-final.svg"
+   sodipodi:docname="logo-virtual-desk2.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +24,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.35355339"
-     inkscape:cx="2877.9246"
-     inkscape:cy="111.72287"
+     inkscape:cx="2054.8523"
+     inkscape:cy="117.37973"
      inkscape:window-width="2560"
      inkscape:window-height="1056"
      inkscape:window-x="0"
@@ -40,15 +40,15 @@
   <defs
      id="defs2">
     <rect
-       x="-82.024387"
-       y="-336.58283"
-       width="3046.216"
+       x="-82.024384"
+       y="-336.58282"
+       width="3046.2161"
        height="1128.5424"
        id="rect328" />
     <rect
-       x="-33.941126"
+       x="-33.941128"
        y="-316.78384"
-       width="3829.6903"
+       width="3829.6902"
        height="1190.7678"
        id="rect322" />
     <clipPath
@@ -266,44 +266,30 @@
      inkscape:label="Camada 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(597.55918,-85.113643)">
+     transform="translate(595.96353,-87.890032)">
     <g
        aria-label="Virtual"
-       transform="scale(1.0295542,0.97129418)"
+       transform="matrix(1.0295542,0,0,0.97129418,-2.1166667,0)"
        id="text44-0-6"
        style="font-size:130.365px;text-align:center;text-anchor:middle;stroke-width:10.8638">
-      <path
-         d="m -564.11013,152.81161 h -16.29562 v -48.88688 h 16.29562 z m 16.29563,0 v -48.88688 h 16.29562 v 48.88688 z m 0,32.59125 h -16.29563 v -32.59125 h 16.29563 z"
-         style="font-family:Tiny5;-inkscape-font-specification:Tiny5"
-         id="path332" />
-      <path
-         d="M -515.22325,103.92473 V 87.629108 h 16.29563 v 16.295622 z m 16.29563,81.47813 h -16.29563 v -65.1825 h 16.29563 z"
-         style="font-family:Tiny5;-inkscape-font-specification:Tiny5"
-         id="path334" />
-      <path
-         d="m -466.33637,185.40286 h -16.29562 v -65.1825 h 32.59125 v 16.29563 h -16.29563 z"
-         style="font-family:Tiny5;-inkscape-font-specification:Tiny5"
-         id="path336" />
-      <path
-         d="m -417.4495,169.10724 h -16.29562 v -65.18251 h 16.29562 v 16.29563 h 16.29563 v 16.29563 h -16.29563 z m 0,16.29562 v -16.29562 h 16.29563 v 16.29562 z"
-         style="font-family:Tiny5;-inkscape-font-specification:Tiny5"
-         id="path338" />
-      <path
-         d="m -368.56261,185.40286 v -16.29562 h -16.29563 v -48.88688 h 16.29563 v 48.88688 h 16.29563 v -48.88688 h 16.29562 v 65.1825 z"
-         style="font-family:Tiny5;-inkscape-font-specification:Tiny5"
-         id="path340" />
-      <path
-         d="m -303.38012,185.40286 v -16.29562 h -16.29562 v -32.59125 h 16.29562 v 32.59125 h 16.29563 v -32.59125 h -16.29563 v -16.29563 h 32.59126 v 65.1825 z"
-         style="font-family:Tiny5;-inkscape-font-specification:Tiny5"
-         id="path342" />
-      <path
-         d="m -238.19762,185.40286 h -16.29563 v -81.47813 h 16.29563 z"
-         style="font-family:Tiny5;-inkscape-font-specification:Tiny5"
-         id="path344" />
+      <g
+         aria-label="My"
+         transform="scale(0.97129418,1.0295542)"
+         id="text285"
+         style="font-weight:bold;font-size:128.429px;font-family:'TeX Gyre Cursor';-inkscape-font-specification:'TeX Gyre Cursor Bold';stroke-width:5.23207">
+        <path
+           d="m -577.79324,168.15816 h -16.05362 V 87.890032 h 16.05362 v 16.053628 h 16.05363 v 16.05362 h -16.05363 z m 64.2145,0 h -16.05362 v -48.16088 h -16.05363 v -16.05362 h 16.05363 V 87.890032 h 16.05362 z m -48.16087,-32.10725 v -16.05363 h 16.05362 v 16.05363 z"
+           style="font-weight:normal;font-family:Tiny5;-inkscape-font-specification:Tiny5"
+           id="path339" />
+        <path
+           d="m -481.47149,152.10453 h -16.05362 v -48.16087 h 16.05362 z m 32.10725,0 h -16.05362 v -48.16087 h 16.05362 z m -16.05362,0 v 16.05363 h -16.05363 v -16.05363 z m -32.10725,32.10725 v -16.05362 h 16.05362 v 16.05362 z"
+           style="font-weight:normal;font-family:Tiny5;-inkscape-font-specification:Tiny5"
+           id="path341" />
+      </g>
     </g>
     <g
        aria-label="Desk"
-       transform="scale(1.0935838,0.91442466)"
+       transform="matrix(1.0935838,0,0,0.91442466,-212.19591,0)"
        id="text641"
        style="font-size:138.784px;text-align:center;text-anchor:middle;stroke-width:11.5656">
       <path
@@ -327,11 +313,11 @@
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-597.55918,85.113643)"
        id="text320"
-       style="fill:#000000;-inkscape-font-specification:Tiny5;font-family:Tiny5;white-space:pre;shape-inside:url(#rect322)" />
+       style="font-family:Tiny5;-inkscape-font-specification:Tiny5;white-space:pre;shape-inside:url(#rect322);fill:#000000" />
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-597.55918,85.113643)"
        id="text326"
-       style="fill:#000000;-inkscape-font-specification:Tiny5;font-family:Tiny5;white-space:pre;shape-inside:url(#rect328)" />
+       style="font-family:Tiny5;-inkscape-font-specification:Tiny5;white-space:pre;shape-inside:url(#rect328);fill:#000000" />
   </g>
 </svg>
