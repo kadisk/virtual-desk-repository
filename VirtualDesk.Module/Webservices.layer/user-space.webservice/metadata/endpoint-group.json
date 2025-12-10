@@ -1,0 +1,18 @@
+{
+    "bound-params":[ "serverService" ],
+    "params": [ "needsAuth" ],
+    "endpoints": [
+        {
+            "url": "/user-space",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/UserSpace.api.json",
+                "controller": "Controllers/UserSpace.controller",
+                "needsAuth": "needsAuth"
+            },
+            "bound-params": {
+                "serverService":"serverService"
+            }
+        }  
+    ]
+}

@@ -1,4 +1,5 @@
 {
     "port" : "7005",
-    "serverName" : "UserSpaceWebAppInstance"
+    "serverName" : "UserSpaceWebAppInstance",
+    "secretKey" : "g09sj3kf@#,ndf"
 }

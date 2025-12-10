@@ -2,10 +2,6 @@ const jwt = require('jsonwebtoken')
 const path = require("path")
 const os = require('os')
 
-const ConvertPathToAbsolutPath = (_path) => path
-    .join(_path)
-    .replace('~', os.homedir())
-
 // Constantes para o usuário padrão
 const DEFAULT_USER = 'su'
 const DEFAULT_PASSWORD = 'su'

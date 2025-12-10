@@ -1,8 +1,7 @@
 const UserSpaceController = (params) =>{
 
-
-    const ListMyApps = (userId) => {
-
+    const ListMyApps = ({ authenticationData }) => {
+        const { userId, username } = authenticationData
     }
 
     const controllerServiceObject = {

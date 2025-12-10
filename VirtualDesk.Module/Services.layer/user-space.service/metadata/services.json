@@ -1,0 +1,6 @@
+[
+    {
+        "namespace": "UserSpaceManagementService",
+        "path": "Services/UserSpaceManagement.service"
+    }
+]

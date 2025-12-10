@@ -1,7 +1,8 @@
 {
     "params" : [
         "port", 
-        "serverName"
+        "serverName",
+        "secretKey"
     ],
     "services": [
         {
@@ -10,6 +11,16 @@
             "params":{
                 "name":"{{serverName}}",
                 "port": "{{port}}"
+            },
+            "bound-params":{
+                "middlewareService": "@@/jwt-verifier-middleware-service"
+            }
+        },
+        {
+            "namespace": "@@/jwt-verifier-middleware-service",
+            "dependency": "@/server-manager.service/services/JWTVerifierMiddlewareService",
+            "params":{
+                "secretKey":"{{secretKey}}"
             }
         }
     ],
@@ -19,6 +30,25 @@
             "bound-params":{
                "serverServiceForController":"@@/server-service",
                "serverService": "@@/server-service"
+            }
+        },
+        {
+            "dependency": "@/authenticator.webservice/endpoint-group",
+            "params":{
+                "needsAuth": true
+            },
+            "bound-params":{
+                "serverService": "@@/server-service",
+                "userManagementService": "@@/user-management-service"
+            }
+        },
+        {
+            "dependency": "@/user-space.webservice/endpoint-group",
+            "params":{
+                "needsAuth": true
+            },
+            "bound-params":{
+                "serverService": "@@/server-service"
             }
         }
     ]
