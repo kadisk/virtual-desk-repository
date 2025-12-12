@@ -1,5 +1,10 @@
 {
     "port" : "7005",
     "serverName" : "UserSpaceWebAppInstance",
-    "secretKey" : "g09sj3kf@#,ndf"
+    "secretKey" : "g09sj3kf@#,ndf",
+    "serverManagerUrl" : "http://localhost:7005/server-manager/status",
+    "RT_ENV_GENERATED_DIR_NAME" : ".generated_data",
+    "isWatch" : true,
+    "iamStorageSocketPath" : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
+    "iamStorageServerManagerUrl" : "/server-manager/status"
 }

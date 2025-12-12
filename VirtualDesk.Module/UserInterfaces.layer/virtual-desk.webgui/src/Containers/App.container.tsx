@@ -1,5 +1,5 @@
 import * as React             from "react"
-import {useEffect, useState}  from "react"
+import {useEffect}  from "react"
 //@ts-ignore
 import { Routes, BrowserRouter, HashRouter, Route }  from "react-router-dom"
 import { connect }            from "react-redux"
@@ -7,6 +7,7 @@ import { bindActionCreators } from "redux"
 import axios                  from "axios"
 
 import HTTPServerManagerActionsCreator from "../Actions/HTTPServerManager.actionsCreator"
+import UserActionsCreator from "../Actions/User.actionsCreator"
 
 import GetAPI from "../Utils/GetAPI"
 
@@ -23,6 +24,8 @@ type AppContainerProps  = {
 	mapper: any
 	HTTPServerManager : any
 	SetHTTPServersRunning : Function
+	UserData?: any
+	SetUserData?: Function
 }
 
 type RouteConfigType = {
@@ -42,10 +45,12 @@ const AppContainer = ({
 	routesConfig,
 	mapper,
 	HTTPServerManager, 
-	SetHTTPServersRunning
+	SetHTTPServersRunning,
+	UserData,
+	SetUserData
 }:AppContainerProps) => {
 
-	const [userData, setUserData] = useState()
+    
 
 	useEffect(()=>{
         FetchHTTPServersRunning()
@@ -73,7 +78,7 @@ const AppContainer = ({
 		try {
 			const response = await getUserInformationAPI().GetUserData()
 			const userData = response.data
-			setUserData(userData)
+			if (SetUserData) SetUserData(userData)
 
 			if (window.location.hash === "" || window.location.hash === "#") {
 				window.location.href = "#my-services"
@@ -113,9 +118,11 @@ const AppContainer = ({
 const mapDispatchToProps = (dispatch:any) =>
  bindActionCreators({
     SetHTTPServersRunning : HTTPServerManagerActionsCreator.SetHTTPServersRunning
+	,SetUserData: UserActionsCreator.SetUserData
 }, dispatch)
 
-const mapStateToProps = ({HTTPServerManager}:any) => ({
-    HTTPServerManager
+const mapStateToProps = ({HTTPServerManager, UserData}:any) => ({
+    HTTPServerManager,
+	UserData
 })
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer)

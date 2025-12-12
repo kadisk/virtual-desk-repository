@@ -1,67 +1,61 @@
-import * as React from "react"
+import * as React             from "react"
+import {useEffect, useState}  from "react"
+import { connect }            from "react-redux"
+import { bindActionCreators } from "redux"
 
 import DefaultPage from "../Components/DefaultPage"
 
+import GetAPI from "../Utils/GetAPI"
 
-const LIST_APPS = [
-    {
-        title: "My Apps",
-        description: "Gerencie e Hospede seus Apps",
-        link: "#my-apps"
-    },
-    {        
-        title: "Identity Access Manager",
-        description: "Crie novos usuários, gerencie permissões e regras",
-        link: "#iam"
-    },
-    {
-        title: "Virtual Desk Control Panel",
-        description: "Controle avançado plataforma",
-        link: "#control-panel"
+const UserPanelPage = ({ HTTPServerManager }) => {
 
-    },
-    {
-        title: "Portal KADISK",
-        description: "Portal da KADISK Engenharia de Software",
-        link: "http://kadisk.com.local"
-    }, 
-    {
-        title: "worms.solutions",
-        description: "Portal da Empresa Worms Solutions",
-        link: "http://worms.solutions.local"   
-    },
-    {
-        title: "Engineering 3D Viewer",
-        description: "Sistema de visualização trimensional focada em engenharia",
-        link: "#3d-viewer"
-    },  
-    {
-        title: "chadodante.shop",
-        description: "Portal de Chá de Bebe",
-        link: "http://chadodante.shop.local"
+    const [ appList, setAppList ] = useState([])
+
+    useEffect(() => {
+        fetchMyApp()
+    }, [])
+
+    const _GetUserSpaceAPI = () => 
+        GetAPI({ 
+            apiName:"UserSpace",  
+            serverManagerInformation: HTTPServerManager
+        })
+
+    const fetchMyApp = async () => {
+        setAppList([])
+        const api = _GetUserSpaceAPI()
+        const response = await api.ListMyApps()
+        setAppList(response.data)
     }
-]
 
-const UserPanelPage = () =>
-    <DefaultPage>
-        <div className="page-body">
-            <div className="container-xl">
-                <div className="row row-cards">
-                    {
-                        LIST_APPS
-                        .map(({ title, description, link }, index) =>
-                            <div className="col-md-6 col-lg-3" key={index}>
-                                <div className="card">
-                                    <div className="card-body">
-                                        <div><strong><a href={link}>{title}</a></strong></div>
-                                        <div>{description}</div>
-                                    </div>
-                                </div>
-                            </div>)      
-                    }
+    return <DefaultPage>
+                <div className="page-body">
+                    <div className="container-xl">
+                        <div className="row row-cards">
+                            {
+                                appList
+                                .map(({ title, description, link }, index) =>
+                                    <div className="col-md-6 col-lg-3" key={index}>
+                                        <div className="card">
+                                            <div className="card-body">
+                                                <div><strong><a href={link}>{title}</a></strong></div>
+                                                <div>{description}</div>
+                                            </div>
+                                        </div>
+                                    </div>)      
+                            }
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </DefaultPage>
+            </DefaultPage>
+}
+    
 
-export default UserPanelPage
+
+
+
+const mapDispatchToProps = (dispatch:any) => bindActionCreators({}, dispatch)
+
+const mapStateToProps = ({ HTTPServerManager }:any) => ({ HTTPServerManager })
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserPanelPage)

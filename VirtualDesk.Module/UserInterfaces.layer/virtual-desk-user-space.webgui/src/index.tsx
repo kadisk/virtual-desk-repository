@@ -12,6 +12,7 @@ import AppManagerReducer        from "./Reducers/AppManager.reducer"
 import HTTPServerManagerReducer from "./Reducers/HTTPServerManager.reducer"
 import ProcessManagerReducer    from "./Reducers/ProcessManager.reducer"
 import QueryParamsReducer       from "./Reducers/QueryParams.reducer"
+import UserReducer              from "./Reducers/User.reducer"
 
 import PagesMapper from "./Mappers/Pages.mapper"
 
@@ -19,7 +20,8 @@ const reducer = combineReducers({
 	AppManager        : AppManagerReducer,
 	HTTPServerManager : HTTPServerManagerReducer,
 	ProcessManager    : ProcessManagerReducer,
-	QueryParams       :  QueryParamsReducer
+	QueryParams       :  QueryParamsReducer,
+	User              : UserReducer
 })
 
 const store = createStore(reducer)

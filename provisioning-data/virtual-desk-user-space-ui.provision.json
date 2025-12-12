@@ -1,0 +1,17 @@
+{
+    "serviceName": "virtual-desk-user-space-ui",
+    "serviceDescription": "Front-end do Virtual Desk User Space",
+    "repositoryNamespace": "VirtualDeskRepo",
+    "packageName": "virtual-desk-user-space",
+    "packageType": "webgui",
+    "packagePath": "VirtualDesk.Module/UserInterfaces.layer/virtual-desk-user-space.webgui",
+    "startupParams": {
+        "port": "7004",
+        "serverName": "KadiskVirtualDeskUserSpaceWebguiInstance",
+        "serverManagerUrl": "http://kadisk.com.local:9000/server-manager/status",
+        "RT_ENV_GENERATED_DIR_NAME": ".generated_data",
+        "isWatch": true
+    },
+    "ports": [],
+    "networkmode": "host"
+}
