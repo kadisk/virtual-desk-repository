@@ -1,20 +1,11 @@
 import UserAction from "../Actions/User.actions"
 
-type UserState = {
-    userData: any
-}
+const INITIAL_STATE = {}
 
-const initialState:UserState = {
-    userData: null,
-}
-
-const UserReducer = (state = initialState, action:any) => {
+const UserReducer = (state = INITIAL_STATE, action:any) => {
     switch (action.type) {
         case UserAction.SetUserData:
-            return {
-                ...state,
-                userData: action.userData
-            }
+            return action.userData
         default:
             return state
     }

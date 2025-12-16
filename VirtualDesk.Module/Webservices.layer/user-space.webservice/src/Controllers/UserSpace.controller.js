@@ -13,7 +13,7 @@ const LIST_APPS = [
     {
         title: "Virtual Desk Control Panel",
         description: "Controle avançado plataforma",
-        link: "#control-panel"
+        link: "http://virtualdesk.app.local:9000/"
 
     },
     {

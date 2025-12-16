@@ -20,8 +20,8 @@ const reducer = combineReducers({
 	AppManager        : AppManagerReducer,
 	HTTPServerManager : HTTPServerManagerReducer,
 	ProcessManager    : ProcessManagerReducer,
-	QueryParams       :  QueryParamsReducer,
-	User              : UserReducer
+	QueryParams       : QueryParamsReducer,
+	UserData          : UserReducer
 })
 
 const store = createStore(reducer)

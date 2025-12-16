@@ -49,13 +49,7 @@ const UserPanelPage = ({ HTTPServerManager }) => {
                 </div>
             </DefaultPage>
 }
-    
-
-
-
 
 const mapDispatchToProps = (dispatch:any) => bindActionCreators({}, dispatch)
-
 const mapStateToProps = ({ HTTPServerManager }:any) => ({ HTTPServerManager })
-
 export default connect(mapStateToProps, mapDispatchToProps)(UserPanelPage)

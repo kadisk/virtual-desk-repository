@@ -1,4 +1,7 @@
-import * as React from "react"
+import * as React             from "react"
+import { connect }            from "react-redux"
+import { bindActionCreators } from "redux"
+import UserActionsCreator from "../Actions/User.actionsCreator"
 
 //@ts-ignore
 import logoVirtualDesk2 from "../../Assets/logo-virtual-desk2.svg"
@@ -6,7 +9,7 @@ import logoVirtualDesk2 from "../../Assets/logo-virtual-desk2.svg"
 
 const ICON_USER = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></svg>
 
-const WelcomeHeader = () => {
+const WelcomeHeader = ({UserData}) => {
     return <header className="navbar navbar-expand-md sticky-top d-print-none">
         <div className="container-xl">
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +26,7 @@ const WelcomeHeader = () => {
                         <span className="nav-link-icon d-md-none d-lg-inline-block">
                           {ICON_USER}
                         </span>
-                        kaio.cezar
+                        {UserData.username}
                     </div>
                 </div>
             </div>
@@ -31,4 +34,13 @@ const WelcomeHeader = () => {
     </header>
 }
 
-export default WelcomeHeader
+
+const mapDispatchToProps = (dispatch:any) =>
+ bindActionCreators({
+	SetUserData: UserActionsCreator.SetUserData
+}, dispatch)
+
+const mapStateToProps = ({UserData}:any) => ({
+	UserData
+})
+export default connect(mapStateToProps, mapDispatchToProps)(WelcomeHeader)
