@@ -1,0 +1,5 @@
+{
+    "serviceOrchestratorSocketPath" : "service-orchestrator.app.sock",
+    "repositoryStorageSocketPath"   : "repository-storage-manager.app.sock",
+    "iamStorageSocketPath"          : "iam.app.sock"
+}

@@ -21,7 +21,7 @@ const FilterByExtList = (extList) => ({name}) => {
 
 const ListPackageItem = async (parentDirPath) => {
     const repositoryDirectories = await ListDir(parentDirPath)
-    return repositoryDirectories.filter(FilterByExtList(["lib", "service", "webservice", "webgui", "webpapp", "app", "cli"]))
+    return repositoryDirectories.filter(FilterByExtList(["lib", "service", "webservice", "webgui", "webapp", "app", "cli"]))
 }
 
 const ListItemByType = async (parentDirPath, itemType) => {

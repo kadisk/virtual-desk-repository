@@ -12,7 +12,7 @@ import logoVirtualDesk2 from "../../../Assets/logo-virtual-desk2.svg"
 import SourceTreeSidebarSection  from "./SidebarSections/SourceTree.sidebarSection"
 import MetadataSidebarSection    from "./SidebarSections/Metadata.sidebarSection"
 
-const PACKAGE_ITEM_TYPE_LIST = ["lib", "service", "webservice", "webgui", "webpapp", "app", "cli"]
+const PACKAGE_ITEM_TYPE_LIST = ["lib", "service", "webservice", "webgui", "webapp", "app", "cli"]
 
 const PackageEditorContainer = ({ packageId, HTTPServerManager }) => {
 

@@ -70,6 +70,14 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             autoIncrement: true,
             primaryKey: true
         },
+        storageParams: {
+            type: DataTypes.JSON,
+            allowNull: true
+        },
+        socketParams: {
+            type: DataTypes.JSON,
+            allowNull: true
+        },
         startupParams: {
             type: DataTypes.JSON,
             allowNull: true
