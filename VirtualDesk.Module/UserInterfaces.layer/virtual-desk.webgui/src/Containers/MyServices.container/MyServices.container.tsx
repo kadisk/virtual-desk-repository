@@ -166,7 +166,7 @@ const MyServicesContainer = ({
                 <div className="container-xl">
                     <div className="row g-2 align-items-center">
                         <div className="col">
-                            <h2 className="page-title">My Services</h2>
+                            <h2 className="page-title">Service Orchestrator</h2>
                         </div>
                         {
                             interfaceModeType === DEFAULT_MODE
