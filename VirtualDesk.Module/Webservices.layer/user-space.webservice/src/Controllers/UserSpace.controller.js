@@ -3,7 +3,7 @@ const LIST_APPS = [
     {
         title: "My Apps",
         description: "Gerencie e Hospede seus Apps",
-        link: "#my-apps"
+        link: "/my-apps-panel"
     },
     {        
         title: "Identity Access Manager",

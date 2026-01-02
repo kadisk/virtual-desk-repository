@@ -6,9 +6,5 @@
     {
         "path":"/user-panel",
         "page":"UserPanelPage"
-    },
-    {
-        "path":"/my-apps",
-        "page":"MyAppsPage"
     }
 ]
