@@ -1,0 +1,7 @@
+{
+    "port":"8833",
+    "serverName":"MyAppsPanelWebguiInstance",
+    "serverManagerUrl": "http://virtualdesk.app.local:9000/server-manager/status",
+    "RT_ENV_GENERATED_DIR_NAME":".generated_data",
+    "isWatch": true
+}
