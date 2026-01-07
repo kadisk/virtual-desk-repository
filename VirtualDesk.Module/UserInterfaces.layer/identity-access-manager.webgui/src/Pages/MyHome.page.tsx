@@ -9,7 +9,7 @@ import logoIAM from "../../Assets/logo-IAM-final-2.svg"
 const WORLD_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M3.6 9h16.8" /><path d="M3.6 15h16.8" /><path d="M11.5 3a17 17 0 0 0 0 18" /><path d="M12.5 3a17 17 0 0 1 0 18" /></svg>
 const X_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="m-0 icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
 
-import ORGANIZATIONS from "./ORGANIZATIONS.mock"
+import OrganizationPanelContainer from "../Containers/OrganizationPanel.container"
 
 const ORGANIZATION_PANEL     = Symbol()
 const ACCOUNT_PANEL          = Symbol()
@@ -21,7 +21,7 @@ const PERMISSION_PANEL       = Symbol()
 const POLICY_PANEL           = Symbol()
 
 const panelsDefinitions = {
-    [ORGANIZATION_PANEL]     : { name: "Organizations",    },
+    [ORGANIZATION_PANEL]     : { name: "Organizations",  ComponentContainer:OrganizationPanelContainer },
     [ACCOUNT_PANEL]          : { name: "Accounts",         },
     [USER_PANEL]             : { name: "Users",            },
     [SERVICE_IDENTITY_PANEL] : { name: "Service Identity", },
@@ -72,74 +72,28 @@ const IAMSidebarMenu = ({
             </aside>
 }
 
-const OrganizationPanelContainer = () => {
-
-    return <div className="card tab-pane active show flex-grow-1 d-flex flex-column">
-                <div className="card-header">
-                    <div className="row w-full">
-                        <div className="col"></div>
-                        <div className="col-md-auto col-sm-12">
-                            <div className="ms-auto d-flex flex-wrap btn-list">
-                                <button className="btn btn-orange">New Organization</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="card-table">
-                    <div className="table-responsive">
-                        <table className="table table-vcenter card-table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>name</th>
-                                    <th>type</th>
-                                    <th>description</th>
-                                    <th>status</th>
-                                    <th>residency</th>
-                                    <th>created_at</th>
-                                    <th className="w-1"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    ORGANIZATIONS.map((org, index) =>
-                                        <tr key={index}>
-                                            <td className="text-secondary">{org.name}</td>
-                                            <td className="text-secondary">{org.org_type}</td>
-                                            <td className="text-secondary">{org.description}</td>
-                                            <td className="text-secondary">{org.status}</td>
-                                            <td className="text-secondary">{org.data_residency}</td>
-                                            <td className="text-secondary">{org.created_at}</td>
-                                            <td className="w-1">
-                                                <a className="btn btn-sm btn-link">Edit</a>
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-}
-
-
 const TabsPanelContainer = ({
-    tabsData,
-    onClosePanel,
+    listTabs,
+    panelFocusSymbol,
+    onCloseTab,
+    onFocusTab,
+    componentContainer
 }) => {
 
     return <div className="m-3 card-tabs d-flex flex-column flex-grow-1" style={{ height: "100%" }}>
                 <ul className="nav nav-tabs" role="tablist">
                     {
-                        tabsData.map(({ name, codePanel }, index) =>
-                            <li key={index} className="nav-item cursor-pointer">
-                                <a className={`nav-link py-1 pe-0`}>{name}<button onClick={() => onClosePanel(codePanel)} className="btn btn-sm btn-link">{X_ICON}</button></a>
+                        listTabs.map(({ name, panelSymbol }, index) =>
+                            <li key={index}
+                                className={`nav-item cursor-pointer ${panelFocusSymbol === panelSymbol ? "active" : ""}`}
+                                onClick={() => onFocusTab(panelSymbol)}>
+                                <a className={`nav-link py-1 pe-0`}>{name}<button onClick={() => onCloseTab(panelSymbol)} className="btn btn-sm btn-link">{X_ICON}</button></a>
                             </li>
                         )
                     }
                 </ul>
                 <div className="tab-content flex-grow-1 d-flex" style={{ minHeight: 0 }}>
-                    <OrganizationPanelContainer/>
+                    {componentContainer}
                 </div>
             </div>
 }
@@ -148,15 +102,37 @@ const useTabsPanelStateManager = (definitions: any) => {
 
     const [panelsOpened, setPanelsOpened] = React.useState<symbol[]>([])
 
-    const _PanelIsOpen = (panel: symbol) => panelsOpened.includes(panel)
-    const OpenPanel    = (panel: symbol) => setPanelsOpened((prevPanels) => !_PanelIsOpen(panel) ? [...prevPanels, panel] : prevPanels)
-    const ClosePanel   = (panel: symbol) => setPanelsOpened((prevPanels) => prevPanels.filter((p) => p !== panel))
-    const GetTabsData  = ()              => panelsOpened.map((codePanel) => ({codePanel, ...definitions[codePanel]}))
+    const [panelFocusSymbol, setPanelFocusSymbol] = React.useState<symbol | null>(null)
+
+    const _PanelIsOpen = (panelSymbol: symbol) => panelsOpened.includes(panelSymbol)
+    const OpenPanel    = (panelSymbol: symbol) => { 
+        setPanelsOpened((prevPanels) => !_PanelIsOpen(panelSymbol) ? [...prevPanels, panelSymbol] : prevPanels) 
+        setPanelFocusSymbol(panelSymbol)
+    }
+    const ClosePanel   = (panelSymbol: symbol) => { setPanelsOpened((prevPanels) => prevPanels.filter((p) => p !== panelSymbol)) }
+    const ListOpenedTabs = () => panelsOpened.map((panelSymbol) => ({ name: definitions[panelSymbol]?.name, panelSymbol }))
+
+    const GetPanelComponent = (panelSymbol: symbol) => {
+        const panelDef = definitions[panelSymbol]
+        if (!panelDef || !panelDef.ComponentContainer) return null
+        const ComponentContainer = panelDef.ComponentContainer
+        return <ComponentContainer/>
+    }
+
+    const ChangeFocusTo = (panelSymbol: symbol) => {
+        if (!_PanelIsOpen(panelSymbol)) return
+        setPanelFocusSymbol(panelSymbol)
+    }
+
+    const GetPanelFocusSymbol = () => panelFocusSymbol
 
     return {
         OpenPanel,
-        GetTabsData,
-        ClosePanel
+        ListOpenedTabs,
+        ClosePanel,
+        ChangeFocusTo,
+        GetPanelFocusSymbol,
+        GetPanelComponent
     }
 }
 
@@ -175,7 +151,12 @@ const IAMHomePanelContainer = () => {
                         <div className="row flex-grow-1 m-0">
                             <div className="col-12 p-0">
                                 <div className="d-flex align-items-start" style={{ gap: "1rem" }}>
-                                    <TabsPanelContainer tabsData={panelState.GetTabsData()} onClosePanel={panelState.ClosePanel}/>
+                                    <TabsPanelContainer 
+                                        panelFocusSymbol={panelState.GetPanelFocusSymbol()}
+                                        listTabs={panelState.ListOpenedTabs()} 
+                                        onFocusTab={panelState.ChangeFocusTo}
+                                        componentContainer={panelState.GetPanelComponent(panelState.GetPanelFocusSymbol()!)}
+                                        onCloseTab={panelState.ClosePanel}/>
                                 </div>
                             </div>
                         </div>
