@@ -8,7 +8,7 @@ const LIST_APPS = [
     {        
         title: "Identity Access Manager",
         description: "Crie novos usuários, gerencie permissões e regras",
-        link: "#iam"
+        link: "/identity-access-manager"
     },
     {
         title: "Virtual Desk Control Panel",

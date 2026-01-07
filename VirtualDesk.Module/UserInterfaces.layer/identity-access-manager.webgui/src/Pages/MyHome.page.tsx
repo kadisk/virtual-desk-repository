@@ -6,9 +6,183 @@ import BlankPage from "../Components/BlankPage"
 //@ts-ignore
 import logoIAM from "../../Assets/logo-IAM-final-2.svg"
 
-const WORLD_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M3.6 9h16.8" /><path d="M3.6 15h16.8" /><path d="M11.5 3a17 17 0 0 0 0 18" /><path d="M12.5 3a17 17 0 0 1 0 18" /></svg>
-const X_ICON = <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="m-0 icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+const WORLD_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M3.6 9h16.8" /><path d="M3.6 15h16.8" /><path d="M11.5 3a17 17 0 0 0 0 18" /><path d="M12.5 3a17 17 0 0 1 0 18" /></svg>
+const X_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="m-0 icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
 
+import ORGANIZATIONS from "./ORGANIZATIONS.mock"
+
+const ORGANIZATION_PANEL     = Symbol()
+const ACCOUNT_PANEL          = Symbol()
+const USER_PANEL             = Symbol()
+const SERVICE_IDENTITY_PANEL = Symbol()
+const DEVICE_PANEL           = Symbol()
+const ROLE_PANEL             = Symbol()
+const PERMISSION_PANEL       = Symbol()
+const POLICY_PANEL           = Symbol()
+
+const panelsDefinitions = {
+    [ORGANIZATION_PANEL]     : { name: "Organizations",    },
+    [ACCOUNT_PANEL]          : { name: "Accounts",         },
+    [USER_PANEL]             : { name: "Users",            },
+    [SERVICE_IDENTITY_PANEL] : { name: "Service Identity", },
+    [DEVICE_PANEL]           : { name: "Devices",          },
+    [ROLE_PANEL]             : { name: "Roles",            },
+    [PERMISSION_PANEL]       : { name: "Permissions",      },
+    [POLICY_PANEL]           : { name: "Policies",         },
+}
+
+const IAMSidebarMenu = ({
+    onClickMenuItem,
+}) => {
+
+    return <aside className="navbar navbar-vertical navbar-expand-lg d-flex flex-column" style={{ width: "auto", position: "relative", overflowY: "auto" }}>
+                <div className="collapse navbar-collapse" id="sidebar-menu">
+                    <ul className="navbar-nav pt-lg-3">
+                        <li className="nav-item dropdown">
+                            <a className="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                                <span className="nav-link-title"> Organizational Structure and Scope </span>
+                            </a>
+                            <div className="dropdown-menu">
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(ORGANIZATION_PANEL)}>{panelsDefinitions[ORGANIZATION_PANEL].name}</a>
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(ACCOUNT_PANEL)}>{panelsDefinitions[ACCOUNT_PANEL].name}</a>
+                            </div>
+                        </li>
+                        <li className="nav-item dropdown">
+                            <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                                <span className="nav-link-title">Identities</span>
+                            </a>
+                            <div className="dropdown-menu">
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(USER_PANEL)}>{panelsDefinitions[USER_PANEL].name}</a>
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(SERVICE_IDENTITY_PANEL)}>{panelsDefinitions[SERVICE_IDENTITY_PANEL].name}</a>
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(DEVICE_PANEL)}>{panelsDefinitions[DEVICE_PANEL].name}</a>
+                            </div>
+                        </li>
+                        <li className="nav-item dropdown">
+                            <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                                <span className="nav-link-title">Access Control</span>
+                            </a>
+                            <div className="dropdown-menu">
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(ROLE_PANEL)}>{panelsDefinitions[ROLE_PANEL].name}</a>
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(PERMISSION_PANEL)}>{panelsDefinitions[PERMISSION_PANEL].name}</a>
+                                <a className="dropdown-item" onClick={() => onClickMenuItem(POLICY_PANEL)}>{panelsDefinitions[POLICY_PANEL].name}</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+}
+
+const OrganizationPanelContainer = () => {
+
+    return <div className="card tab-pane active show flex-grow-1 d-flex flex-column">
+                <div className="card-header">
+                    <div className="row w-full">
+                        <div className="col"></div>
+                        <div className="col-md-auto col-sm-12">
+                            <div className="ms-auto d-flex flex-wrap btn-list">
+                                <button className="btn btn-orange">New Organization</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="card-table">
+                    <div className="table-responsive">
+                        <table className="table table-vcenter card-table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>type</th>
+                                    <th>description</th>
+                                    <th>status</th>
+                                    <th>residency</th>
+                                    <th>created_at</th>
+                                    <th className="w-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    ORGANIZATIONS.map((org, index) =>
+                                        <tr key={index}>
+                                            <td className="text-secondary">{org.name}</td>
+                                            <td className="text-secondary">{org.org_type}</td>
+                                            <td className="text-secondary">{org.description}</td>
+                                            <td className="text-secondary">{org.status}</td>
+                                            <td className="text-secondary">{org.data_residency}</td>
+                                            <td className="text-secondary">{org.created_at}</td>
+                                            <td className="w-1">
+                                                <a className="btn btn-sm btn-link">Edit</a>
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+}
+
+
+const TabsPanelContainer = ({
+    tabsData,
+    onClosePanel,
+}) => {
+
+    return <div className="m-3 card-tabs d-flex flex-column flex-grow-1" style={{ height: "100%" }}>
+                <ul className="nav nav-tabs" role="tablist">
+                    {
+                        tabsData.map(({ name, codePanel }, index) =>
+                            <li key={index} className="nav-item cursor-pointer">
+                                <a className={`nav-link py-1 pe-0`}>{name}<button onClick={() => onClosePanel(codePanel)} className="btn btn-sm btn-link">{X_ICON}</button></a>
+                            </li>
+                        )
+                    }
+                </ul>
+                <div className="tab-content flex-grow-1 d-flex" style={{ minHeight: 0 }}>
+                    <OrganizationPanelContainer/>
+                </div>
+            </div>
+}
+
+const useTabsPanelStateManager = (definitions: any) => {
+
+    const [panelsOpened, setPanelsOpened] = React.useState<symbol[]>([])
+
+    const _PanelIsOpen = (panel: symbol) => panelsOpened.includes(panel)
+    const OpenPanel    = (panel: symbol) => setPanelsOpened((prevPanels) => !_PanelIsOpen(panel) ? [...prevPanels, panel] : prevPanels)
+    const ClosePanel   = (panel: symbol) => setPanelsOpened((prevPanels) => prevPanels.filter((p) => p !== panel))
+    const GetTabsData  = ()              => panelsOpened.map((codePanel) => ({codePanel, ...definitions[codePanel]}))
+
+    return {
+        OpenPanel,
+        GetTabsData,
+        ClosePanel
+    }
+}
+
+const IAMHomePanelContainer = () => {
+
+    const panelState = useTabsPanelStateManager(panelsDefinitions)
+
+    const handleClickMenuItem = (panel: symbol) => panelState.OpenPanel(panel)
+
+    return <div className="d-flex" style={{ height: "94vh", overflow: "hidden", marginTop: "56px" }}>
+                <IAMSidebarMenu onClickMenuItem={handleClickMenuItem}/>
+                <div
+                    className="page-wrapper flex-grow-1 d-flex flex-column"
+                    style={{ overflowY: "auto", minWidth: 0, paddingTop: ".5rem", margin: 0 }}>
+                    <div className="container-fluid flex-grow-1 d-flex p-0">
+                        <div className="row flex-grow-1 m-0">
+                            <div className="col-12 p-0">
+                                <div className="d-flex align-items-start" style={{ gap: "1rem" }}>
+                                    <TabsPanelContainer tabsData={panelState.GetTabsData()} onClosePanel={panelState.ClosePanel}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+}
 
 const MyHomePage = () =>
     <BlankPage>
@@ -20,113 +194,7 @@ const MyHomePage = () =>
                     </div>
                 </div>
             </nav>
-            <div className="d-flex" style={{ height: "94vh", overflow: "hidden", marginTop: "56px" }}>
-                <aside className="navbar navbar-vertical navbar-expand-lg d-flex flex-column" style={{ width: "auto", position: "relative", overflowY: "auto" }}>
-                    <div className="collapse navbar-collapse" id="sidebar-menu">
-                    <ul className="navbar-nav pt-lg-3">
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-                                <span className="nav-link-title"> Estrutura Organizacional e Escopo </span>
-                            </a>
-                            <div className="dropdown-menu">
-                                <a className="dropdown-item">Organizações</a>
-                                <a className="dropdown-item">Contas</a>
-                            </div>
-                        </li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-                                <span className="nav-link-title"> Identidades </span>
-                            </a>
-                            <div className="dropdown-menu">
-                                <a className="dropdown-item"> Usuários </a>
-                                <a className="dropdown-item"> Identidade de Serviços </a>
-                                <a className="dropdown-item"> Dispositivos </a>
-                            </div>
-                        </li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-                                <span className="nav-link-title"> Controle de Acesso </span>
-                            </a>
-                            <div className="dropdown-menu">
-                                <a className="dropdown-item"> Funções </a>
-                                <a className="dropdown-item"> Permissões </a>
-                                <a className="dropdown-item"> Políticas </a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                </aside>
-                <div 
-                    className="page-wrapper flex-grow-1 d-flex flex-column" 
-                    style={{ overflowY: "auto", minWidth: 0, paddingTop: ".5rem", margin: 0 }}>
-                        <div className="container-fluid flex-grow-1 d-flex p-0">
-                            <div className="row flex-grow-1 m-0">
-                                <div className="col-12 p-0">
-                                    <div className="px-3 d-flex align-items-start">
-           
-                                        <div className="col">
-                                        </div>
-                                        <div className="col-auto ms-auto d-print-none">
-                                            <div className="btn-list">
-                                                <span className="d-none d-sm-inline">
-                                                    <button className="btn btn-indigo">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M21 12a9 9 0 1 0 -9 9" /><path d="M3.6 9h16.8" /><path d="M3.6 15h8.4" /><path d="M11.578 3a17 17 0 0 0 0 18" /><path d="M12.5 3c1.719 2.755 2.5 5.876 2.5 9" /><path d="M18 21v-7m3 3l-3 -3l-3 3" /></svg>
-                                                        Publish Web App
-                                                    </button>
-                                                </span>
-                                                <button className="btn btn-outline-indigo">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folders"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" /><path d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2" /></svg>
-                                                    Manager your Repos
-                                                </button>
-                                            </div>
-                                        </div>
-                    
-                                    </div>
-                                    <div className="d-flex align-items-start" style={{ gap: "1rem" }}>
-                                        <div className="m-3 card-tabs d-flex flex-column flex-grow-1" style={{ height: "100%" }}>
-                                            <ul className="nav nav-tabs" role="tablist">
-                                                <li className="nav-item cursor-pointer">
-                                                    <a className={`nav-link py-1 pe-0`}>Publish APP<button className="btn btn-sm btn-link">{X_ICON}</button></a>
-                                                </li>
-                                            </ul>
-                                            <div className="tab-content flex-grow-1 d-flex" style={{ minHeight: 0 }}>
-                                                <div className="card tab-pane active show flex-grow-1 d-flex flex-column">
-                                                    <div className="card-body">
-                                                        <div className="row">
-                                                            <div className="col-12">
-                                                                <div className="mb-3">
-                                                                    <label className="form-label">Subdomain</label>
-                                                                    <div className="input-group">
-                                                                        <input type="text" className="form-control" placeholder="subdomain"/>
-                                                                        <span className="input-group-text"> .v-desk.app </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-12 mb-3">
-                                                                <span className="d-none d-sm-inline">
-                                                                    <button className="btn btn-cyan">
-                                                                        Configure Package
-                                                                    </button>
-                                                                </span>
-                                                            </div>
-                                                            <div className="col-12 mb-3">
-                                                                <span className="d-none d-sm-inline">
-                                                                    <button className="btn btn-pink">
-                                                                        Publish
-                                                                    </button>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
+            <IAMHomePanelContainer/>
         </>
     </BlankPage>
 
