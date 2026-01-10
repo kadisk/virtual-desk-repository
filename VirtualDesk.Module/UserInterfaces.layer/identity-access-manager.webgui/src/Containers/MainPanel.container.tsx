@@ -1,23 +1,26 @@
 
 import * as React from "react"
 
-
 import PANELS_DEFINITIONS from "../Definitions/Panels.definitions"
-
 import useTabsPanelStateManager from "../Hooks/useTabsPanelStateManager"
-
-import IAMSidebarMenu from "../Components/IAMSidebarMenu"
-
+import SidebarMenu from "../Components/SidebarMenu"
 import TabsPanelContainer from "../Containers/TabsPanel.container"
 
 const MainPanelContainer = () => {
 
-    const panelState = useTabsPanelStateManager(PANELS_DEFINITIONS)
+    const {
+        OpenPanel,
+        ListOpenedTabs,
+        ClosePanel,
+        ChangeFocusTo,
+        GetPanelFocusSymbol,
+        GetPanelComponent
+    } = useTabsPanelStateManager(PANELS_DEFINITIONS)
 
-    const handleClickMenuItem = (panel: symbol) => panelState.OpenPanel(panel)
+    const handleClickMenuItem = (panel: symbol) => OpenPanel(panel)
 
     return <div className="d-flex" style={{ height: "94vh", overflow: "hidden", marginTop: "56px" }}>
-                <IAMSidebarMenu onClickMenuItem={handleClickMenuItem}/>
+                <SidebarMenu panelFocusSymbol={GetPanelFocusSymbol()} onClickMenuItem={handleClickMenuItem}/>
                 <div
                     className="page-wrapper flex-grow-1 d-flex flex-column"
                     style={{ overflowY: "auto", minWidth: 0, paddingTop: ".5rem", margin: 0 }}>
@@ -26,11 +29,11 @@ const MainPanelContainer = () => {
                             <div className="col-12 p-0">
                                 <div className="d-flex align-items-start" style={{ gap: "1rem" }}>
                                     <TabsPanelContainer 
-                                        panelFocusSymbol={panelState.GetPanelFocusSymbol()}
-                                        listTabs={panelState.ListOpenedTabs()} 
-                                        onFocusTab={panelState.ChangeFocusTo}
-                                        componentContainer={panelState.GetPanelComponent(panelState.GetPanelFocusSymbol()!)}
-                                        onCloseTab={panelState.ClosePanel}/>
+                                        panelFocusSymbol={GetPanelFocusSymbol()}
+                                        listTabs={ListOpenedTabs()} 
+                                        onFocusTab={ChangeFocusTo}
+                                        componentContainer={GetPanelComponent(GetPanelFocusSymbol()!)}
+                                        onCloseTab={ClosePanel}/>
                                 </div>
                             </div>
                         </div>
