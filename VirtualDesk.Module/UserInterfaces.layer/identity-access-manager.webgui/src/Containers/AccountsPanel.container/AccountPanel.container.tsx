@@ -16,7 +16,7 @@ const AccountPanelContainer = () => {
                         <div className="col"></div>
                         <div className="col-md-auto col-sm-12">
                             <div className="ms-auto d-flex flex-wrap btn-list">
-                                <button className="btn btn-orange" onClick={() => setIsCreateOrgModalOpen(true)}>New Organization</button>
+                                <button className="btn btn-orange" onClick={() => setIsCreateOrgModalOpen(true)}>New Account</button>
                             </div>
                         </div>
                     </div>
