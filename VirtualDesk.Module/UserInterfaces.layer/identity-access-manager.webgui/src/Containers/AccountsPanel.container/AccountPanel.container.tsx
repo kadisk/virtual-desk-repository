@@ -1,15 +1,15 @@
 
 import * as React from "react"
-import CreateOrganizationModal from "./CreateOrganization.modal"
+import CreateAccountModal from "./CreateAccount.modal"
 
-import ORGANIZATIONS from "./ORGANIZATIONS.mock"
+import ACCOUNTS from "./ACCOUNTS.mock"
 
-const OrganizationPanelContainer = () => {
+const AccountPanelContainer = () => {
 
     const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = React.useState(false)
 
     return <>
-            {isCreateOrgModalOpen && <CreateOrganizationModal onClose={() => setIsCreateOrgModalOpen(false)} />}
+            {isCreateOrgModalOpen && <CreateAccountModal onClose={() => setIsCreateOrgModalOpen(false)} />}
             <div className="card tab-pane active show flex-grow-1 d-flex flex-column">
                 <div className="card-header">
                     <div className="row w-full">
@@ -36,14 +36,16 @@ const OrganizationPanelContainer = () => {
                             </thead>
                             <tbody>
                                 {
-                                    ORGANIZATIONS.map((org, index) =>
+                                    ACCOUNTS.map((org, index) =>
                                         <tr key={index}>
+                                            <td className="text-secondary">{org.id}</td>
                                             <td className="text-secondary">{org.name}</td>
-                                            <td className="text-secondary">{org.segment}</td>
-                                            <td className="text-secondary">{org.description}</td>
+                                            <td className="text-secondary">{org.type}</td>  
+                                            <td className="text-secondary">{org.environment}</td>
+                                            <td className="text-secondary">{org.isolation_level}</td>
                                             <td className="text-secondary">
                                                 <label className="form-check form-switch form-switch-3">
-                                                    <input className="form-check-input" type="checkbox" checked/>
+                                                    <input className="form-check-input" type="checkbox" checked={org.status === "Active"}/>
                                                 </label>    
                                             </td>
                                             <td className="text-secondary">{org.created_at}</td>
@@ -62,4 +64,4 @@ const OrganizationPanelContainer = () => {
 }
 
 
-export default OrganizationPanelContainer
+export default AccountPanelContainer

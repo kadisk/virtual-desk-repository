@@ -10,6 +10,7 @@ const WORLD_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24
 const X_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="m-0 icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
 
 import OrganizationPanelContainer from "../Containers/OrganizationPanel.container"
+import AccountPanelContainer from "../Containers/AccountsPanel.container/AccountPanel.container"
 
 const ORGANIZATION_PANEL     = Symbol()
 const ACCOUNT_PANEL          = Symbol()
@@ -22,7 +23,7 @@ const POLICY_PANEL           = Symbol()
 
 const panelsDefinitions = {
     [ORGANIZATION_PANEL]     : { name: "Organizations",  ComponentContainer:OrganizationPanelContainer },
-    [ACCOUNT_PANEL]          : { name: "Accounts",         },
+    [ACCOUNT_PANEL]          : { name: "Accounts",       ComponentContainer:AccountPanelContainer },
     [USER_PANEL]             : { name: "Users",            },
     [SERVICE_IDENTITY_PANEL] : { name: "Service Identity", },
     [DEVICE_PANEL]           : { name: "Devices",          },
@@ -168,7 +169,7 @@ const IAMHomePanelContainer = () => {
 const MyHomePage = () =>
     <BlankPage>
         <>
-            <nav className="navbar navbar-expand-lg bg-orange-lt fixed-top" style={{ zIndex: 9999 }}>
+            <nav className="navbar navbar-expand-lg bg-orange-lt fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-brand d-flex align-items-center p-0">
                         <img src={logoIAM} width={250} className="me-2" />

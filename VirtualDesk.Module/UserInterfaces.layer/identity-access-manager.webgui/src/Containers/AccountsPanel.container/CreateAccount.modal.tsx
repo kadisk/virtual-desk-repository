@@ -3,7 +3,7 @@ import * as React from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 
-const CreateOrganizationModal = ({
+const CreateAccountModal = ({
     onClose,
     HTTPServerManager
 }) => {
@@ -12,7 +12,7 @@ const CreateOrganizationModal = ({
         <div className="modal-dialog modal-xl" role="document">
             <div className="modal-content">
                 <div className="modal-header">
-                    <h5 className="modal-title">Create a new organization</h5>
+                    <h5 className="modal-title">Create a new Account</h5>
                     <button type="button" className="btn-close" onClick={onClose} />
                 </div>
                 <div className="modal-body">
@@ -48,4 +48,4 @@ const CreateOrganizationModal = ({
 
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({}, dispatch)
 const mapStateToProps = ({ HTTPServerManager }: any) => ({ HTTPServerManager })
-export default connect(mapStateToProps, mapDispatchToProps)(CreateOrganizationModal)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateAccountModal)
