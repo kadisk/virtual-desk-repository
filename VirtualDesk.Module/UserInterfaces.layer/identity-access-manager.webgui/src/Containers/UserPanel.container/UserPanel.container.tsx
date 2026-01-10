@@ -1,22 +1,22 @@
 
 import * as React from "react"
-import CreateAccountModal from "./CreateAccount.modal"
+import CreateUserModal from "./CreateUser.modal"
 
-import ACCOUNTS from "./ACCOUNTS.mock"
+import USERS from "./USERS.mock"
 
-const AccountPanelContainer = () => {
+const UserPanelContainer = () => {
 
     const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = React.useState(false)
 
     return <>
-            {isCreateOrgModalOpen && <CreateAccountModal onClose={() => setIsCreateOrgModalOpen(false)} />}
+            {isCreateOrgModalOpen && <CreateUserModal onClose={() => setIsCreateOrgModalOpen(false)} />}
             <div className="card tab-pane active show flex-grow-1 d-flex flex-column">
                 <div className="card-header">
                     <div className="row w-full">
                         <div className="col"></div>
                         <div className="col-md-auto col-sm-12">
                             <div className="ms-auto d-flex flex-wrap btn-list">
-                                <button className="btn btn-orange" onClick={() => setIsCreateOrgModalOpen(true)}>New Account</button>
+                                <button className="btn btn-orange" onClick={() => setIsCreateOrgModalOpen(true)}>New User</button>
                             </div>
                         </div>
                     </div>
@@ -26,11 +26,12 @@ const AccountPanelContainer = () => {
                         <table className="table table-vcenter card-table table-striped">
                             <thead>
                                 <tr>
-                                    <th>id</th>
                                     <th>name</th>
-                                    <th>type</th>
-                                    <th>environment</th>
-                                    <th>isolation level</th>
+                                    <th>account id</th>
+                                    <th>email</th>
+                                    <th>phone</th>
+                                    <th>mfa enabled</th>
+                                    <th>risk level</th>
                                     <th>status</th>
                                     <th>created_at</th>
                                     <th className="w-1"></th>
@@ -38,18 +39,19 @@ const AccountPanelContainer = () => {
                             </thead>
                             <tbody>
                                 {
-                                    ACCOUNTS.map((org, index) =>
+                                    USERS.map((org, index) =>
                                         <tr key={index}>
                                             <td className="text-secondary">{org.id}</td>
-                                            <td className="text-secondary">{org.name}</td>
-                                            <td className="text-secondary">{org.type}</td>  
-                                            <td className="text-secondary">{org.environment}</td>
-                                            <td className="text-secondary">{org.isolation_level}</td>
+                                            <td className="text-secondary">{org.account_id}</td>
+                                            <td className="text-secondary">{org.email}</td>  
+                                            <td className="text-secondary">{org.phone}</td>
                                             <td className="text-secondary">
                                                 <label className="form-check form-switch form-switch-3">
-                                                    <input className="form-check-input" type="checkbox" checked={org.status === "Active"}/>
+                                                    <input className="form-check-input" type="checkbox" checked={org.mfa_enabled}/>
                                                 </label>    
                                             </td>
+                                            <td className="text-secondary">{org.risk_level}</td>
+                                            <td className="text-secondary">{org.status}</td>
                                             <td className="text-secondary">{org.created_at}</td>
                                             <td className="w-1">
                                                 <a className="btn btn-sm btn-link">Edit</a>
@@ -66,4 +68,4 @@ const AccountPanelContainer = () => {
 }
 
 
-export default AccountPanelContainer
+export default UserPanelContainer
