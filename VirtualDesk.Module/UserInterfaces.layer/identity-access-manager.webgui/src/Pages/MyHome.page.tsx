@@ -6,7 +6,7 @@ import BlankPage from "../Components/BlankPage"
 //@ts-ignore
 import logoIAM from "../../Assets/logo-IAM-final-2.svg"
 
-import IAMHomePanelContainer from "../Containers/IAMHomePanel.container"    
+import MainPanelContainer from "../Containers/MainPanel.container"    
 
 const MyHomePage = () =>
     <BlankPage>
@@ -18,7 +18,7 @@ const MyHomePage = () =>
                     </div>
                 </div>
             </nav>
-            <IAMHomePanelContainer/>
+            <MainPanelContainer/>
         </>
     </BlankPage>
 

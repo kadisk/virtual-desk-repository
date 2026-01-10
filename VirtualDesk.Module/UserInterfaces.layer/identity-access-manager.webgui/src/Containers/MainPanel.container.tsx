@@ -10,7 +10,7 @@ import IAMSidebarMenu from "../Components/IAMSidebarMenu"
 
 import TabsPanelContainer from "../Containers/TabsPanel.container"
 
-const IAMHomePanelContainer = () => {
+const MainPanelContainer = () => {
 
     const panelState = useTabsPanelStateManager(PANELS_DEFINITIONS)
 
@@ -40,4 +40,4 @@ const IAMHomePanelContainer = () => {
 }
 
 
-export default IAMHomePanelContainer
+export default MainPanelContainer
