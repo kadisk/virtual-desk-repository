@@ -1,0 +1,8 @@
+export const ORGANIZATION_PANEL     = Symbol()
+export const ACCOUNT_PANEL          = Symbol()
+export const USER_PANEL             = Symbol()
+export const SERVICE_IDENTITY_PANEL = Symbol()
+export const DEVICE_PANEL           = Symbol()
+export const ROLE_PANEL             = Symbol()
+export const PERMISSION_PANEL       = Symbol()
+export const POLICY_PANEL           = Symbol()
