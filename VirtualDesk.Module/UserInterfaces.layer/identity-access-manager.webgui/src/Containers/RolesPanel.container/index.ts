@@ -1,0 +1,3 @@
+import ServiceIdentityPanelContainer from "./ServiceIdentityPanel.container"
+
+export default ServiceIdentityPanelContainer
