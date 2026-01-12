@@ -1,0 +1,10 @@
+{
+	"name": "Users",
+	"endpoints": [
+		{
+			"path": "/users",
+			"method": "GET",
+			"summary": "ListUsers"
+		}
+	]
+}
