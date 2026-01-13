@@ -1,14 +1,12 @@
 {
     "bound-params":[ "serverService" ],
-    "params": [ "needsAuth" ],
     "endpoints": [
         {
             "url": "/users",
             "type": "controller",
             "params": {
                 "api-template": "APIs/Users.api.json",
-                "controller": "Controllers/Users.controller",
-                "needsAuth": "needsAuth"
+                "controller": "Controllers/Users.controller"
             },
             "bound-params": {
                 "serverService":"serverService"

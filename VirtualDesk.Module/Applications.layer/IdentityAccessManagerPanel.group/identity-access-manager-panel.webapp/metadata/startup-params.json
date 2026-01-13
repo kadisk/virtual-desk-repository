@@ -1,7 +1,7 @@
 {
-    "port" : 6666,
+    "port" : "9999",
     "serverName" : "IdentityAccessManagerPanelWebAppInstance",
-    "serverManagerUrl" : "http://localhost:6666/server-manager/status",
+    "serverManagerUrl" : "http://localhost:9999/server-manager/status",
     "isWatch" : true,
     "RT_ENV_GENERATED_DIR_NAME": ".generated_data"
 }

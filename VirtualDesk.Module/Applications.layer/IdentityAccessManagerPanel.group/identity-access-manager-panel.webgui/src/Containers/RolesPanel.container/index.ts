@@ -1,3 +1,3 @@
-import ServiceIdentityPanelContainer from "./ServiceIdentityPanel.container"
+import RolesPanelContainer from "./RolePanel.container"
 
-export default ServiceIdentityPanelContainer
+export default RolesPanelContainer

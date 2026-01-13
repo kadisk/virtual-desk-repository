@@ -64,6 +64,12 @@
         "executable":"my-iam",
         "packageNamespace":"VirtualDesk.Module/PlatformApplications.layer/iam-tools.cli",
         "supervisorSocketFileName":"my-iam.sock"
+    },
+    {
+        "appType":"APP",
+        "executable":"iam-panel",
+        "packageNamespace":"VirtualDesk.Module/Applications.layer/IdentityAccessManagerPanel.group/identity-access-manager-panel.webapp",
+        "supervisorSocketFileName":"iam-panel.sock"
     }
 
 ]
