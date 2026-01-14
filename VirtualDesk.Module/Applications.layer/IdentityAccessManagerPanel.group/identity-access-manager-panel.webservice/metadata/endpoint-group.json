@@ -1,15 +1,26 @@
 {
-    "bound-params":[ "serverService" ],
+    "bound-params":[ "serverService", "commandExecutorLib" ],
+    "params": [ 
+        "iamManagerServerManagerUrl", 
+        "iamManagerSocketPath" 
+    ],
     "endpoints": [
         {
             "url": "/users",
             "type": "controller",
             "params": {
                 "api-template": "APIs/Users.api.json",
-                "controller": "Controllers/Users.controller"
+                "controller": "Controllers/Users.controller",
+                "controller-params":{
+                    "iamManagerServerManagerUrl":"{{iamManagerServerManagerUrl}}",
+                    "iamManagerSocketPath":"{{iamManagerSocketPath}}"
+                }
             },
             "bound-params": {
-                "serverService":"serverService"
+                "serverService":"serverService",
+                "controller-params":{
+                    "commandExecutorLib":"commandExecutorLib"
+                }
             }
         }  
     ]

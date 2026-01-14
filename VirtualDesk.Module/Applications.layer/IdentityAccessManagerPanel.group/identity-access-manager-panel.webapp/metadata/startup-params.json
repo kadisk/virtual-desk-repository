@@ -1,7 +1,9 @@
 {
-    "port" : "9999",
-    "serverName" : "IdentityAccessManagerPanelWebAppInstance",
-    "serverManagerUrl" : "http://localhost:9999/server-manager/status",
-    "isWatch" : true,
-    "RT_ENV_GENERATED_DIR_NAME": ".generated_data"
+    "port": "9999",
+    "serverName": "IdentityAccessManagerPanelWebAppInstance",
+    "serverManagerUrl": "http://localhost:9999/server-manager/status",
+    "isWatch": true,
+    "RT_ENV_GENERATED_DIR_NAME": ".generated_data",
+    "iamManagerSocketPath": "/home/kadisk/EcosystemData/sockets/iam.app.sock",
+    "iamManagerServerManagerUrl": "/server-manager/status"
 }
