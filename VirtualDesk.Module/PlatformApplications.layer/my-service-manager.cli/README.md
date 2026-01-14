@@ -2,7 +2,7 @@
 
 CLI para gerenciamento de serviços e suas instâncias.
 
-## 📋 Comandos Disponíveis
+## Comandos Disponíveis
 
 | Comando | Descrição |
 |---------|-----------|
@@ -14,7 +14,7 @@ CLI para gerenciamento de serviços e suas instâncias.
 | `instances <serviceId>` | Lista instâncias de um serviço |
 | `builds <serviceId>` | Mostra histórico de builds de um serviço |
 
-## 🚀 Uso
+## Uso
 
 ### Listar e consultar serviços
 ```bash
@@ -46,7 +46,7 @@ my-services instances 12
 my-services builds 12
 ```
 
-## 📝 Parâmetros
+## Parâmetros
 
 | Comando | Parâmetro | Tipo | Obrigatório | Descrição |
 |---------|-----------|------|-------------|-----------|
@@ -57,7 +57,7 @@ my-services builds 12
 | `instances` | `serviceId` | number | ✅ | ID do serviço |
 | `builds` | `serviceId` | number | ✅ | ID do serviço |
 
-## 🧩 Bibliotecas Internas
+## Bibliotecas Internas
 
 - `jsonFileUtilitiesLib`: Utilitários para arquivos JSON
 - `commandExecutorLib`: Execução de comandos CLI

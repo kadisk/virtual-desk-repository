@@ -2,26 +2,32 @@
 	"bound-params":[ "jsonFileUtilitiesLib", "commandExecutorLib" ],
 	"commands": [
 		{
-			"namespace": "CreateOrganization",
-			"path": "Commands/CreateOrganization.command",
-			"command": "create organization [name]",
-			"description": "Cria uma nova organização",
-			"parameters": [
+			"namespace": "create",
+            "command": "create",
+            "children": [
 				{
-					"key": "name",
-					"paramType": "positional",
-					"valueType": "string",
-					"describe": "Nome da organização a ser criada"
+					"namespace": "CreateOrganization",
+					"path": "Commands/CreateOrganization.command",
+					"command": "organization [name]",
+					"description": "Cria uma nova organização",
+					"parameters": [
+						{
+							"key": "name",
+							"paramType": "positional",
+							"valueType": "string",
+							"describe": "Nome da organização a ser criada"
+						}
+					],
+					"parametersToLoad": [ "commandExecutorLib" ]
+				},
+				{
+					"namespace": "CreateUser",
+					"path": "Commands/CreateUser.command",
+					"command": "user",
+					"description": "Cria um novo usuário",
+					"parametersToLoad": [ "commandExecutorLib" ]
 				}
-			],
-            "parametersToLoad": [ "commandExecutorLib" ]
-		},
-		{
-			"namespace": "CreateUser",
-			"path": "Commands/CreateUser.command",
-			"command": "create user",
-			"description": "Cria um novo usuário",
-            "parametersToLoad": [ "commandExecutorLib" ]
+			]
 		},
 		{
 			"namespace": "ListOrganizations",
