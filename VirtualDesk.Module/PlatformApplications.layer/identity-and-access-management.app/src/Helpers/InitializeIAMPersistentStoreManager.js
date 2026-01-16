@@ -17,6 +17,14 @@ const InitializeIAMPersistentStoreManager = (storage) => {
             type: DataTypes.STRING,
             allowNull: false 
         },
+        segment: { 
+            type: DataTypes.STRING,
+            allowNull: true 
+        },
+        description: { 
+            type: DataTypes.STRING,
+            allowNull: true 
+        },
         status: { 
             type: DataTypes.ENUM('ACTIVE','SUSPENDED'),
             defaultValue: 'ACTIVE' 

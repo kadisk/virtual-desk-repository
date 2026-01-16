@@ -1,12 +1,40 @@
-
 import * as React from "react"
+import { useEffect, useState } from "react"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
+
+import GetAPI from "../../Utils/GetAPI"
+
 import CreateOrganizationModal from "./CreateOrganization.modal"
 
-import ORGANIZATIONS from "./ORGANIZATIONS.mock"
 
-const OrganizationPanelContainer = () => {
+const OrganizationPanelContainer = ({ HTTPServerManager }) => {
 
     const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = React.useState(false)
+
+    const [organizations, setOrganizations] = useState([])
+
+    useEffect(() => {
+
+        FetchOrganizations()
+
+    }, [])
+
+    const GetOrganizationsAPI = () =>
+        GetAPI({
+            apiName: "Organizations",
+            serverManagerInformation: HTTPServerManager
+        })
+
+    const FetchOrganizations = async () => {
+        const api = GetOrganizationsAPI()
+        try {
+            const response = await api.ListOrganizations()
+            setOrganizations(response.data)
+        } catch (error) {
+            console.log("Error fetching organizations:", error)
+        }
+    }
 
     return <>
             {isCreateOrgModalOpen && <CreateOrganizationModal onClose={() => setIsCreateOrgModalOpen(false)} />}
@@ -27,26 +55,20 @@ const OrganizationPanelContainer = () => {
                             <thead>
                                 <tr>
                                     <th>name</th>
-                                    <th>type</th>
-                                    <th>description</th>
                                     <th>status</th>
-                                    <th>created_at</th>
+                                    <th>updated at</th>
+                                    <th>created at</th>
                                     <th className="w-1"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    ORGANIZATIONS.map((org, index) =>
+                                    organizations.map((org, index) =>
                                         <tr key={index}>
                                             <td className="text-secondary">{org.name}</td>
-                                            <td className="text-secondary">{org.segment}</td>
-                                            <td className="text-secondary">{org.description}</td>
-                                            <td className="text-secondary">
-                                                <label className="form-check form-switch form-switch-3">
-                                                    <input className="form-check-input" type="checkbox" checked/>
-                                                </label>    
-                                            </td>
-                                            <td className="text-secondary">{org.created_at}</td>
+                                            <td className="text-secondary">{org.status}</td>
+                                            <td className="text-secondary">{org.updatedAt}</td>
+                                            <td className="text-secondary">{org.createdAt}</td>
                                             <td className="w-1">
                                                 <a className="btn btn-sm btn-link">Edit</a>
                                             </td>
@@ -61,5 +83,7 @@ const OrganizationPanelContainer = () => {
     </>
 }
 
+const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+const mapStateToProps = ({ HTTPServerManager }) => ({ HTTPServerManager })
 
-export default OrganizationPanelContainer
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizationPanelContainer)

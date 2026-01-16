@@ -1,0 +1,42 @@
+[
+	{
+		"name": "Carlos Henrique Silva",
+		"email": "carlos.silva@atlasbrasil.com.br",
+		"phone": "+55 11 98765-4321",
+		"password_hash": "hash_placeholder",
+		"mfa_enabled": true,
+		"risk_level": "Low"
+	},
+	{
+		"name": "Mariana Costa",
+		"email": "mariana.costa@bancoorion.com.br",
+		"phone": "+55 21 99887-1122",
+		"password_hash": "hash_placeholder",
+		"mfa_enabled": true,
+		"risk_level": "Medium"
+	},
+	{
+		"name": "Rafael Almeida",
+		"email": "rafael.almeida@nebulasoft.com.br",
+		"phone": null,
+		"password_hash": "hash_placeholder",
+		"mfa_enabled": false,
+		"risk_level": "Low"
+	},
+	{
+		"name": "Fernanda Lopes",
+		"email": "fernanda.lopes@helixsaude.com.br",
+		"phone": "+55 31 97654-8899",
+		"password_hash": "hash_placeholder",
+		"mfa_enabled": true,
+		"risk_level": "High"
+	},
+	{
+		"name": "João Pedro Martins",
+		"email": "joao.martins@auroravarejo.com.br",
+		"phone": null,
+		"password_hash": "hash_placeholder",
+		"mfa_enabled": false,
+		"risk_level": "Medium"
+	}
+]

@@ -1,0 +1,102 @@
+[
+    {
+        "name": "Grupo Atlas Brasil",
+        "segment": "Holding Corporativa",
+        "description": "Conglomerado empresarial com atuação em múltiplos setores e filiais regionais."
+    },
+    {
+        "name": "NebulaSoft Tecnologia",
+        "segment": "Provedor SaaS",
+        "description": "Empresa de software SaaS B2B com múltiplos clientes e isolamento por tenant."
+    },
+    {
+        "name": "AgroVerde Nacional",
+        "segment": "Agronegócio",
+        "description": "Grupo agroindustrial com operações agrícolas, logísticas e exportação."
+    },
+    {
+        "name": "Banco Orion",
+        "segment": "Instituição Financeira",
+        "description": "Banco comercial com forte exigência regulatória e controles de risco."
+    },
+    {
+        "name": "Helix Saúde Integrada",
+        "segment": "Saúde",
+        "description": "Rede de hospitais e clínicas com dados sensíveis de pacientes."
+    },
+    {
+        "name": "Solaris Energia Renovável",
+        "segment": "Energia",
+        "description": "Empresa de geração de energia solar e eólica com infraestrutura crítica."
+    },
+    {
+        "name": "Vórtice Logística",
+        "segment": "Logística",
+        "description": "Operadora logística nacional com centros de distribuição e frota própria."
+    },
+    {
+        "name": "Aurora Varejo",
+        "segment": "Varejo",
+        "description": "Rede varejista omnichannel com lojas físicas e e-commerce."
+    },
+    {
+        "name": "Sentinela Defesa e Segurança",
+        "segment": "Defesa",
+        "description": "Empresa especializada em soluções de segurança e defesa estratégica."
+    },
+    {
+        "name": "BlueWave Telecomunicações",
+        "segment": "Telecom",
+        "description": "Operadora de telecomunicações com infraestrutura de rede nacional."
+    },
+    {
+        "name": "Polaris Educação Digital",
+        "segment": "Educação",
+        "description": "Plataforma educacional digital para ensino remoto e corporativo."
+    },
+    {
+        "name": "Lumina Mídia e Conteúdo",
+        "segment": "Mídia",
+        "description": "Empresa de produção e distribuição de conteúdo digital."
+    },
+    {
+        "name": "ForjaFerro Indústria",
+        "segment": "Manufatura",
+        "description": "Indústria pesada com integração entre sistemas OT e IT."
+    },
+    {
+        "name": "TerraNova Empreendimentos Imobiliários",
+        "segment": "Imobiliário",
+        "description": "Grupo imobiliário focado em empreendimentos residenciais e comerciais."
+    },
+    {
+        "name": "NuvemCasa Serviços Gerenciados",
+        "segment": "MSP / Cloud",
+        "description": "Provedora de serviços gerenciados de TI e cloud computing."
+    },
+    {
+        "name": "Aether Biotecnologia",
+        "segment": "Biotecnologia",
+        "description": "Empresa de pesquisa e desenvolvimento em biotecnologia avançada."
+    },
+    {
+        "name": "QuantumPay Soluções Financeiras",
+        "segment": "Fintech",
+        "description": "Plataforma de pagamentos digitais e serviços financeiros."
+    },
+    {
+        "name": "Horizonte Turismo e Viagens",
+        "segment": "Turismo",
+        "description": "Operadora de turismo com atuação nacional e internacional."
+    },
+    {
+        "name": "EnergiaVerde Serviços Públicos",
+        "segment": "Serviço Público",
+        "description": "Empresa de utilidade pública focada em distribuição de energia."
+    },
+    {
+        "name": "NovaGrade Cidades Inteligentes",
+        "segment": "Smart Cities / IoT",
+        "description": "Plataforma para gestão de cidades inteligentes e dispositivos IoT."
+    }
+]

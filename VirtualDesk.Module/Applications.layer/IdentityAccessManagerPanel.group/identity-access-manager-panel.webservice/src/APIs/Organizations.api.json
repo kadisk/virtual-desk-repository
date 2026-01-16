@@ -1,0 +1,10 @@
+{
+	"name": "Organizations",
+	"endpoints": [
+		{
+			"path": "/organizations",
+			"method": "GET",
+			"summary": "ListOrganizations"
+		}
+	]
+}

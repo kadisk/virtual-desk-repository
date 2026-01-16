@@ -22,6 +22,24 @@
                     "commandExecutorLib":"commandExecutorLib"
                 }
             }
-        }  
+        },
+        {
+            "url": "/organizations",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/Organizations.api.json",
+                "controller": "Controllers/Organizations.controller",
+                "controller-params":{
+                    "iamManagerServerManagerUrl":"{{iamManagerServerManagerUrl}}",
+                    "iamManagerSocketPath":"{{iamManagerSocketPath}}"
+                }
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "commandExecutorLib":"commandExecutorLib"
+                }
+            }
+        } 
     ]
 }
