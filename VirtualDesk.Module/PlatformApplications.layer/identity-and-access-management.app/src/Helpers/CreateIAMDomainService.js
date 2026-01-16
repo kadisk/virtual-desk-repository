@@ -1,60 +1,6 @@
 const bcrypt = require('bcrypt')
 
-const CreateIAMDomainService = ({
-        OrganizationModel,
-        UserModel,
-        ServiceIdentityModel,
-        DeviceModel
-    }) => {
-
-    const CreateOrganization = async (name) => {
-        const organization = await OrganizationModel.create({ name })
-        return organization
-    }
-
-    const ListOrganizations = async () => {
-        const organizations = await OrganizationModel.findAll()
-        return organizations
-    }
-
-    const GetOrganization = async (organizationId) => {
-        const organization = await OrganizationModel.findByPk(organizationId)
-        return organization
-    }
-
-    const UpdateOrganizationName = async ({ organizationId, name}) => {
-        const organization = await OrganizationModel.findByPk(organizationId)
-        if (!organization) {
-            throw new Error(`Organização com ID "${organizationId}" não encontrada.`)
-        }
-        organization.name = name
-        await organization.save()
-        return organization
-    }
-
-    const DeleteOrganization = async (organizationId) => {
-        const organization = await OrganizationModel.findByPk(organizationId)
-        if (!organization) {
-            throw new Error(`Organização com ID "${organizationId}" não encontrada.`)
-        }
-        await organization.destroy()
-        return true
-    }
-
-    const CreateUser = async ({ name, username, email, password }) => {
-        const passwordHash = await bcrypt.hash(password, 10)
-        const user = await UserModel.create({ name, username, email, passwordHash })
-        const safeUser = typeof user.toJSON === 'function' ? user.toJSON() : { ...user }
-        delete safeUser.passwordHash    
-        return safeUser
-    }
-
-    const ListUsers = async () => {
-        const users = await UserModel.findAll({
-            attributes: { exclude: ['passwordHash'] }
-        })
-        return users
-    }
+const CreateIAMDomainService = ({ UserModel }) => {
 
     const CheckUserExist = async ({ email , username }) => {
         const existingUser = await UserModel.findOne({
@@ -87,26 +33,10 @@ const CreateIAMDomainService = ({
             throw error
         }
     }
-
-    const GetUser = async (userId) => {
-        const user  = await UserModel.findOne({
-            attributes: { exclude: ['passwordHash'] },
-            where: { id:userId }
-        })
-        return user
-    }
     
     return {
-        CreateOrganization,
-        ListOrganizations,
-        GetOrganization,
-        UpdateOrganizationName,
-        DeleteOrganization,
-        CreateUser,
-        ListUsers,
         CheckUserExist,
-        VerifyPasswordAndGetUser,
-        GetUser
+        VerifyPasswordAndGetUser
     }
 }
 

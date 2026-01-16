@@ -1,0 +1,54 @@
+{
+	"name": "UserManagement",
+	"endpoints": [
+		{
+			"path": "/user",
+			"method": "POST",
+			"summary": "CreateUser",
+			"parameters": [
+				{
+					"name": "name",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "username",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "email",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "password",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/user/information",
+			"method": "POST",
+			"summary": "GetUser",
+			"parameters": [
+				{
+					"name": "userId",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/users",
+			"method": "GET",
+			"summary": "ListUsers"
+		}
+	]
+}

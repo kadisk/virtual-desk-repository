@@ -4,16 +4,8 @@ const IdentityManagementController = (params) => {
 
     const controllerServiceObject = {
         controllerName           : "IdentityManagementController",
-        CreateOrganization       : iamManagerService.CreateOrganization,
-        ListOrganizations        : iamManagerService.ListOrganizations,
-        GetOrganization          : iamManagerService.GetOrganization,
-        UpdateOrganizationName   : iamManagerService.UpdateOrganizationName,
-        DeleteOrganization       : iamManagerService.DeleteOrganization,
-        CreateUser               : iamManagerService.CreateUser,
-        ListUsers                : iamManagerService.ListUsers,
         CheckUserExist           : iamManagerService.CheckUserExist,
-        VerifyPasswordAndGetUser : iamManagerService.VerifyPasswordAndGetUser,
-        GetUser                  : iamManagerService.GetUser
+        VerifyPasswordAndGetUser : iamManagerService.VerifyPasswordAndGetUser
     }
     
     return Object.freeze(controllerServiceObject)
