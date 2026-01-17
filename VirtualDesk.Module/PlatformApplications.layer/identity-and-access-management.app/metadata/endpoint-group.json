@@ -1,7 +1,9 @@
 {
     "bound-params":[
         "serverService",
-        "iamManagerService"
+        "iamManagerService",
+        "userManagerService",
+        "organizationManagerService"
     ],
     "endpoints": [
         {
@@ -15,6 +17,34 @@
                 "serverService":"serverService",
                 "controller-params":{
                     "iamManagerService":"iamManagerService"
+                }
+            }
+        },
+        {
+            "url": "/users",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/UserManagement.api.json",
+                "controller": "Controllers/UserManagement.controller"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "userManagerService":"userManagerService"
+                }
+            }
+        },
+        {
+            "url": "/organizations",
+            "type": "controller",
+            "params": {
+                "api-template": "APIs/OrganizationManagement.api.json",
+                "controller": "Controllers/OrganizationManagement.controller"
+            },
+            "bound-params": {
+                "serverService":"serverService",
+                "controller-params":{
+                    "organizationManagerService":"organizationManagerService"
                 }
             }
         }

@@ -1,10 +1,26 @@
 [
     {
+        "namespace": "IAMPersistentStoreManager",
+        "path": "Managers/IAMPersistentStore.manager",
+        "params": [ "storageFilePath"]
+        
+    },
+    {
         "namespace": "IdentityAndAccessManager",
         "path": "Managers/IdentityAndAccess.manager",
-        "params": [ 
-            "storageFilePath"
-        ]
+        "bound-params": [ "iamPersistentStoreManagerService"]
+        
+    },
+    {
+        "namespace": "UserManager",
+        "path": "Managers/User.manager",
+        "bound-params": [ "iamPersistentStoreManagerService"]
+        
+    },
+    {
+        "namespace": "OrganizationManager",
+        "path": "Managers/Organization.manager",
+        "bound-params": [ "iamPersistentStoreManagerService"]
         
     }
 ]

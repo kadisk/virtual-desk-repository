@@ -14,10 +14,31 @@
             }
         },
         {
-            "namespace": "@@/iam-manager-service",
-            "dependency": "@//services/IdentityAndAccessManager",
+            "namespace": "@@/iam-persistent-store-service",
+            "dependency": "@//services/IAMPersistentStoreManager",
             "params":{
                 "storageFilePath": "{{storageFilePath}}"
+            }
+        },
+        {
+            "namespace": "@@/iam-manager-service",
+            "dependency": "@//services/IdentityAndAccessManager",
+            "bound-params": {
+                "iamPersistentStoreManagerService":"@@/iam-persistent-store-service"
+            }
+        },
+        {
+            "namespace": "@@/user-manager-service",
+            "dependency": "@//services/UserManager",
+            "bound-params": {
+                "iamPersistentStoreManagerService":"@@/iam-persistent-store-service"
+            }
+        },
+        {
+            "namespace": "@@/organization-manager-service",
+            "dependency": "@//services/OrganizationManager",
+            "bound-params": {
+                "iamPersistentStoreManagerService":"@@/iam-persistent-store-service"
             }
         }
     ],
@@ -33,7 +54,9 @@
             "dependency": "@//endpoint-group",
             "bound-params":{
                 "serverService": "@@/server-service",
-                "iamManagerService": "@@/iam-manager-service"
+                "iamManagerService": "@@/iam-manager-service",
+                "userManagerService": "@@/user-manager-service",
+                "organizationManagerService": "@@/organization-manager-service"
             }
         }
     ]
