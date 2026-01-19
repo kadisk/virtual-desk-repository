@@ -29,3 +29,5 @@ https://kjphotos.com/
 
 
 docker run -it --volumes-from myecosystem-01-container --entrypoint /bin/bash myecosystem:latest
+
+nvm use stable
