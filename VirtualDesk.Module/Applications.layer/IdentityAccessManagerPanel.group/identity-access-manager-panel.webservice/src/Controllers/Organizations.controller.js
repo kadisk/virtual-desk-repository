@@ -12,7 +12,7 @@ const OrganizationsController = (params) => {
         serverManagerUrl: iamManagerServerManagerUrl,
         socketPath: iamManagerSocketPath, 
         commandExecutorLib,
-        ExtractAPI: (APIs) => APIs.IAMAppInstance.IdentityManagement
+        ExtractAPI: (APIs) => APIs.IAMAppInstance.OrganizationManagement
     })
 
     const ListOrganizations = async () => {

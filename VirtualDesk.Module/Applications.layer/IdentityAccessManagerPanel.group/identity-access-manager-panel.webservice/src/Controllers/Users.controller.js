@@ -12,7 +12,7 @@ const UsersController = (params) => {
         serverManagerUrl: iamManagerServerManagerUrl,
         socketPath: iamManagerSocketPath, 
         commandExecutorLib,
-        ExtractAPI: (APIs) => APIs.IAMAppInstance.IdentityManagement
+        ExtractAPI: (APIs) => APIs.IAMAppInstance.UserManagement
     })
 
     const ListUsers = async ({ authenticationData }) => {

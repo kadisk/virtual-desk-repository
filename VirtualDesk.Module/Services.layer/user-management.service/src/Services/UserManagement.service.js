@@ -19,11 +19,9 @@ const UserManagementService = (params) => {
 
     const CommandExecutor = commandExecutorLib.require("CommandExecutor")
 
-    const IAMCommand = async (CommandFunction) => {
+    const CreateIAMCommand = (apiName) => async (CommandFunction) => {
         const APICommandFunction = async ({ APIs }) => {
-            const API = APIs
-            .IAMAppInstance
-            .IdentityManagement
+            const API = APIs.IAMAppInstance[apiName]
             return await CommandFunction(API)
         }
 
@@ -34,13 +32,19 @@ const UserManagementService = (params) => {
         })
     }
 
+    const IAMUserManagementCommand =  (CommandFunction) => 
+        CreateIAMCommand('UserManagement')(CommandFunction)
+
+    const IAMIdentityManagementCommand =  (CommandFunction) => 
+        CreateIAMCommand('IdentityManagement')(CommandFunction)
+
 
     const _Start = async () => {
         try {
-            const users = await IAMCommand((API) => API.ListUsers())
+            const users = await IAMUserManagementCommand((API) => API.ListUsers())
 
             if (users.length === 0) {
-                await IAMCommand((API) =>
+                await IAMUserManagementCommand((API) =>
                     API.CreateUser({
                         name: DEFAULT_USER,
                         username: DEFAULT_USER,
@@ -60,11 +64,11 @@ const UserManagementService = (params) => {
 
     const CreateNewUser = async ({ name, username, email, password }) => {
         try {
-            const existingUser = await IAMCommand((API) => API.CheckUserExist({ email , username }))
+            const existingUser = await IAMIdentityManagementCommand((API) => API.CheckUserExist({ email , username }))
 
             if (existingUser) 
                 throw new Error('User with the same email or username already exists')
-            const newUser = await IAMCommand((API) => API.CreateUser({ name, username, email, password }))
+            const newUser = await IAMUserManagementCommand((API) => API.CreateUser({ name, username, email, password }))
             return newUser
         } catch (error) {
             console.error('Error creating user:', error)
@@ -74,7 +78,7 @@ const UserManagementService = (params) => {
 
     const ListUsers = async () => {
         try {
-            const users = await IAMCommand((API) => API.ListUsers())
+            const users = await IAMUserManagementCommand((API) => API.ListUsers())
             return users
         } catch (error) {
             console.error('Error listing users:', error)
@@ -83,7 +87,7 @@ const UserManagementService = (params) => {
     }
 
     const SignToken = async ({ username, password }) => {
-        const user = await IAMCommand((API) => API.VerifyPasswordAndGetUser({ username, password }))
+        const user = await IAMIdentityManagementCommand((API) => API.VerifyPasswordAndGetUser({ username, password }))
         if (user){
             const { id, username } = user
             const token = jwt.sign({ userId: id, username }, secretKey, { expiresIn: '1h' })
@@ -95,7 +99,7 @@ const UserManagementService = (params) => {
 
     const GetUser = async (id) => {
         try {
-            const user = await IAMCommand((API) => API.GetUser({ userId: id }))
+            const user = await IAMUserManagementCommand((API) => API.GetUser({ userId: id }))
             return user
         } catch (error) {
             console.error('Error getting user:', error)
