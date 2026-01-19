@@ -56,7 +56,7 @@
     {
         "appType":"APP",
         "executable":"iam-panel",
-        "packageNamespace":"Platform.Module/Applications.layer/IdentityAccessManagerPanel.group/identity-access-manager-panel.webapp",
+        "packageNamespace":"Platform.Module/PanelApplications.layer/IdentityAccessManagerPanel.group/identity-access-manager-panel.webapp",
         "supervisorSocketFileName":"iam-panel.sock"
     }
 
