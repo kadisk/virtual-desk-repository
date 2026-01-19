@@ -69,7 +69,7 @@
             }
         },
         {
-            "dependency": "@/virtual-desk-user-space-panel.webgui/endpoint-group",
+            "dependency": "@/user-space-panel.webgui/endpoint-group",
             "params":{
                 "serverManagerUrl":"{{serverManagerUrl}}",
                 "serverName":"{{serverName}}",
