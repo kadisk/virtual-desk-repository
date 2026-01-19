@@ -4,7 +4,7 @@
     "repositoryNamespace": "VirtualDeskRepo",
     "packageName": "virtual-desk-user-space",
     "packageType": "webgui",
-    "packagePath": "VirtualDesk.Module/UserInterfaces.layer/virtual-desk-user-space.webgui",
+    "packagePath": "VirtualDesk.Module/UserInterfaces.layer/virtual-desk-user-space-panel.webgui",
     "startupParams": {
         "port": "7004",
         "serverName": "KadiskVirtualDeskUserSpaceWebguiInstance",
