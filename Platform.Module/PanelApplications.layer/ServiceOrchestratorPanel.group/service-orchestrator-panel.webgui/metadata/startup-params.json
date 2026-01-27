@@ -1,0 +1,7 @@
+{
+    "port":"8877",
+    "serverName":"ServiceOrchestratorPanelWebguiInstance",
+    "serverManagerUrl": "http://service-orchestrator-panel.local/server-manager/status",
+    "RT_ENV_GENERATED_DIR_NAME":".generated_data",
+    "isWatch": true
+}

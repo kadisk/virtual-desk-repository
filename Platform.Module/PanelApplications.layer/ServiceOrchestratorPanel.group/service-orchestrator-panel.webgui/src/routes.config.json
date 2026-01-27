@@ -1,0 +1,19 @@
+[
+    {
+        "path":"/",
+        "page":"MyServicesPage"
+    },
+    {
+        "path":"/my-services",
+        "page":"MyServicesPage"
+    },
+    {
+        "path":"/my-services/service-settings/:serviceId",
+        "page":"ServiceSettingsPage"
+    },
+    {
+        "path":"/container-manager",
+        "page":"ContainerManagerPage"
+    }
+    
+]
