@@ -58,6 +58,12 @@
         "executable":"iam-panel",
         "packageNamespace":"Platform.Module/PanelApplications.layer/IdentityAccessManagerPanel.group/identity-access-manager-panel.webapp",
         "supervisorSocketFileName":"iam-panel.sock"
+    },
+    {
+        "appType":"APP",
+        "executable":"service-panel",
+        "packageNamespace":"Platform.Module/PanelApplications.layer/ServiceOrchestratorPanel.group/service-orchestrator-panel.webapp",
+        "supervisorSocketFileName":"service-panel.sock"
     }
 
 ]

@@ -93,10 +93,6 @@
                 "ecosystemdataHandlerService": "@@/ecosystemdata-handler-service",
                 "commandExecutorLib": "@/command-executor.lib"
             }
-        },
-        {
-            "namespace": "@@/container-manager-service",
-            "dependency": "@/container-manager.service/services/ContainerManager"
         }
     ],
     "endpoints": [
@@ -176,20 +172,6 @@
             },
             "params":{
                 "uploadDirPath": "{{myWorkbenchRepositoriesUploadDirPath}}",
-                "repositoryStorageSocketPath":"{{repositoryStorageSocketPath}}",
-                "repositoryStorageServerManagerUrl":"{{repositoryStorageServerManagerUrl}}",
-                "needsAuth": true
-            }
-        },
-        {
-            "dependency": "@/service-orchestrator-manager.webservice/endpoint-group",
-            "bound-params":{
-                "serverService": "@@/server-service",
-                "commandExecutorLib": "@/command-executor.lib"
-            },
-            "params":{
-                "serviceOrchestratorSocketPath":"{{serviceOrchestratorSocketPath}}",
-                "serviceOrchestratorServerManagerUrl":"{{serviceOrchestratorServerManagerUrl}}",
                 "repositoryStorageSocketPath":"{{repositoryStorageSocketPath}}",
                 "repositoryStorageServerManagerUrl":"{{repositoryStorageServerManagerUrl}}",
                 "needsAuth": true

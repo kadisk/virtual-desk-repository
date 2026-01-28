@@ -1,7 +1,7 @@
 import * as React from "react"
 
 //@ts-ignore
-import logoVirtualDesk2 from "../../Assets/logo-virtual-desk2.svg"
+import logo from "../../Assets/logo-service-orchestrator-final.svg"
 
 const WelcomeHeader = () => {
     return <header className="navbar navbar-expand-md sticky-top d-print-none">
@@ -11,7 +11,7 @@ const WelcomeHeader = () => {
             </button>
             <div className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                 <a href=".">
-                    <img src={logoVirtualDesk2} width={200} />
+                    <img src={logo} width={200} />
                 </a>
             </div>
         </div>

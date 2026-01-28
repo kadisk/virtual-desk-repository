@@ -4,7 +4,7 @@
         "commandExecutorLib"
     ],
     "params": [ 
-        "needsAuth", 
+        "?needsAuth", 
         "uploadDirPath", 
         "repositoryStorageSocketPath", 
         "repositoryStorageServerManagerUrl" 

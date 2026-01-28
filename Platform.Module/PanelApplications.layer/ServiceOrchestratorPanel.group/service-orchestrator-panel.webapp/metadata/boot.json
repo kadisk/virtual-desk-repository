@@ -69,6 +69,13 @@
                 "repositoryStorageSocketPath":"{{repositoryStorageSocketPath}}",
                 "repositoryStorageServerManagerUrl":"{{repositoryStorageServerManagerUrl}}"
             }
+        },
+        {
+            "dependency": "@/container-manager.webservice/endpoint-group",
+            "bound-params":{
+                "serverService": "@@/server-service",
+                "containerManagerService":"@@/container-manager-service"
+            }
         }
         
     ]
