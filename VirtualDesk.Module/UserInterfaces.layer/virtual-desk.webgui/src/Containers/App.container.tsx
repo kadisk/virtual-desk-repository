@@ -81,7 +81,7 @@ const AppContainer = ({
 			if (SetUserData) SetUserData(userData)
 
 			if (window.location.hash === "" || window.location.hash === "#") {
-				window.location.href = "#my-services"
+				window.location.href = "#my-workspace"
 			}
 
 		} catch (error) {

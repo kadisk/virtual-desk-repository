@@ -30,7 +30,7 @@ const LoginContainer = ({ HTTPServerManager }) => {
             const { token } = response.data
             localStorage.setItem("token", token)
             document.cookie = `token=${token}; path=/;`
-            window.location.href = "#my-services"
+            window.location.href = "#my-workspace"
         } catch (error) {
             setErrorMessage("Authentication failed. Please check your credentials and try again.")
         }

@@ -3,11 +3,6 @@ import * as React from "react"
 
 const MENU_CONFIG = [
     {
-        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path> <path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path> <path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path> <path d="M14 7l6 0"></path> <path d="M17 4l0 6"></path> </svg>,
-        title: "Service Orchestrator",
-        href: "#my-services"
-    },
-    {
         icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
             <path d="M3 6h18"></path>
             <path d="M4 6v13"></path>
@@ -31,17 +26,6 @@ const MENU_CONFIG = [
                 icon: <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-database"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" /><path d="M4 6v6a8 3 0 0 0 16 0v-6" /><path d="M4 12v6a8 3 0 0 0 16 0v-6" /></svg>,
                 title:"My Databases",
                 href: "#my-databases"
-            }
-        ]
-    },
-    {
-        icon: <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-device-imac-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17h-8a1 1 0 0 1 -1 -1v-12a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v8" /><path d="M3 13h13" /><path d="M8 21h4" /><path d="M10 17l-.5 4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>,
-        title: "Ecosytem Manager",
-        dropdownItems: [
-            {
-                icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-users-group"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 13v-1a2 2 0 0 1 2 -2h2" /></svg>,
-                title: "User administration",
-                href: "#user-admin"
             }
         ]
     },
@@ -86,12 +70,6 @@ const MENU_CONFIG = [
                 href: "#host-os-setting"
             },
             {
-                icon: <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-brand-docker"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 12.54c-1.804 -.345 -2.701 -1.08 -3.523 -2.94c-.487 .696 -1.102 1.568 -.92 2.4c.028 .238 -.32 1 -.557 1h-14c0 5.208 3.164 7 6.196 7c4.124 .022 7.828 -1.376 9.854 -5c1.146 -.101 2.296 -1.505 2.95 -2.46z" /><path d="M5 10h3v3h-3z" /><path d="M8 10h3v3h-3z" /><path d="M11 10h3v3h-3z" /><path d="M8 7h3v3h-3z" /><path d="M11 7h3v3h-3z" /><path d="M11 4h3v3h-3z" /><path d="M4.571 18c1.5 0 2.047 -.074 2.958 -.78" /><path d="M10 16l0 .01" /></svg>,
-                title:"Container Manager",
-                href: "#container-manager"
-
-            },
-            {
                 icon: <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-route-alt-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16 3h5v5" /><path d="M8 3h-5v5" /><path d="M21 3l-7.536 7.536a5 5 0 0 0 -1.464 3.534v6.93" /><path d="M6 6.01v-.01" /><path d="M8 8.02v-.01" /><path d="M10 10v.01" /></svg>,
                 title: "HTTP Proxy Manager",
                 href: "#http-proxy-manager"
@@ -114,12 +92,12 @@ const WelcomeMenu = () => {
 
                         {
                             MENU_CONFIG
-                                .map(({ icon, title, href, dropdownItems}) => {
+                                .map(({ icon, title, dropdownItems}) => {
 
                                     const isDropdown = dropdownItems && dropdownItems.length > 0
 
                                     return <li className={`nav-item ${isDropdown ? "dropdown" : ''}`}>
-                                                <a className={`nav-link ${isDropdown ? "dropdown-toggle" : ''}`} href={href || "#"} {...isDropdown ? {"data-bs-toggle":"dropdown"} : {}}>
+                                                <a className={`nav-link ${isDropdown ? "dropdown-toggle" : ''}`} href={"#"} {...isDropdown ? {"data-bs-toggle":"dropdown"} : {}}>
                                                     <span className="nav-link-icon d-md-none d-lg-inline-block">{icon}</span>
                                                     <span className="nav-link-title">{title}</span>
                                                 </a>

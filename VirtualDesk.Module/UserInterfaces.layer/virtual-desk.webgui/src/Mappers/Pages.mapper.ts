@@ -1,6 +1,4 @@
 import LoginPage from "../Pages/Login.page"
-import MyServicesPage from "../Pages/MyServices.page"
-import ServiceSettingsPage from "../Pages/ServiceSettings.page"
 
 import MyWorkspacePage        from "../Pages/Workbench/MyWorkspaces.page"
 import RepositoryEditorPage from "../Pages/Workbench/MyWorkspaces/RepositoryEditor.page"
@@ -11,7 +9,6 @@ import MyDatabasesPage       from "../Pages/Workbench/MyDatabases.page"
 import MyDatasourcesPage     from "../Pages/Workbench/MyDatasources.page"
 import MyEcosystemConsolePage from "../Pages/Workbench/MyEcosystemConsole.page"
 
-import UserAdministrationPage from "../Pages/EcosytemManager/UserAdministration.page"
 import HTTPProxyManagerPage from "../Pages/EcosytemManager/HTTPProxyManager.page"
 
 import EventHistoryPage from "../Pages/EcosystemMonitoring/EventHistory.page"
@@ -23,7 +20,6 @@ import DefaultParametersPage    from "../Pages/EcosystemAdministrator/DefaultPar
 import RepositorySettingsPage from "../Pages/EcosystemAdministrator/RepositorySettings.page"
 import RepositorySourcesPage from "../Pages/EcosystemAdministrator/RepositorySources.page"
 import HostOSSettingsPage from "../Pages/EcosystemAdministrator/HostOSSettings.page"
-import ContainerManagerPage from "../Pages/EcosystemAdministrator/ContainerManager.page"
 
 export default {
     LoginPage,
@@ -31,9 +27,7 @@ export default {
     MyDatabasesPage,
     MyDatasourcesPage,
     MyEcosystemConsolePage,
-    UserAdministrationPage,
     HTTPProxyManagerPage,
-    MyServicesPage,
     EventHistoryPage,
     InstanceMonitoringPage,
     InstanceMonitorPage,
@@ -43,8 +37,6 @@ export default {
     RepositorySettingsPage,
     RepositorySourcesPage,
     HostOSSettingsPage,
-    ContainerManagerPage,
     RepositoryEditorPage,
-    PackageEditorPage,
-    ServiceSettingsPage
+    PackageEditorPage
 }
