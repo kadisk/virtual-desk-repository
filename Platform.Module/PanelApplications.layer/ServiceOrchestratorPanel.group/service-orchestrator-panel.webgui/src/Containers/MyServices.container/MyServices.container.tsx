@@ -1,7 +1,7 @@
-import * as React                    from "react"
-import {useEffect, useState, useRef} from "react"
-import { connect }                   from "react-redux"
-import { bindActionCreators }        from "redux"
+import * as React from "react"
+import { useEffect, useState, useRef } from "react"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
 
 import GetAPI from "../../Utils/GetAPI"
 
@@ -14,39 +14,44 @@ import ServiceDetailsOffcanvas from "./ServiceDetails.offcanvas"
 
 import useWebSocket from "../../Hooks/useWebSocket"
 
+const START_ICON     = <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>
+const STOP_ICON      = <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-stop"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 5m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /></svg>
+const SETTINGS_ICON  = <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-world-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12a9 9 0 1 0 -8.979 9" /><path d="M3.6 9h16.8" /><path d="M3.6 15h8.9" /><path d="M11.5 3a17 17 0 0 0 0 18" /><path d="M12.5 3a16.992 16.992 0 0 1 2.522 10.376" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+
+
 import ServiceCard from "./ServiceCard"
 
-const DEFAULT_MODE              = Symbol()
-const IMPORT_SELECT_MODE        = Symbol()
-const IMPORTING_MODE            = Symbol()
-const NO_REPOSITORIES_MODE      = Symbol()
-const LOADING_MODE              = Symbol()
+const DEFAULT_MODE = Symbol()
+const IMPORT_SELECT_MODE = Symbol()
+const IMPORTING_MODE = Symbol()
+const NO_REPOSITORIES_MODE = Symbol()
+const LOADING_MODE = Symbol()
 const SERVICE_PROVISIONING_MODE = Symbol()
 const REPOSITORIES_MANAGER_MODE = Symbol()
 
-const OVERVIEW_TAB  = Symbol()
-const DETAILS_TAB   = Symbol()
+const OVERVIEW_TAB = Symbol()
+const DETAILS_TAB = Symbol()
 
 const GetStatusBadgeClasses = (status: string) => {
     switch (status) {
         case "RUNNING":
             return "badge bg-green-lt text-green"
-		case "FINISHED":
+        case "FINISHED":
             return "badge bg-cyan-lt text-cyan"
         case "FAILURE":
             return "badge bg-red-lt text-red"
         case "TERMINATED":
-			return "badge bg-gray-lt text-gray"
+            return "badge bg-gray-lt text-gray"
         case "STOPPED":
-			return "badge bg-orange-lt text-orange"
-		case "RESTARTING":
-		case  "CREATED":
-		case "STARTING":
-			return "badge bg-azure-lt text-azure"
-		case "STOPPING":
-			return "badge bg-yellow-lt text-yellow"
-		case "WAITING":
-		case "LOADING":
+            return "badge bg-orange-lt text-orange"
+        case "RESTARTING":
+        case "CREATED":
+        case "STARTING":
+            return "badge bg-azure-lt text-azure"
+        case "STOPPING":
+            return "badge bg-yellow-lt text-yellow"
+        case "WAITING":
+        case "LOADING":
             return "badge bg-purple-lt text-purple"
         default:
             return "badge bg-gray-lt text-gray"
@@ -60,42 +65,101 @@ const ServiceOverview = ({
     onStopService
 }) => {
     return <div className="py-4">
+        {
+            servicesList
+            && <div className="row">
                 {
-                    servicesList 
-                    && <div className="row">
-                            {
-                                servicesList.map((provisionedService, index) => (
-                                    <div key={index} className="col-md-4">
-                                        <ServiceCard 
-                                            serviceId={provisionedService.serviceId}
-                                            serviceIdSelected={servicesList}
-                                            status={provisionedService.status}
-                                            serviceName={provisionedService.serviceName}
-                                            originRepositoryNamespace={provisionedService.originRepositoryNamespace}
-                                            originPackageName={provisionedService.originPackageName}
-                                            originPackageType={provisionedService.originPackageType}
-                                            onSelectService={onSelectService}
-                                            onStartService={onStartService}
-                                            onStopService={onStopService}
-                                        />
-                                    </div>))
-                            }
-                        </div>
+                    servicesList.map((provisionedService, index) => (
+                        <div key={index} className="col-md-4">
+                            <ServiceCard
+                                serviceId={provisionedService.serviceId}
+                                serviceIdSelected={servicesList}
+                                status={provisionedService.status}
+                                serviceName={provisionedService.serviceName}
+                                originRepositoryNamespace={provisionedService.originRepositoryNamespace}
+                                originPackageName={provisionedService.originPackageName}
+                                originPackageType={provisionedService.originPackageType}
+                                onSelectService={onSelectService}
+                                onStartService={onStartService}
+                                onStopService={onStopService}
+                            />
+                        </div>))
                 }
             </div>
+        }
+    </div>
+}
+const ServiceDetails = ({
+    servicesList,
+    onSelectService,
+    onStartService,
+    onStopService
+}) => {
+    return <div className="py-4">
+        <div className="card">
+            <div className="table-responsive">
+                <table className="table table-vcenter card-table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th><strong>Service</strong> ID | Name</th>
+                            <th><strong>Package</strong> ID | Name | Type</th>
+                            <th><strong>Repository</strong> ID | Namespace</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            servicesList.map((provisionedService, index) => (
+                                <tr key={index} >
+                                    <td><span className={`${GetStatusBadgeClasses(provisionedService.status)} me-2`}>{provisionedService.status}</span></td>
+                                    <td>{provisionedService.serviceId} | {provisionedService.serviceName}</td>
+                                    <td className="text-secondary">{provisionedService.originPackageId} | {provisionedService.originPackageName} | {provisionedService.originPackageType}</td>
+                                    <td className="text-secondary">{provisionedService.originRepositoryId} | {provisionedService.originRepositoryNamespace}</td>
+                                    <td>
+                                        {
+                                            ( provisionedService.status === "STOPPED"
+                                            || provisionedService.status === "TERMINATED" )
+                                            && <button className="btn btn-primary" onClick={() => onStartService(provisionedService.serviceId)}>
+                                                    {START_ICON}start
+                                                </button>
+                                        }
+                                        {
+                                            provisionedService.status === "RUNNING"
+                                            && <>
+                                                    <button className="btn btn-danger" onClick={() => onStopService(provisionedService.serviceId)}>
+                                                        {STOP_ICON}stop
+                                                    </button>
+                                                </>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a className="btn btn-sencondary" href={`#/my-services/service-settings/${provisionedService.serviceId}`}>
+                                            {SETTINGS_ICON}settings
+                                        </a>
+                                    </td>
+                                </tr>))
+                        }
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 }
 
 const MyServicesContainer = ({
     HTTPServerManager
 }) => {
 
-    const [ importDataCurrent, setImportDataCurrent ] = useState<{repositoryNamespace:string, sourceCodeURL:string}>()
-    const [ interfaceModeType,  changeMode] = useState<any>(LOADING_MODE)
-    const [ provisionedServicesList, setProvisionedServicesList ] = useState([])
+    const [importDataCurrent, setImportDataCurrent] = useState<{ repositoryNamespace: string, sourceCodeURL: string }>()
+    const [interfaceModeType, changeMode] = useState<any>(LOADING_MODE)
+    const [provisionedServicesList, setProvisionedServicesList] = useState([])
 
-    const [ serviceIdSelected, setServiceIdSelected] = useState()
+    const [serviceIdSelected, setServiceIdSelected] = useState()
 
-    const [ tabsCurrent, setTabsCurrent ] = useState<any>(OVERVIEW_TAB)
+    const [tabsCurrent, setTabsCurrent] = useState<any>(OVERVIEW_TAB)
 
     const provisionedServicesListRef = useRef(provisionedServicesList)
 
@@ -105,29 +169,29 @@ const MyServicesContainer = ({
 
     useEffect(() => {
 
-        if(interfaceModeType === LOADING_MODE){
+        if (interfaceModeType === LOADING_MODE) {
             fetchMyServicesStatus()
-        } else if(interfaceModeType === DEFAULT_MODE){
+        } else if (interfaceModeType === DEFAULT_MODE) {
             fetchProvisionedServices()
         }
 
     }, [interfaceModeType])
 
-    const _MyServicesAPI = () => 
-        GetAPI({ 
-            apiName:"MyServicesManager",  
+    const _MyServicesAPI = () =>
+        GetAPI({
+            apiName: "MyServicesManager",
             serverManagerInformation: HTTPServerManager
         })
-    const _RepositoryServiceAPI = () => 
-        GetAPI({ 
-            apiName:"RepositoryServiceManager",  
+    const _RepositoryServiceAPI = () =>
+        GetAPI({
+            apiName: "RepositoryServiceManager",
             serverManagerInformation: HTTPServerManager
         })
 
-    const updateServiceStatus = ({serviceId, status}) => {
+    const updateServiceStatus = ({ serviceId, status }) => {
         const listWithStatusUpdated = provisionedServicesListRef.current
             .map((serviceData) => {
-                if(parseInt(serviceId) === serviceData.serviceId){
+                if (parseInt(serviceId) === serviceData.serviceId) {
                     serviceData.status = status
                 }
                 return serviceData
@@ -136,30 +200,30 @@ const MyServicesContainer = ({
     }
 
     useWebSocket({
-		socket          : _MyServicesAPI().ServicesStatusChange,
-		onMessage       : updateServiceStatus,
-		onConnection    : () => {},
-		onDisconnection : () => {}
-	})
+        socket: _MyServicesAPI().ServicesStatusChange,
+        onMessage: updateServiceStatus,
+        onConnection: () => { },
+        onDisconnection: () => { }
+    })
 
     const fetchMyServicesStatus = async () => {
         const api = _RepositoryServiceAPI()
         const response = await api.CheckRepositoryImported()
-        if(response.data === "READY"){
+        if (response.data === "READY") {
             changeMode(DEFAULT_MODE)
-        } else if (response.data === "NO_REPOSITORIES"){
+        } else if (response.data === "NO_REPOSITORIES") {
             changeMode(NO_REPOSITORIES_MODE)
         }
     }
 
     const startService = async (serviceId) => {
         const api = _MyServicesAPI()
-        await api.StartService({serviceId})
+        await api.StartService({ serviceId })
     }
 
     const stopService = async (serviceId) => {
         const api = _MyServicesAPI()
-        await api.StopService({serviceId})
+        await api.StopService({ serviceId })
     }
 
     const fetchProvisionedServices = async () => {
@@ -188,85 +252,94 @@ const MyServicesContainer = ({
     const handleCloseServiceDetails = () => setServiceIdSelected(undefined)
 
     return <>
-                {
-                    serviceIdSelected !== undefined
-                    && <ServiceDetailsOffcanvas 
-                            serviceId={serviceIdSelected}
-                            onCloseServiceDetails={() => handleCloseServiceDetails()} />
-                }
-                <div className="container-xl">
-                    <div className="row g-2 align-items-center">
-                        <div className="col">
-                            <h2 className="page-title">Services</h2>
-                        </div>
-                        {
-                            interfaceModeType === DEFAULT_MODE
-                            && <div className="col-auto ms-auto d-print-none">
-                                <div className="btn-list">
-                                    <span className="d-none d-sm-inline">
-                                        <button className="btn btn-cyan" onClick={() => changeMode(SERVICE_PROVISIONING_MODE)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M21 12a9 9 0 1 0 -9 9" /><path d="M3.6 9h16.8" /><path d="M3.6 15h8.4" /><path d="M11.578 3a17 17 0 0 0 0 18" /><path d="M12.5 3c1.719 2.755 2.5 5.876 2.5 9" /><path d="M18 21v-7m3 3l-3 -3l-3 3" /></svg>
-                                            Service provisioning
-                                        </button>
-                                    </span>
-                                    <button className="btn btn-outline-cyan" onClick={() => changeMode(REPOSITORIES_MANAGER_MODE)}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folders"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" /><path d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2" /></svg>
-                                        Repository manager
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                    <ul className="nav nav-bordered mb-4">
-                        <li className="nav-item cursor-pointer">
-                            <a className={`nav-link ${tabsCurrent === OVERVIEW_TAB ? "active" : ""}`} onClick={() => setTabsCurrent(OVERVIEW_TAB)}>Overview</a>
-                        </li>
-                        <li className="nav-item cursor-pointer">
-                            <a className={`nav-link ${tabsCurrent === DETAILS_TAB ? "active" : ""}`} onClick={() => setTabsCurrent(DETAILS_TAB)}>Details</a>
-                        </li>
-                    </ul>
-                    
-
-                    {
-                        tabsCurrent === OVERVIEW_TAB
-                        && <ServiceOverview 
-                                servicesList={provisionedServicesList}
-                                onSelectService={handleSelectService}
-                                onStartService={handleStartService}
-                                onStopService={handleStopService}/>
-                    }
+        {
+            serviceIdSelected !== undefined
+            && <ServiceDetailsOffcanvas
+                serviceId={serviceIdSelected}
+                onCloseServiceDetails={() => handleCloseServiceDetails()} />
+        }
+        <div className="container-xl">
+            <div className="row g-2 align-items-center">
+                <div className="col">
+                    <h2 className="page-title">Services</h2>
                 </div>
                 {
-                    interfaceModeType === IMPORT_SELECT_MODE
-                    && <ImportRepositoryModal onImport={handleImportingMode} onClose={() => changeMode(DEFAULT_MODE)} />
-                }
-                {
-                    interfaceModeType === SERVICE_PROVISIONING_MODE
-                    && <ServiceProvisioningModal onClose={() => changeMode(DEFAULT_MODE)} />
-                }
-                {
-                    interfaceModeType === REPOSITORIES_MANAGER_MODE
-                    && <NamespaceAndRepositoryManagerModal onImportNew={() => changeMode(IMPORT_SELECT_MODE)} onClose={() => changeMode(DEFAULT_MODE)} />
-                }
-                {
-                   interfaceModeType === NO_REPOSITORIES_MODE
-                   && <WelcomeMyServices onImportNew={() => changeMode(IMPORT_SELECT_MODE)} onUseFromMyWorkspace={handleUseFromMyWorkspace}/>
-                }
-                {
-                    interfaceModeType === IMPORTING_MODE 
-                    && <ImportingModal importData={importDataCurrent} onFinishedImport={handleFinishedImportModal}/>
-                }
-                {
-                    interfaceModeType === LOADING_MODE
-                    && <div className="text-center py-4">
-                            <div className="spinner-border text-primary" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
+                    interfaceModeType === DEFAULT_MODE
+                    && <div className="col-auto ms-auto d-print-none">
+                        <div className="btn-list">
+                            <span className="d-none d-sm-inline">
+                                <button className="btn btn-cyan" onClick={() => changeMode(SERVICE_PROVISIONING_MODE)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-world-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M21 12a9 9 0 1 0 -9 9" /><path d="M3.6 9h16.8" /><path d="M3.6 15h8.4" /><path d="M11.578 3a17 17 0 0 0 0 18" /><path d="M12.5 3c1.719 2.755 2.5 5.876 2.5 9" /><path d="M18 21v-7m3 3l-3 -3l-3 3" /></svg>
+                                    Service provisioning
+                                </button>
+                            </span>
+                            <button className="btn btn-outline-cyan" onClick={() => changeMode(REPOSITORIES_MANAGER_MODE)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folders"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" /><path d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2" /></svg>
+                                Repository manager
+                            </button>
                         </div>
+                    </div>
                 }
-            </>
+            </div>
+            <ul className="nav nav-bordered mb-4">
+                <li className="nav-item cursor-pointer">
+                    <a className={`nav-link ${tabsCurrent === OVERVIEW_TAB ? "active" : ""}`} onClick={() => setTabsCurrent(OVERVIEW_TAB)}>Overview</a>
+                </li>
+                <li className="nav-item cursor-pointer">
+                    <a className={`nav-link ${tabsCurrent === DETAILS_TAB ? "active" : ""}`} onClick={() => setTabsCurrent(DETAILS_TAB)}>Details</a>
+                </li>
+            </ul>
+
+
+            {
+                tabsCurrent === OVERVIEW_TAB
+                && <ServiceOverview
+                    servicesList={provisionedServicesList}
+                    onSelectService={handleSelectService}
+                    onStartService={handleStartService}
+                    onStopService={handleStopService} />
+            }
+
+            {
+                tabsCurrent === DETAILS_TAB
+                && <ServiceDetails
+                    servicesList={provisionedServicesList}
+                    onSelectService={handleSelectService}
+                    onStartService={handleStartService}
+                    onStopService={handleStopService} />
+            }
+        </div>
+        {
+            interfaceModeType === IMPORT_SELECT_MODE
+            && <ImportRepositoryModal onImport={handleImportingMode} onClose={() => changeMode(DEFAULT_MODE)} />
+        }
+        {
+            interfaceModeType === SERVICE_PROVISIONING_MODE
+            && <ServiceProvisioningModal onClose={() => changeMode(DEFAULT_MODE)} />
+        }
+        {
+            interfaceModeType === REPOSITORIES_MANAGER_MODE
+            && <NamespaceAndRepositoryManagerModal onImportNew={() => changeMode(IMPORT_SELECT_MODE)} onClose={() => changeMode(DEFAULT_MODE)} />
+        }
+        {
+            interfaceModeType === NO_REPOSITORIES_MODE
+            && <WelcomeMyServices onImportNew={() => changeMode(IMPORT_SELECT_MODE)} onUseFromMyWorkspace={handleUseFromMyWorkspace} />
+        }
+        {
+            interfaceModeType === IMPORTING_MODE
+            && <ImportingModal importData={importDataCurrent} onFinishedImport={handleFinishedImportModal} />
+        }
+        {
+            interfaceModeType === LOADING_MODE
+            && <div className="text-center py-4">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        }
+    </>
 }
 
-const mapDispatchToProps = (dispatch:any) => bindActionCreators({}, dispatch)
-const mapStateToProps = ({ HTTPServerManager }:any) => ({ HTTPServerManager })
+const mapDispatchToProps = (dispatch: any) => bindActionCreators({}, dispatch)
+const mapStateToProps = ({ HTTPServerManager }: any) => ({ HTTPServerManager })
 export default connect(mapStateToProps, mapDispatchToProps)(MyServicesContainer)
