@@ -214,6 +214,7 @@ const MyServicesContainer = ({
                 tabsCurrent === OVERVIEW_TAB
                 && <ServiceOverview
                     servicesList={provisionedServicesList}
+                    serviceIdSelected={serviceIdSelected}
                     onSelectService={handleSelectService}
                     onStartService={handleStartService}
                     onStopService={handleStopService} />

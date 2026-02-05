@@ -3,6 +3,7 @@ import * as React from "react"
 import ServiceCard from "./ServiceCard"
 
 const ServiceOverview = ({
+    serviceIdSelected,
     servicesList,
     onSelectService,
     onStartService,
@@ -17,7 +18,7 @@ const ServiceOverview = ({
                         <div key={index} className="col-md-4">
                             <ServiceCard
                                 serviceId={provisionedService.serviceId}
-                                serviceIdSelected={servicesList}
+                                serviceIdSelected={serviceIdSelected}
                                 status={provisionedService.status}
                                 serviceName={provisionedService.serviceName}
                                 originRepositoryNamespace={provisionedService.originRepositoryNamespace}
