@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-const GetSatatusBadgeClasses = (status: string) => {
+const GetStatusBadgeClasses = (status: string) => {
     switch (status) {
         case "running":
             return "badge bg-green-lt text-green"
@@ -23,7 +23,7 @@ const ApplicationContainerPanel = ({ container, onRemoveContainer, onStopContain
 
     const [ tabCodeSelected, setTabCodeSelected ] = useState("general")
     
-    const badgeClasses = GetSatatusBadgeClasses(container.State.Status)
+    const badgeClasses = GetStatusBadgeClasses(container.State.Status)
 
     return (
         <div className="col-12">

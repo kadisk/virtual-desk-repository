@@ -1,7 +1,7 @@
 {
     "port"                                : "8545",
     "serverName"                          : "ServiceOrchestratorPanelWebAppInstance",
-    "serverManagerUrl"                    : "http://localhost:8545/server-manager/status",
+    "serverManagerUrl"                    : "http://service-panel.app.local:9000/server-manager/status",
     "RT_ENV_GENERATED_DIR_NAME"           : ".generated_data",
     "isWatch"                             : true,
     "serviceOrchestratorServerManagerUrl" : "/server-manager/status",

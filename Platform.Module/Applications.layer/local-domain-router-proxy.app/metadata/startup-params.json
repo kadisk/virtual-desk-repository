@@ -12,6 +12,18 @@
         {
             "host": "virtualdesk.app.local",
             "target": "http://localhost:7001"
+        },
+        {
+            "host": "service-panel.app.local",
+            "target": "http://localhost:8545"
+        },
+        {
+            "host": "iam-panel.app.local",
+            "target": "http://localhost:9999"
+        },
+        {
+            "host": "user-space.app.local",
+            "target": "http://localhost:7005"
         }
     ]
 }
