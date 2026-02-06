@@ -31,6 +31,7 @@ const GetStatusBadgeClasses = (status: string) => {
 }
 
 const ServiceDetails = ({
+    serviceIdSelected,
     servicesList,
     onSelectService,
     onStartService,
@@ -53,7 +54,7 @@ const ServiceDetails = ({
                     <tbody>
                         {
                             servicesList.map((provisionedService, index) => (
-                                <tr key={index} >
+                                <tr key={index} className="cursor-pointer" style={serviceIdSelected === provisionedService.serviceId ? {border: "2px solid #9f9f9f"} : {}} onClick={() => onSelectService(provisionedService.serviceId)}>
                                     <td><span className={`${GetStatusBadgeClasses(provisionedService.status)} me-2`}>{provisionedService.status}</span></td>
                                     <td>{provisionedService.serviceId} | {provisionedService.serviceName}</td>
                                     <td className="text-secondary">{provisionedService.originPackageId} | {provisionedService.originPackageName} | {provisionedService.originPackageType}</td>

@@ -71,15 +71,17 @@ const MyServicesContainer = ({
 
     useEffect(() => {
         
-        if(QueryParams.tabView){
-            if(QueryParams.tabView === "OVERVIEW_TAB"){
+        if(QueryParams.serviceView){
+            if(QueryParams.serviceView === "OVERVIEW_TAB"){
                 setTabsCurrent(OVERVIEW_TAB)
-            } else if(QueryParams.tabView === "DETAILS_TAB"){
+            } else if(QueryParams.serviceView === "DETAILS_TAB"){
                 setTabsCurrent(DETAILS_TAB)
             } 
+        }else {
+            setTabsCurrent(OVERVIEW_TAB)
         }
 
-    }, [QueryParams?.tabView])
+    }, [QueryParams?.serviceView])
 
 
     useEffect(() => {
@@ -179,9 +181,6 @@ const MyServicesContainer = ({
         }
         <div className="container-xl">
             <div className="row g-2 align-items-center">
-                <div className="col">
-                    <h2 className="page-title">Services</h2>
-                </div>
                 {
                     interfaceModeType === DEFAULT_MODE
                     && <div className="col-auto ms-auto d-print-none">
@@ -202,10 +201,10 @@ const MyServicesContainer = ({
             </div>
             <ul className="nav nav-bordered mb-4">
                 <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${tabsCurrent === OVERVIEW_TAB ? "active" : ""}`} onClick={() => AddQueryParam("tabView", "OVERVIEW_TAB")}>Overview</a>
+                    <a className={`nav-link ${tabsCurrent === OVERVIEW_TAB ? "active" : ""}`} onClick={() => AddQueryParam("serviceView", "OVERVIEW_TAB")}>Overview</a>
                 </li>
                 <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${tabsCurrent === DETAILS_TAB ? "active" : ""}`} onClick={() => AddQueryParam("tabView", "DETAILS_TAB")}>Details</a>
+                    <a className={`nav-link ${tabsCurrent === DETAILS_TAB ? "active" : ""}`} onClick={() => AddQueryParam("serviceView", "DETAILS_TAB")}>Details</a>
                 </li>
             </ul>
 
@@ -224,6 +223,7 @@ const MyServicesContainer = ({
                 tabsCurrent === DETAILS_TAB
                 && <ServiceDetails
                     servicesList={provisionedServicesList}
+                    serviceIdSelected={serviceIdSelected}
                     onSelectService={handleSelectService}
                     onStartService={handleStartService}
                     onStopService={handleStopService} />

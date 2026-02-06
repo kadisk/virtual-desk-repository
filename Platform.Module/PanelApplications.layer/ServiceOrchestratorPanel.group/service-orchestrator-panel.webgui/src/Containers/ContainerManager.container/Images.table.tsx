@@ -14,7 +14,7 @@ const ImagesTable = ({ images }) => <div className="table-responsive">
                                         {images.map((image, idx) => (
                                             <React.Fragment key={image.Id || idx}>
                                                 <tr style={idx % 2 === 0 ? { background: "#f9fafb" } : {}}>
-                                                    <td data-label="Created" style={{ verticalAlign: "top", whiteSpace: "nowrap", fontWeight: 500, color: "#1976d2" }}>
+                                                    <td>
                                                         {new Date(image.Created * 1000).toLocaleString()}
                                                     </td>
                                                     <td data-label="Id" style={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.97em", color: "#444", wordBreak: "break-all" }}>

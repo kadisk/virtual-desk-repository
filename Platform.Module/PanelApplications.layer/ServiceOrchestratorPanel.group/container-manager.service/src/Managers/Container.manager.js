@@ -192,6 +192,19 @@ const ContainerManager = (params) => {
         }
     }
 
+    const ListAllVolumes = async () => {
+        try {
+            const volumes = await docker.listVolumes()
+            return volumes
+        }
+        catch (error) {
+            console.error('Error listing volumes:', error)
+            throw error
+        }
+
+
+    }
+
     const RegisterDockerEventListener = (f) => 
         eventEmitter.on(DOCKER_EVENT, (eventData) => f(eventData))
 
@@ -200,6 +213,7 @@ const ContainerManager = (params) => {
         StopContainer,
         RemoveContainer,
         ListAllContainers,
+        ListAllVolumes,
         BuildImageFromDockerfileString,
         CreateNewContainer,
         InspectContainer,

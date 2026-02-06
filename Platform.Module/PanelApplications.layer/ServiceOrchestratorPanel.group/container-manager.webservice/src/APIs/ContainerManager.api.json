@@ -17,6 +17,11 @@
 			"summary": "ListNetworks"
 		},
 		{
+			"path": "/volumes",
+			"method": "GET",
+			"summary": "ListVolumes"
+		},
+		{
 			"summary": "RemoveContainer",
 			"method": "POST",
 			"path": "/remove-container",
