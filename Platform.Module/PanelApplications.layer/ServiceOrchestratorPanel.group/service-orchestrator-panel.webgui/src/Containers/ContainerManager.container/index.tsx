@@ -228,12 +228,24 @@ const ContainerManager = ({ HTTPServerManager }) => {
                             <NetworksTable networks={networks}/>
                         </div>
                     }
-
                     {
                         mode === VOLUMES_MANAGER_MODE &&
-                        <div className="card">
-                            <VolumesTable volumes={volumes}/>
-                        </div>
+                        <>
+                            <div className="row g-2 align-items-center">
+                                <div className="col-auto ms-auto d-print-none mt-0 mb-3">
+                                    <div className="btn-list">
+                                        <button className="btn btn-outline-blue">
+                                            New Volume
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div className="card">
+                                <VolumesTable volumes={volumes}/>
+                            </div>
+                        
+                        </>
                     }
                 </div>
             </div>

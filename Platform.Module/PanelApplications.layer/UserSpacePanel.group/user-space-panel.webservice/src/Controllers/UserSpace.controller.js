@@ -10,6 +10,11 @@ const LIST_APPS = [
         description: "Crie novos usuários, gerencie permissões e regras",
         link: "/identity-access-manager"
     },
+    {        
+        title: "Service Orchestrator Panel",
+        description: "Genrencia os serviços em execução",
+        link: "http://service-panel.app.local:9000/"
+    },
     {
         title: "Virtual Desk Control Panel",
         description: "Controle avançado plataforma",
