@@ -59,6 +59,22 @@
 					"required": true
 				}
 			]
+		},
+		{
+			"summary": "GetContainerLogHistory",
+			"method": "POST",
+			"path": "/container-log-history",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "containerIdOrName",
+					"type": "string",
+					"required": true
+				}
+			]
 		}
+
+
+		
 	]
 }

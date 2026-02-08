@@ -3,6 +3,18 @@ const EventEmitter = require('node:events')
 
 const DOCKER_EVENT = Symbol('dockerEvent')
 
+const ExtracLogs = async (container) => {
+    const logBuffer = await container.logs({
+        stdout: true,
+        stderr: true,
+        timestamps: true,
+        follow: false,
+        tail: "all"
+    })
+
+    return logBuffer.toString('utf-8')
+}
+
 const ContainerManager = (params) => {
 
     const docker = new Docker({ socketPath: '/var/run/docker.sock' })
@@ -192,6 +204,18 @@ const ContainerManager = (params) => {
         }
     }
 
+    const GetContainerLogHistory = async (containerIdOrName) => {
+        try {
+            const container = docker.getContainer(containerIdOrName)
+            const logs =  await ExtracLogs(container)
+            return logs
+        } catch (error) {
+            console.error(`Error getting logs for container ${containerIdOrName}:`, error)
+            throw error 
+        }
+    }
+
+
     const ListAllVolumes = async () => {
         try {
             const volumes = await docker.listVolumes()
@@ -219,7 +243,8 @@ const ContainerManager = (params) => {
         InspectContainer,
         ListAllImages,
         ListAllNetworks,
-        RegisterDockerEventListener
+        RegisterDockerEventListener,
+        GetContainerLogHistory
     }
 
 }
