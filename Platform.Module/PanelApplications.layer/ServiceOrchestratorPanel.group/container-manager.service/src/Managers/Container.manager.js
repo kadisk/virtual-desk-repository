@@ -3,18 +3,6 @@ const EventEmitter = require('node:events')
 
 const DOCKER_EVENT = Symbol('dockerEvent')
 
-const ExtracLogs = async (container) => {
-    const logBuffer = await container.logs({
-        stdout: true,
-        stderr: true,
-        timestamps: true,
-        follow: false,
-        tail: "all"
-    })
-
-    return logBuffer.toString('utf-8')
-}
-
 const ContainerManager = (params) => {
 
     const docker = new Docker({ socketPath: '/var/run/docker.sock' })
@@ -207,8 +195,58 @@ const ContainerManager = (params) => {
     const GetContainerLogHistory = async (containerIdOrName) => {
         try {
             const container = docker.getContainer(containerIdOrName)
-            const logs =  await ExtracLogs(container)
-            return logs
+            const logBuffer = await container.logs({
+                stdout: true,
+                stderr: true,
+                follow: false,
+                tail: "all"
+            })
+            // If docker returned a Buffer it may contain multiplexed headers when
+            // the container was not started with a TTY. Those headers are 8-byte
+            // frames: [streamType(1)][0][0][0][length(4-be)]...payload...
+            // Parse and strip them so the output keeps ANSI sequences (colors)
+            // and line breaks intact for TTY display.
+            if (Buffer.isBuffer(logBuffer)) {
+                const buf = logBuffer
+                // quick detection: first byte 0x01 or 0x02 and next three bytes 0x00
+                if (buf.length >= 8 && (buf[0] === 1 || buf[0] === 2) && buf[1] === 0 && buf[2] === 0 && buf[3] === 0) {
+                    let idx = 0
+                    const outChunks = []
+                    while (idx + 8 <= buf.length) {
+                        const streamType = buf[idx]
+                        const payloadLen = buf.readUInt32BE(idx + 4)
+                        const start = idx + 8
+                        const end = start + payloadLen
+                        if (end > buf.length) {
+                            // malformed/truncated frame: push remainder and break
+                            outChunks.push(buf.slice(start))
+                            break
+                        }
+                        const payload = buf.slice(start, end)
+                        outChunks.push(payload)
+                        idx = end
+                    }
+                    try {
+                        // return as base64 so transport (JSON) doesn't escape ANSI bytes
+                        return { isBase64: true, data: Buffer.concat(outChunks).toString('base64') }
+                    } catch (e) {
+                        return { isBase64: true, data: Buffer.concat(outChunks).toString('base64') }
+                    }
+                }
+                // not multiplexed - return UTF-8 string
+                try {
+                    return { isBase64: true, data: buf.toString('base64') }
+                } catch (e) {
+                    return { isBase64: true, data: buf.toString('base64') }
+                }
+            }
+
+            // if not a Buffer, stringify and return as plain text
+            if (typeof logBuffer === 'string') {
+                return { isBase64: false, data: logBuffer }
+            }
+
+            return { isBase64: false, data: String(logBuffer) }
         } catch (error) {
             console.error(`Error getting logs for container ${containerIdOrName}:`, error)
             throw error 

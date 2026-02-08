@@ -12,22 +12,17 @@ const GetStatusBadgeClasses = (status: string) => {
     }
 }
 
-
-const Truncate = (text: any, max = 120) => {
-    if (!text && text !== 0) return ""
-    const str = String(text)
-    return str.length > max ? str.slice(0, max) + "..." : str
-}
-
 const ContainerTable = ({
     containers,
     onRemoveContainer,
     onStopContainer, 
-    onStartContainer
+    onStartContainer,
+    onShowContainerLogHistory
     }) => <div className="table-responsive">
                                 <table className="table table-vcenter card-table table-striped">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Status</th>
                                             <th>Name | Image</th>
                                             <th>Network</th>
@@ -44,6 +39,11 @@ const ContainerTable = ({
                                                 Config
                                             }) =>
                                             <tr>
+                                                <td>
+                                                    <button className="btn btn-azure btn-sm">
+                                                        more details
+                                                    </button>
+                                                </td>
                                                 <td>{<span className={GetStatusBadgeClasses(State.Status)}>{State.Status}</span>}</td>
                                                 <td>
                                                     <div className="flex-fill">
@@ -53,6 +53,10 @@ const ContainerTable = ({
                                                             {Config && Config.Cmd ? Config.Cmd.join(" ") : ""}
                                                         </code>
                                                         <div className="btn-list justify-content-end">
+
+                                                        <button className="btn btn-sm btn-primary" onClick={() => onShowContainerLogHistory(Id)}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-logs"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12h.01" /><path d="M4 6h.01" /><path d="M4 18h.01" /><path d="M8 18h2" /><path d="M8 12h2" /><path d="M8 6h2" /><path d="M14 6h6" /><path d="M14 12h6" /><path d="M14 18h6" /></svg> log history
+                                                        </button>
                                                         {
                                                             State.Status === "exited"
                                                             && <button className="btn btn-sm btn-primary" onClick={() => onStartContainer(Id)}>

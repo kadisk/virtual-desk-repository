@@ -9,6 +9,8 @@ import ImagesTable from "./Images.table"
 import NetworksTable from "./Networks.table"
 import VolumesTable from "./Volumes.table"
 
+import ContainerLogHistoryOffcanvas from "./ContainerLogHistory.offcanvas"
+
 const CONTAINERS_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-box"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /></svg>
 const IMAGES_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-3"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2l-8 4l8 4l8 -4l-8 -4" /><path d="M4 10l8 4l8 -4" /><path d="M4 18l8 4l8 -4" /><path d="M4 14l8 4l8 -4" /></svg>
 const NETWORKS_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-network"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 9a6 6 0 1 0 12 0a6 6 0 0 0 -12 0" /><path d="M12 3c1.333 .333 2 2.333 2 6s-.667 5.667 -2 6" /><path d="M12 3c-1.333 .333 -2 2.333 -2 6s.667 5.667 2 6" /><path d="M6 9h12" /><path d="M3 20h7" /><path d="M14 20h7" /><path d="M10 20a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M12 15v3" /></svg>
@@ -25,6 +27,9 @@ const ContainerManager = ({ HTTPServerManager }) => {
     const [ images, setImages ]         = useState<any[]>([])
     const [ networks, setNetworks ]     = useState<any[]>([])
     const [ volumes, setVolumes ]       = useState<any[]>([])
+
+
+    const [containerIdLogsSelected, setContainerIdLogsSelected] = useState<string>()
 
     const [loading, setLoading] = useState(false)
     const [mode, setMode] = useState<any>(CONTAINERS_MANAGER_MODE)
@@ -142,7 +147,19 @@ const ContainerManager = ({ HTTPServerManager }) => {
         }
     }
 
+    const handleShowContainerLogs = async (containerId: string) => {
+        setContainerIdLogsSelected(containerId)
+    }
+
     return <div className="pt-4">
+
+        {
+            containerIdLogsSelected
+            && <ContainerLogHistoryOffcanvas
+                containerId={containerIdLogsSelected}
+                onClose={() => setContainerIdLogsSelected(undefined)} />
+        }
+
         <div className="container-xl">
             <ul className="nav nav-bordered mb-4">
                 <li className="nav-item cursor-pointer">
@@ -212,7 +229,9 @@ const ContainerManager = ({ HTTPServerManager }) => {
                                     containers={containers}
                                     onStartContainer={handleStartContainer}
                                     onStopContainer={handleStopContainer}
-                                    onRemoveContainer={handleRemoveContainer} />
+                                    onRemoveContainer={handleRemoveContainer} 
+                                    onShowContainerLogHistory={handleShowContainerLogs}
+                                    />
                         </div>
                     }
                     {
