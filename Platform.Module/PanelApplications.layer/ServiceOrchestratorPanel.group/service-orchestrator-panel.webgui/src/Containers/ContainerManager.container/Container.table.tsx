@@ -23,7 +23,7 @@ const ContainerTable = ({
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th>Status</th>
+                                            <th>State | Status</th>
                                             <th>Name | Image</th>
                                             <th>Network</th>
                                             <th></th>
@@ -33,10 +33,12 @@ const ContainerTable = ({
                                         {
                                             containers.map(({
                                                 State,
+                                                Status,
                                                 Id,
-                                                Name,
+                                                Names,
+                                                Image,
                                                 NetworkSettings: {Networks},
-                                                Config
+                                                Command
                                             }) =>
                                             <tr>
                                                 <td>
@@ -44,56 +46,61 @@ const ContainerTable = ({
                                                         more details
                                                     </button>
                                                 </td>
-                                                <td>{<span className={GetStatusBadgeClasses(State.Status)}>{State.Status}</span>}</td>
                                                 <td>
                                                     <div className="flex-fill">
-                                                        <div>{Name}</div>
-                                                        <div className="text-secondary"><strong>Image </strong>{Config.Image}</div>
-                                                        <code title={Config && Config.Cmd ? Config.Cmd.join(" ") : ""}>
-                                                            {Config && Config.Cmd ? Config.Cmd.join(" ") : ""}
-                                                        </code>
-                                                        <div className="btn-list justify-content-end">
-
-                                                        <button className="btn btn-sm btn-primary" onClick={() => onShowContainerLogHistory(Id)}>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-logs"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12h.01" /><path d="M4 6h.01" /><path d="M4 18h.01" /><path d="M8 18h2" /><path d="M8 12h2" /><path d="M8 6h2" /><path d="M14 6h6" /><path d="M14 12h6" /><path d="M14 18h6" /></svg> log history
-                                                        </button>
-                                                        {
-                                                            State.Status === "exited"
-                                                            && <button className="btn btn-sm btn-primary" onClick={() => onStartContainer(Id)}>
-                                                                <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>start
-                                                            </button>
-                                                        }
-                                                        {
-                                                            State.Status === "exited"
-                                                            && <button className="btn btn-sm btn-danger" onClick={() => onRemoveContainer(Id)}>
-                                                                <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>delete
-                                                            </button>
-                                                        }
-                                                        {
-                                                            State.Status === "running"
-                                                            && <button className="btn btn-sm btn-yellow">
-                                                                <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-pause"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>pause
-                                                            </button>
-                                                        }
-                                                        {
-                                                            State.Status === "running"
-                                                            && <button className="btn btn-sm btn-orange">
-                                                                <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-refresh"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>restart
-                                                            </button>
-                                                        }
-                                                        {
-                                                            State.Status === "running"
-                                                            && <button className="btn btn-sm btn-orange" onClick={() => onStopContainer(Id)}>
-                                                                <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-stop"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 5m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /></svg>stop
-                                                            </button>
-                                                        }
-                                                        {
-                                                            State.Status === "running"
-                                                            && <button className="btn btn-sm btn-danger">
-                                                                <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cancel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M18.364 5.636l-12.728 12.728" /></svg>kill
-                                                            </button>
-                                                        }
+                                                        <span className={GetStatusBadgeClasses(State)}>{State}</span>
+                                                        <div>{Status}</div>
                                                     </div>
+                                                </td>
+                                                <td>
+                                                    <div className="flex-fill">
+                                                        <div>{Names[0]}</div>
+                                                        <div className="text-secondary"><strong>Image </strong>{Image}</div>
+                                                        <code>
+                                                            {Command}
+                                                        </code>
+                                                        <div className="btn-list justify-content-end mt-2">
+
+                                                            <button className="btn btn-sm btn-primary" onClick={() => onShowContainerLogHistory(Id)}>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-logs"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12h.01" /><path d="M4 6h.01" /><path d="M4 18h.01" /><path d="M8 18h2" /><path d="M8 12h2" /><path d="M8 6h2" /><path d="M14 6h6" /><path d="M14 12h6" /><path d="M14 18h6" /></svg> log history
+                                                            </button>
+                                                            {
+                                                                State === "exited"
+                                                                && <button className="btn btn-sm btn-primary" onClick={() => onStartContainer(Id)}>
+                                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>start
+                                                                </button>
+                                                            }
+                                                            {
+                                                                State === "exited"
+                                                                && <button className="btn btn-sm btn-danger" onClick={() => onRemoveContainer(Id)}>
+                                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>delete
+                                                                </button>
+                                                            }
+                                                            {
+                                                                State === "running"
+                                                                && <button className="btn btn-sm btn-yellow">
+                                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-pause"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>pause
+                                                                </button>
+                                                            }
+                                                            {
+                                                                State === "running"
+                                                                && <button className="btn btn-sm btn-orange">
+                                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-refresh"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>restart
+                                                                </button>
+                                                            }
+                                                            {
+                                                                State === "running"
+                                                                && <button className="btn btn-sm btn-orange" onClick={() => onStopContainer(Id)}>
+                                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-player-stop"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 5m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /></svg>stop
+                                                                </button>
+                                                            }
+                                                            {
+                                                                State === "running"
+                                                                && <button className="btn btn-sm btn-danger">
+                                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cancel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M18.364 5.636l-12.728 12.728" /></svg>kill
+                                                                </button>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td>

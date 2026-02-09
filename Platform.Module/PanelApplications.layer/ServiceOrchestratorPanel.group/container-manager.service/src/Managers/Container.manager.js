@@ -47,19 +47,8 @@ const ContainerManager = (params) => {
 
     const ListAllContainers = async () => {
         try {
-
             const containers = await docker.listContainers({ all: true })
-            
-            const detailedContainers = await Promise.all(
-                containers.map(async (containerInfo) => {
-                    const container = docker.getContainer(containerInfo.Id)
-                    const inspectData = await container.inspect()
-                    
-                    return inspectData
-                })
-            )
-            
-            return detailedContainers
+            return containers
         } catch (error) {
             console.error('Error listing containers with details:', error)
             throw error

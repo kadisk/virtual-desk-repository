@@ -177,7 +177,7 @@ const MyServicesContainer = ({
             serviceIdSelected !== undefined
             && <ServiceDetailsOffcanvas
                 serviceId={serviceIdSelected}
-                onCloseServiceDetails={() => handleCloseServiceDetails()} />
+                onClose={() => handleCloseServiceDetails()} />
         }
         <div className="container-xl">
             <div className="row g-2 align-items-center">
