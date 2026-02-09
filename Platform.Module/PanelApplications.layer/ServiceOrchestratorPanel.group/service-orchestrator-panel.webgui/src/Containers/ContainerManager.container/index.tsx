@@ -10,6 +10,7 @@ import NetworksTable from "./Networks.table"
 import VolumesTable from "./Volumes.table"
 
 import ContainerLogHistoryOffcanvas from "./ContainerLogHistory.offcanvas"
+import ContainerDetailsOffcanvas from "./ContainerDetails.offcanvas"
 
 const CONTAINERS_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-box"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /></svg>
 const IMAGES_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-3"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2l-8 4l8 4l8 -4l-8 -4" /><path d="M4 10l8 4l8 -4" /><path d="M4 18l8 4l8 -4" /><path d="M4 14l8 4l8 -4" /></svg>
@@ -30,6 +31,7 @@ const ContainerManager = ({ HTTPServerManager }) => {
 
 
     const [containerIdLogsSelected, setContainerIdLogsSelected] = useState<string>()
+    const [containerIdDetailsSelected, setContainerIdDetailsSelected] = useState<string>()
 
     const [loading, setLoading] = useState(false)
     const [mode, setMode] = useState<any>(CONTAINERS_MANAGER_MODE)
@@ -151,6 +153,10 @@ const ContainerManager = ({ HTTPServerManager }) => {
         setContainerIdLogsSelected(containerId)
     }
 
+    const handleShowContainerDetails = async (containerId: string) => {
+        setContainerIdDetailsSelected(containerId)
+    }
+
     return <div className="pt-4">
 
         {
@@ -158,6 +164,13 @@ const ContainerManager = ({ HTTPServerManager }) => {
             && <ContainerLogHistoryOffcanvas
                 containerId={containerIdLogsSelected}
                 onClose={() => setContainerIdLogsSelected(undefined)} />
+        }
+
+        {
+            containerIdDetailsSelected
+            && <ContainerDetailsOffcanvas
+                containerId={containerIdDetailsSelected}
+                onClose={() => setContainerIdDetailsSelected(undefined)} />
         }
 
         <div className="container-xl">
@@ -231,6 +244,7 @@ const ContainerManager = ({ HTTPServerManager }) => {
                                     onStopContainer={handleStopContainer}
                                     onRemoveContainer={handleRemoveContainer} 
                                     onShowContainerLogHistory={handleShowContainerLogs}
+                                    onShowContainerDetails={handleShowContainerDetails}
                                     />
                         </div>
                     }

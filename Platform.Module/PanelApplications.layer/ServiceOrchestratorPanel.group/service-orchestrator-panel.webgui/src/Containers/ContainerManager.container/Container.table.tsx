@@ -17,7 +17,8 @@ const ContainerTable = ({
     onRemoveContainer,
     onStopContainer, 
     onStartContainer,
-    onShowContainerLogHistory
+    onShowContainerLogHistory,
+    onShowContainerDetails
     }) => <div className="table-responsive">
                                 <table className="table table-vcenter card-table table-striped">
                                     <thead>
@@ -42,7 +43,7 @@ const ContainerTable = ({
                                             }) =>
                                             <tr>
                                                 <td>
-                                                    <button className="btn btn-azure btn-sm">
+                                                    <button className="btn btn-azure btn-sm" onClick={() => onShowContainerDetails(Id)}>
                                                         more details
                                                     </button>
                                                 </td>
