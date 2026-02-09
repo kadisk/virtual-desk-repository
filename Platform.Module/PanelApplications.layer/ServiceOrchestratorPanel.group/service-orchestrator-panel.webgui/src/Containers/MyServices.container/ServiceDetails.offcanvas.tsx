@@ -38,7 +38,7 @@ const GetColor = (status: string) => {
 
 const ServiceDetailsOffcanvas = ({
     serviceId,
-    onCloseServiceDetails,
+    onClose,
     HTTPServerManager,
 }) => {
 
@@ -251,7 +251,7 @@ const ServiceDetailsOffcanvas = ({
                             </div>
                         </div>
                         </div>
-                    <button type="button" className="btn-close text-reset" onClick={() => onCloseServiceDetails()}></button>
+                    <button type="button" className="btn-close text-reset" onClick={() => onClose()}></button>
                 </div>
                 {
                     status == "RESTARTING" && <div className="justify-content-center row my-4"><div className="spinner-border"></div></div>
