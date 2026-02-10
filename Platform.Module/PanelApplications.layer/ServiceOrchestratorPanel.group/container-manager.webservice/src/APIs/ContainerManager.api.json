@@ -61,6 +61,19 @@
 			]
 		},
 		{
+			"summary": "InspectContainer",
+			"method": "POST",
+			"path": "/inspect-container",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "containerIdOrName",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"summary": "GetContainerLogHistory",
 			"method": "POST",
 			"path": "/container-log-history",

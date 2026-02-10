@@ -13,6 +13,7 @@ const ContainerManagerController = (params) => {
         RemoveContainer        : containerManagerService.RemoveContainer,
         StartContainer         : containerManagerService.StartContainer,
         StopContainer          : containerManagerService.StopContainer,
+        InspectContainer       : containerManagerService.InspectContainer,
         GetContainerLogHistory : containerManagerService.GetContainerLogHistory
     }
     
