@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
+import { 
+	useLocation,
+	useNavigate
+  } from "react-router-dom"
+import qs from "query-string"
+
+import QueryParamsActionsCreator from "../../Actions/QueryParams.actionsCreator"
+
 
 import GetAPI from "../../Utils/GetAPI"
 
@@ -22,7 +30,17 @@ const IMAGES_MANAGER_MODE = Symbol()
 const NETWORKS_MANAGER_MODE = Symbol()
 const VOLUMES_MANAGER_MODE = Symbol()
 
-const ContainerManager = ({ HTTPServerManager }) => {
+const ContainerManager = ({
+    SetQueryParams,
+	QueryParams,
+    AddQueryParam,
+    HTTPServerManager
+}) => {
+
+    const location = useLocation()
+    const navigate = useNavigate()
+    const queryParams = qs.parse(location.search.substr(1))
+    
 
     const [ containers, setContainers ] = useState<any[]>([])
     const [ images, setImages ]         = useState<any[]>([])
@@ -35,6 +53,36 @@ const ContainerManager = ({ HTTPServerManager }) => {
 
     const [loading, setLoading] = useState(false)
     const [mode, setMode] = useState<any>(CONTAINERS_MANAGER_MODE)
+
+
+    useEffect(() => {
+            if(Object.keys(queryParams).length > 0){
+                SetQueryParams(queryParams)
+            }
+        }, [])
+    
+        useEffect(() => {
+            const search = qs.stringify(QueryParams)
+            navigate({search: `?${search}`})
+        }, [QueryParams])
+
+        useEffect(() => {
+                
+            if(QueryParams.managerMode){
+                if(QueryParams.managerMode === "CONTAINERS_MANAGER_MODE"){
+                    setMode(CONTAINERS_MANAGER_MODE)
+                } else if(QueryParams.managerMode === "IMAGES_MANAGER_MODE"){
+                    setMode(IMAGES_MANAGER_MODE)
+                } else if(QueryParams.managerMode === "NETWORKS_MANAGER_MODE"){
+                    setMode(NETWORKS_MANAGER_MODE)
+                } else if(QueryParams.managerMode === "VOLUMES_MANAGER_MODE"){
+                    setMode(VOLUMES_MANAGER_MODE)
+                }
+            }else {
+                setMode(CONTAINERS_MANAGER_MODE)
+            }
+    
+        }, [QueryParams?.managerMode])
 
     useEffect(() => {
         if (mode === CONTAINERS_MANAGER_MODE) {
@@ -157,6 +205,10 @@ const ContainerManager = ({ HTTPServerManager }) => {
         setContainerIdDetailsSelected(containerId)
     }
 
+    const handleShowNewNetworkModal = () => {
+        alert("Not implemented yet.")
+    }
+
     return <div className="pt-4">
 
         {
@@ -176,16 +228,16 @@ const ContainerManager = ({ HTTPServerManager }) => {
         <div className="container-xl">
             <ul className="nav nav-bordered mb-4">
                 <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${mode === CONTAINERS_MANAGER_MODE ? "active" : ""}`}  onClick={() => setMode(CONTAINERS_MANAGER_MODE)} >{CONTAINERS_ICON} Containers</a>
+                    <a className={`nav-link ${mode === CONTAINERS_MANAGER_MODE ? "active" : ""}`}  onClick={() => AddQueryParam("managerMode", "CONTAINERS_MANAGER_MODE") && setMode(CONTAINERS_MANAGER_MODE)} >{CONTAINERS_ICON} Containers</a>
                 </li>
                 <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${mode === IMAGES_MANAGER_MODE ? "active" : ""}`}  onClick={() => setMode(IMAGES_MANAGER_MODE)} >{IMAGES_ICON} Images</a>
+                    <a className={`nav-link ${mode === IMAGES_MANAGER_MODE ? "active" : ""}`}  onClick={() => AddQueryParam("managerMode", "IMAGES_MANAGER_MODE") && setMode(IMAGES_MANAGER_MODE)} >{IMAGES_ICON} Images</a>
                 </li>
                 <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${mode === NETWORKS_MANAGER_MODE ? "active" : ""}`}  onClick={() => setMode(NETWORKS_MANAGER_MODE)} >{NETWORKS_ICON} Networks</a>
+                    <a className={`nav-link ${mode === NETWORKS_MANAGER_MODE ? "active" : ""}`}  onClick={() => AddQueryParam("managerMode", "NETWORKS_MANAGER_MODE") && setMode(NETWORKS_MANAGER_MODE)} >{NETWORKS_ICON} Networks</a>
                 </li>
                 <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${mode === VOLUMES_MANAGER_MODE ? "active" : ""}`}  onClick={() => setMode(VOLUMES_MANAGER_MODE)} >{VOLUME_ICON} Volumes</a>
+                    <a className={`nav-link ${mode === VOLUMES_MANAGER_MODE ? "active" : ""}`}  onClick={() => AddQueryParam("managerMode", "VOLUMES_MANAGER_MODE") && setMode(VOLUMES_MANAGER_MODE)} >{VOLUME_ICON} Volumes</a>
                 </li>
             </ul>
             {
@@ -257,9 +309,20 @@ const ContainerManager = ({ HTTPServerManager }) => {
 
                     {
                         mode === NETWORKS_MANAGER_MODE &&
-                        <div className="card">
-                            <NetworksTable networks={networks}/>
-                        </div>
+                        <>
+                            <div className="row g-2 align-items-center">
+                                <div className="col-auto ms-auto d-print-none mt-0 mb-3">
+                                    <div className="btn-list">
+                                        <button className="btn btn-outline-blue" onClick={handleShowNewNetworkModal}>
+                                            New Network
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card">
+                                <NetworksTable networks={networks}/>
+                            </div>
+                        </>
                     }
                     {
                         mode === VOLUMES_MANAGER_MODE &&
@@ -287,7 +350,13 @@ const ContainerManager = ({ HTTPServerManager }) => {
     </div>
 }
 
-const mapDispatchToProps = (dispatch: any) => bindActionCreators({}, dispatch)
-const mapStateToProps = ({ HTTPServerManager }: any) => ({ HTTPServerManager })
-
+const mapDispatchToProps = (dispatch: any) => bindActionCreators({
+    SetQueryParams    : QueryParamsActionsCreator.SetQueryParams,
+    AddQueryParam     : QueryParamsActionsCreator.AddQueryParam,
+    RemoveQueryParam  : QueryParamsActionsCreator.RemoveQueryParam
+}, dispatch)
+const mapStateToProps = ({ HTTPServerManager, QueryParams }: any) => ({
+    QueryParams,
+    HTTPServerManager
+})
 export default connect(mapStateToProps, mapDispatchToProps)(ContainerManager)

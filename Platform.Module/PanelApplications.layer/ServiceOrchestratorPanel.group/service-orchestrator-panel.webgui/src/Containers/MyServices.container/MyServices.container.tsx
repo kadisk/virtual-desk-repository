@@ -6,7 +6,7 @@ import qs                     from "query-string"
 import { 
 	useLocation,
 	useNavigate,
-	useParams
+
   } from "react-router-dom"
 
 import GetAPI from "../../Utils/GetAPI"
