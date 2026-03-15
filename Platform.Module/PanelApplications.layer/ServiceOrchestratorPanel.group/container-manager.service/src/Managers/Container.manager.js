@@ -259,6 +259,29 @@ const ContainerManager = (params) => {
     const RegisterDockerEventListener = (f) => 
         eventEmitter.on(DOCKER_EVENT, (eventData) => f(eventData))
 
+    const InspectNetwork = async (networkIdOrName) => {
+        try {
+            const network = docker.getNetwork(networkIdOrName)
+            const networkInfo = await network.inspect()
+            return networkInfo
+        }
+        catch (error) {
+            console.error(`Error inspecting network ${networkIdOrName}:`, error)
+            throw error
+        }
+    }
+
+    const CreateNewNetwork = async (options) => {
+        try {
+            const network = await docker.createNetwork(options)
+            return network
+        }
+        catch (error) {
+            console.error(`Error creating network ${options.Name || 'unknown'}:`, error)
+            throw error
+        }
+    }
+
     return {
         StartContainer,
         StopContainer,
@@ -271,7 +294,9 @@ const ContainerManager = (params) => {
         ListAllImages,
         ListAllNetworks,
         RegisterDockerEventListener,
-        GetContainerLogHistory
+        GetContainerLogHistory,
+        InspectNetwork,
+        CreateNewNetwork
     }
 
 }

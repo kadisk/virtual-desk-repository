@@ -14,9 +14,9 @@ export const NetworkId = styled.div`
 `
 
 
-const NetworksTable = ({ networks }) => 
+const NetworksTable = ({ networks, onViewNetworkDetails }) => 
     <div className="table-responsive">
-                                <table className="table table-vcenter card-table table-striped">
+                                <table className="table table-vcenter card-table table-hover table-striped">
                                     <thead>
                                         <tr>
                                             <th>General Information</th>
@@ -26,7 +26,7 @@ const NetworksTable = ({ networks }) =>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {networks.map(network => <tr>
+                                        {networks.map(network => <tr className="cursor-pointer" onClick={() => onViewNetworkDetails(network.Id)}>
                                             <td>
                                                 <div className="flex-fill">
                                                     <div><h1>{network.Name}</h1></div>

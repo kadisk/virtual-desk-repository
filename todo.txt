@@ -1,33 +1,26 @@
-
-
-Websites de referencia
-https://wearemotto.com/
-https://departuremono.com/
-https://www.marchanslin.com/?ref=onepagelove
-
-
-https://www.heartbeatdrummachine.com/?ref=onepagelove
-https://getserva.com/?ref=onepagelove
-https://wearemotto.com/
-https://ollivere.co/
-https://natesmith.design/scroll-transform-exploration
-https://www.cocokind.com/
-
-https://doubble.group/sg/
-
-https://www.gubrica.com/
-
-https://luxitalia-group.webflow.io/
-
-https://postevand.com/
-
-https://kjphotos.com/
-
-- O portal KADISK precisar ter alguma galerias
-    - Exemplo usado REACT+ algumas CSS framework
-
-
-
-docker run -it --volumes-from myecosystem-01-container --entrypoint /bin/bash myecosystem:latest
+- Criar Service Orchestrator Panel + Container Panel
+- Repository Manager Panel + Workspace Panel
+- Ecosystem Data Panel + Host Information 
 
 nvm use stable
+
+
+repository-storage-manager
+iam-manager
+service-orchestrator
+
+local-transit-proxy
+local-domain-router-proxy
+
+user-space
+virtual-desk
+
+iam-panel
+service-panel
+
+
+
+virtualdesk.app.local:9000
+service-panel.app.local:9000
+iam-panel.app.local:9000
+user-space.app.local:9000

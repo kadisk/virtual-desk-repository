@@ -85,9 +85,32 @@
 					"required": true
 				}
 			]
+		},
+		{
+			"summary": "InspectNetwork",
+			"method": "POST",
+			"path": "/inspect-details",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "networkIdOrName",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"summary": "CreateNewNetwork",
+			"method": "POST",
+			"path": "/create-network",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "options",
+					"type": "json",
+					"required": true
+				}
+			]
 		}
-
-
-		
 	]
 }
