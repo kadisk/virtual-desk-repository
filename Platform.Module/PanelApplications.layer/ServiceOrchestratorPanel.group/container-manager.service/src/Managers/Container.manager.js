@@ -294,6 +294,17 @@ const ContainerManager = (params) => {
         }
     }
 
+    const InspectImage = async (imageIdOrName) => {
+        try {
+            const image = docker.getImage(imageIdOrName)
+            const imageInfo = await image.inspect()
+            return imageInfo
+        } catch (error) {
+            console.error(`Error inspecting image ${imageIdOrName}:`, error)
+            throw error
+        }
+    }
+
     return {
         StartContainer,
         StopContainer,
@@ -309,7 +320,8 @@ const ContainerManager = (params) => {
         GetContainerLogHistory,
         InspectNetwork,
         CreateNewNetwork,
-        InspectVolume
+        InspectVolume,
+        InspectImage
     }
 
 }

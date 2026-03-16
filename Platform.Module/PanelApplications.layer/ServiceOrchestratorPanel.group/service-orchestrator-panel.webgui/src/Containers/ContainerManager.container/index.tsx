@@ -13,6 +13,7 @@ import GetAPI from "../../Utils/GetAPI"
 
 import ContainerTable from "./Container.table"
 import ImagesTable from "./Images.table"
+import ImageDetailsOffcanvas from "./ImageDetails.offcanvas"
 import NetworksTable from "./Networks.table"
 import VolumesTable from "./Volumes.table"
 
@@ -48,6 +49,8 @@ const ContainerManager = ({
     const [ images, setImages ]         = useState<any[]>([])
     const [ networks, setNetworks ]     = useState<any[]>([])
     const [ volumes, setVolumes ]       = useState<any[]>([])
+
+    const [imageIdSelected, setImageIdSelected] = useState<string>()
 
 
     const [containerIdLogsSelected, setContainerIdLogsSelected] = useState<string>()
@@ -220,6 +223,14 @@ const ContainerManager = ({
                 onClose={() => setContainerIdLogsSelected(undefined)} />
         }
 
+
+        {
+            imageIdSelected
+            && <ImageDetailsOffcanvas
+                imageId={imageIdSelected}
+                onClose={() => setImageIdSelected(undefined)} />
+        }
+
         {
             volumeNameSelected
             && <VolumeDetailsOffcanvas
@@ -324,7 +335,7 @@ const ContainerManager = ({
                     {
                         mode === IMAGES_MANAGER_MODE &&
                         <div className="card">
-                            <ImagesTable images={images}/>
+                            <ImagesTable images={images} onViewImageDetails={setImageIdSelected}/>
                         </div>
                     }
 

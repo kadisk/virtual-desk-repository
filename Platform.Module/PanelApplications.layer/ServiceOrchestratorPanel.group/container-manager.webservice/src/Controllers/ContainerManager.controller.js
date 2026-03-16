@@ -18,7 +18,8 @@ const ContainerManagerController = (params) => {
         GetContainerLogHistory : containerManagerService.GetContainerLogHistory,
         InspectNetwork         : containerManagerService.InspectNetwork,
         CreateNewNetwork       : containerManagerService.CreateNewNetwork,
-        InspectVolume          : containerManagerService.InspectVolume
+        InspectVolume          : containerManagerService.InspectVolume,
+        InspectImage           : containerManagerService.InspectImage
     }
     
     return Object.freeze(controllerServiceObject)
