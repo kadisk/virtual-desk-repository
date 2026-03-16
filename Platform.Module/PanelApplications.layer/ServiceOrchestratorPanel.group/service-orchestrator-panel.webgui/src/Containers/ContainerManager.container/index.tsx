@@ -9,7 +9,6 @@ import qs from "query-string"
 
 import QueryParamsActionsCreator from "../../Actions/QueryParams.actionsCreator"
 
-
 import GetAPI from "../../Utils/GetAPI"
 
 import ContainerTable from "./Container.table"
@@ -21,6 +20,7 @@ import ContainerLogHistoryOffcanvas from "./ContainerLogHistory.offcanvas"
 import ContainerDetailsOffcanvas from "./ContainerDetails.offcanvas"
 import NewNetworkOffcanvas from "./NewNetwork.offcanvas"
 import NetworkDetailsOffcanvas from "./NetworkDetails.offcanvas"
+import VolumeDetailsOffcanvas from "./VolumeDetails.offcanvas"
 
 const CONTAINERS_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-box"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /></svg>
 const IMAGES_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-3"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2l-8 4l8 4l8 -4l-8 -4" /><path d="M4 10l8 4l8 -4" /><path d="M4 18l8 4l8 -4" /><path d="M4 14l8 4l8 -4" /></svg>
@@ -55,6 +55,7 @@ const ContainerManager = ({
 
     const [newNetworkModalVisible, setNewNetworkModalVisible] = useState(false)
     const [networkIdSelected, setNetworkIdSelected] = useState<string>()
+    const [volumeNameSelected, setVolumeNameSelected] = useState<string>()
 
     const [loading, setLoading] = useState(false)
     const [mode, setMode] = useState<any>(CONTAINERS_MANAGER_MODE)
@@ -220,6 +221,13 @@ const ContainerManager = ({
         }
 
         {
+            volumeNameSelected
+            && <VolumeDetailsOffcanvas
+                volumeName={volumeNameSelected}
+                onClose={() => setVolumeNameSelected(undefined)} />
+        }
+
+        {
             newNetworkModalVisible
             && <NewNetworkOffcanvas onClose={() => setNewNetworkModalVisible(false)} />
         }
@@ -351,7 +359,7 @@ const ContainerManager = ({
                             </div>
                         
                             <div className="card">
-                                <VolumesTable volumes={volumes}/>
+                                <VolumesTable onViewVolumeDetails={setVolumeNameSelected} volumes={volumes}/>
                             </div>
                         
                         </>

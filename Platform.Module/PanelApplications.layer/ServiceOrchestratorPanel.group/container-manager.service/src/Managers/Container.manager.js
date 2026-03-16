@@ -282,6 +282,18 @@ const ContainerManager = (params) => {
         }
     }
 
+    const InspectVolume = async (volumeName) => {
+        try {
+            const volume = docker.getVolume(volumeName)
+            const volumeInfo = await volume.inspect()
+            return volumeInfo
+        }
+        catch (error) {
+            console.error(`Error inspecting volume ${volumeName}:`, error)
+            throw error
+        }
+    }
+
     return {
         StartContainer,
         StopContainer,
@@ -296,7 +308,8 @@ const ContainerManager = (params) => {
         RegisterDockerEventListener,
         GetContainerLogHistory,
         InspectNetwork,
-        CreateNewNetwork
+        CreateNewNetwork,
+        InspectVolume
     }
 
 }

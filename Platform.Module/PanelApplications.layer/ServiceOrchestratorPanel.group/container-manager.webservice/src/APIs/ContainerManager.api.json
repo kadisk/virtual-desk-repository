@@ -111,6 +111,19 @@
 					"required": true
 				}
 			]
+		},
+		{
+			"summary": "InspectVolume",
+			"method": "POST",
+			"path": "/inspect-volume",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "volumeName",
+					"type": "string",
+					"required": true
+				}
+			]
 		}
 	]
 }

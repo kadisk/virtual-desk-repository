@@ -2,7 +2,8 @@
 import React from "react"
 
 const VolumesTable = ({
-    volumes
+    volumes,
+    onViewVolumeDetails
     }) => <div className="table-responsive">
                                 <table className="table table-vcenter card-table table-striped">
                                     <thead>
@@ -22,7 +23,7 @@ const VolumesTable = ({
                                                 Labels,
                                                 CreatedAt
                                             }) =>
-                                            <tr>
+                                            <tr  className="cursor-pointer" onClick={() => onViewVolumeDetails(Name)}>
                                                 
                                                 <td>
                                                     <div className="flex-fill">
