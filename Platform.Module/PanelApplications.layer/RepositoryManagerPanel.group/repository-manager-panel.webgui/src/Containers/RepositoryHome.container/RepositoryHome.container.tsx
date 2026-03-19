@@ -26,8 +26,6 @@ const LOADING_MODE = Symbol()
 
 const REPOSITORIES_MANAGER_MODE = Symbol()
 
-const OVERVIEW_TAB = Symbol()
-const DETAILS_TAB = Symbol()
 
 const RepositoryHomeContainer = ({
     SetQueryParams,
@@ -42,11 +40,6 @@ const RepositoryHomeContainer = ({
 
     const [importDataCurrent, setImportDataCurrent] = useState<{ repositoryNamespace: string, sourceCodeURL: string }>()
     const [interfaceModeType, changeMode] = useState<any>(LOADING_MODE)
-    const [provisionedServicesList, setProvisionedServicesList] = useState([])
-
-    const [tabsCurrent, setTabsCurrent] = useState<any>()
-
-    const provisionedServicesListRef = useRef(provisionedServicesList)
 
     useEffect(() => {
         if(Object.keys(queryParams).length > 0){
@@ -61,39 +54,14 @@ const RepositoryHomeContainer = ({
 
 
     useEffect(() => {
-        
-        if(QueryParams.serviceView){
-            if(QueryParams.serviceView === "OVERVIEW_TAB"){
-                setTabsCurrent(OVERVIEW_TAB)
-            } else if(QueryParams.serviceView === "DETAILS_TAB"){
-                setTabsCurrent(DETAILS_TAB)
-            } 
-        }else {
-            setTabsCurrent(OVERVIEW_TAB)
-        }
-
-    }, [QueryParams?.serviceView])
-
-
-    useEffect(() => {
-        provisionedServicesListRef.current = provisionedServicesList
-    }, [provisionedServicesList])
-
-    useEffect(() => {
 
         if (interfaceModeType === LOADING_MODE) {
             fetchMyServicesStatus()
-        } else if (interfaceModeType === DEFAULT_MODE) {
-            fetchProvisionedServices()
         }
 
     }, [interfaceModeType])
 
-    const _MyServicesAPI = () =>
-        GetAPI({
-            apiName: "MyServicesManager",
-            serverManagerInformation: HTTPServerManager
-        })
+
     const _RepositoryServiceAPI = () =>
         GetAPI({
             apiName: "RepositoryServiceManager",
@@ -110,11 +78,6 @@ const RepositoryHomeContainer = ({
         }
     }
 
-    const fetchProvisionedServices = async () => {
-        const api = _MyServicesAPI()
-        const response = await api.ListProvisionedServices()
-        setProvisionedServicesList(response.data)
-    }
 
     const handleUseFromMyWorkspace = () => {
         console.log("== handleUseFromMyWorkspace")
@@ -142,14 +105,6 @@ const RepositoryHomeContainer = ({
                     </div>
                 }
             </div>
-            <ul className="nav nav-bordered mb-4">
-                <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${tabsCurrent === OVERVIEW_TAB ? "active" : ""}`} onClick={() => AddQueryParam("serviceView", "OVERVIEW_TAB")}>Overview</a>
-                </li>
-                <li className="nav-item cursor-pointer">
-                    <a className={`nav-link ${tabsCurrent === DETAILS_TAB ? "active" : ""}`} onClick={() => AddQueryParam("serviceView", "DETAILS_TAB")}>Details</a>
-                </li>
-            </ul>
         </div>
         {
             interfaceModeType === IMPORT_SELECT_MODE
