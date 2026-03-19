@@ -15,6 +15,7 @@ import WelcomeMyServices from "./WelcomeMyServices"
 import ImportRepositoryModal from "./ImportRepository.modal"
 import NamespaceAndRepositoryManagerModal from "./NamespaceAndRepositoryManager.modal"
 import ImportingModal from "./Importing.modal"
+import NamespaceTable from "./Namespace.table"
 
 import QueryParamsActionsCreator    from "../../Actions/QueryParams.actionsCreator"
 
@@ -25,7 +26,6 @@ const NO_REPOSITORIES_MODE = Symbol()
 const LOADING_MODE = Symbol()
 
 const REPOSITORIES_MANAGER_MODE = Symbol()
-
 
 const RepositoryHomeContainer = ({
     SetQueryParams,
@@ -40,11 +40,13 @@ const RepositoryHomeContainer = ({
 
     const [importDataCurrent, setImportDataCurrent] = useState<{ repositoryNamespace: string, sourceCodeURL: string }>()
     const [interfaceModeType, changeMode] = useState<any>(LOADING_MODE)
+    const [ namespaces, setNamespaces ] = useState([])
 
     useEffect(() => {
         if(Object.keys(queryParams).length > 0){
             SetQueryParams(queryParams)
         }
+        FetchNamespaces()
     }, [])
 
     useEffect(() => {
@@ -67,6 +69,12 @@ const RepositoryHomeContainer = ({
             apiName: "RepositoryServiceManager",
             serverManagerInformation: HTTPServerManager
         })
+
+    const FetchNamespaces = async () => {
+        const api = _RepositoryServiceAPI()
+        const response = await api.ListNamespaces()
+        setNamespaces(response.data)
+    }
 
     const fetchMyServicesStatus = async () => {
         const api = _RepositoryServiceAPI()
@@ -105,7 +113,13 @@ const RepositoryHomeContainer = ({
                     </div>
                 }
             </div>
+            {
+                namespaces
+                && namespaces.length > 0
+                && <NamespaceTable namespaces={namespaces} />
+            }
         </div>
+
         {
             interfaceModeType === IMPORT_SELECT_MODE
             && <ImportRepositoryModal onImport={handleImportingMode} onClose={() => changeMode(DEFAULT_MODE)} />
