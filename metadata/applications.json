@@ -64,6 +64,12 @@
         "executable":"service-panel",
         "packageNamespace":"Platform.Module/PanelApplications.layer/ServiceOrchestratorPanel.group/service-orchestrator-panel.webapp",
         "supervisorSocketFileName":"service-panel.sock"
+    },
+    {
+        "appType":"APP",
+        "executable":"repository-manager-panel",
+        "packageNamespace":"Platform.Module/PanelApplications.layer/RepositoryManagerPanel.group/repository-manager-panel.webapp",
+        "supervisorSocketFileName":"repository-manager-panel.sock"
     }
 
 ]

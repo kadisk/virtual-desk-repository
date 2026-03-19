@@ -1,7 +1,7 @@
 {
     "port":"8978",
     "serverName":"RepositoryManagerPanelWebguiInstance",
-    "serverManagerUrl": "http://repository-manager-panel.local/server-manager/status",
+    "serverManagerUrl": "http://repository-manager-panel.app.local:9000/server-manager/status",
     "RT_ENV_GENERATED_DIR_NAME":".generated_data",
     "isWatch": true,
     "repositoryStorageServerManagerUrl"   : "/server-manager/status",

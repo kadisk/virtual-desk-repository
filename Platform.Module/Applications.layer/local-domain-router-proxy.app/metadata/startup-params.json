@@ -24,6 +24,10 @@
         {
             "host": "user-space.app.local",
             "target": "http://localhost:7005"
+        },
+        {
+            "host": "repository-manager-panel.app.local",
+            "target": "http://localhost:7006"
         }
     ]
 }
