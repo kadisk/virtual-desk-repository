@@ -1,0 +1,10 @@
+{
+    "port":"8978",
+    "serverName":"RepositoryManagerPanelWebguiInstance",
+    "serverManagerUrl": "http://repository-manager-panel.local/server-manager/status",
+    "RT_ENV_GENERATED_DIR_NAME":".generated_data",
+    "isWatch": true,
+    "repositoryStorageServerManagerUrl"   : "/server-manager/status",
+    "myServicesRepositoriesUploadDirPath" : "~/virtual-desk-state/local-app-data/my-services-uploded-repositories",
+    "repositoryStorageSocketPath"         : "/home/kadisk/EcosystemData/sockets/repository-storage-manager.app.sock"
+}

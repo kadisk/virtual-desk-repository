@@ -1,0 +1,7 @@
+{
+    "port"                                : "7006",
+    "serverName"                          : "RepositoryManagerPanelWebAppInstance",
+    "serverManagerUrl"                    : "http://repository-manager-panel.local:9000/server-manager/status",
+    "RT_ENV_GENERATED_DIR_NAME"           : ".generated_data",
+    "isWatch"                             : true
+}
