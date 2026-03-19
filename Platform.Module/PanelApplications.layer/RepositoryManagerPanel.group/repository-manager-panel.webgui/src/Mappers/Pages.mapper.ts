@@ -1,6 +1,6 @@
 
-import MyServicesPage from "../Pages/MyServices.page"
+import RepositoryHomePage from "../Pages/RepositoryHome.page"
 
 export default {
-    MyServicesPage
+    RepositoryHomePage
 }

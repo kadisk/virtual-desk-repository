@@ -29,7 +29,7 @@ const REPOSITORIES_MANAGER_MODE = Symbol()
 const OVERVIEW_TAB = Symbol()
 const DETAILS_TAB = Symbol()
 
-const MyServicesContainer = ({
+const RepositoryHomeContainer = ({
     SetQueryParams,
 	QueryParams,
     AddQueryParam,
@@ -187,4 +187,4 @@ const mapStateToProps = ({ HTTPServerManager, QueryParams }: any) => ({
     QueryParams,
     HTTPServerManager
 })
-export default connect(mapStateToProps, mapDispatchToProps)(MyServicesContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(RepositoryHomeContainer)
