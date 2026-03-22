@@ -58,7 +58,7 @@ const ServiceDetails = ({
                                     <td>
                                         {
                                             serviceIdSelected !== provisionedService.serviceId
-                                            && <button className="btn btn-azure btn-sm" onClick={() => onSelectService(provisionedService.serviceId)}>
+                                            && <button className="btn btn-cyan btn-sm" onClick={() => onSelectService(provisionedService.serviceId)}>
                                                     more details
                                                 </button>
                                         }

@@ -13,9 +13,10 @@ import GetAPI from "../../Utils/GetAPI"
 
 import WelcomeRepositoryManager from "./WelcomeRepositoryManager"
 import ImportRepositoryModal from "./ImportRepository.modal"
-import NamespaceAndRepositoryManagerModal from "./NamespaceAndRepositoryManager.modal"
+import UpdateRepositoryManagerModal from "./UpdateRepositoryManager.modal"
 import ImportingModal from "./Importing.modal"
 import NamespaceTable from "./Namespace.table"
+import ImportedRepositoriesOffcanvas from "./ImportedRepositories.offcanvas"
 
 import QueryParamsActionsCreator    from "../../Actions/QueryParams.actionsCreator"
 
@@ -24,11 +25,13 @@ const IMPORT_SELECT_MODE = Symbol()
 const IMPORTING_MODE = Symbol()
 const NO_REPOSITORIES_MODE = Symbol()
 const LOADING_MODE = Symbol()
+const UPDATE_REPOSITORY_MODE = Symbol()
 
 const REPOSITORIES_MANAGER_MODE = Symbol()
 
 const RepositoryHomeContainer = ({
     SetQueryParams,
+    RemoveQueryParam,
 	QueryParams,
     AddQueryParam,
     HTTPServerManager
@@ -41,6 +44,9 @@ const RepositoryHomeContainer = ({
     const [importDataCurrent, setImportDataCurrent] = useState<{ repositoryNamespace: string, sourceCodeURL: string }>()
     const [interfaceModeType, changeMode] = useState<any>(LOADING_MODE)
     const [ namespaces, setNamespaces ] = useState([])
+    const [ namespaceIdSelected, setNamespaceIdSelected ] = useState<any>()
+    const [ namespaceSelected, setNamespaceSelected ] = useState()
+    const [ recentRepositoryImported, setRecentRepositoryImported ] = useState()
 
     useEffect(() => {
         if(Object.keys(queryParams).length > 0){
@@ -93,6 +99,24 @@ const RepositoryHomeContainer = ({
 
     const handleFinishedImportModal = () => changeMode(LOADING_MODE)
 
+    const handleManageRepository = ({ id, namespace }) => {
+        AddQueryParam({ key: "namespace", value: id })
+        setNamespaceIdSelected(id)
+        setNamespaceSelected(namespace)
+        changeMode(REPOSITORIES_MANAGER_MODE)
+    }
+
+    const handleCloseImportedRepositories = () => {
+        RemoveQueryParam({ key: "namespace" })
+        setNamespaceIdSelected(null)
+        changeMode(DEFAULT_MODE)
+    }
+
+    const handleUpdateRepository = (recentRepositoryImported) => { 
+        setRecentRepositoryImported(recentRepositoryImported)
+        changeMode(UPDATE_REPOSITORY_MODE)
+    }
+
     return <>
         <div className="container-xl">
             <div className="row g-2 align-items-center">
@@ -118,7 +142,9 @@ const RepositoryHomeContainer = ({
             {
                 namespaces
                 && namespaces.length > 0
-                && <NamespaceTable namespaces={namespaces} />
+                && <NamespaceTable 
+                        namespaces={namespaces} 
+                        onManageRepository={handleManageRepository}/>
             }
         </div>
 
@@ -126,10 +152,26 @@ const RepositoryHomeContainer = ({
             interfaceModeType === IMPORT_SELECT_MODE
             && <ImportRepositoryModal onImport={handleImportingMode} onClose={() => changeMode(LOADING_MODE)} />
         }
+
         {
             interfaceModeType === REPOSITORIES_MANAGER_MODE
-            && <NamespaceAndRepositoryManagerModal onImportNew={() => changeMode(IMPORT_SELECT_MODE)} onClose={() => changeMode(DEFAULT_MODE)} />
+            && <ImportedRepositoriesOffcanvas 
+                                namespaceId={namespaceIdSelected}
+                                namespace={namespaceSelected}
+                                onClose={() => handleCloseImportedRepositories()} 
+                                onUpdateRespository={(recentRepositoryImported) => handleUpdateRepository(recentRepositoryImported)}/>
         }
+
+        {
+            interfaceModeType === UPDATE_REPOSITORY_MODE
+            && namespaceIdSelected
+            && <UpdateRepositoryManagerModal 
+                    namespaceId={namespaceIdSelected}
+                    namespace={namespaceSelected}
+                    recentRepositoryImported={recentRepositoryImported}
+                    onClose={() => handleCloseImportedRepositories()} />
+        }
+
         {
             interfaceModeType === NO_REPOSITORIES_MODE
             && <WelcomeRepositoryManager onImportNew={() => changeMode(IMPORT_SELECT_MODE)} />

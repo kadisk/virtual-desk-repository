@@ -1,15 +1,17 @@
 import * as React from "react"
 
-const NamespaceTable = ({ namespaces }) =>
+const NamespaceTable = ({ 
+    namespaces,
+    onManageRepository,
+}) =>
     <div className="py-4">
         <div className="card">
             <div className="table-responsive">
                 <table className="table table-vcenter card-table table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Namespace</th>
                             <th></th>
+                            <th>ID | Namespace</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -17,13 +19,12 @@ const NamespaceTable = ({ namespaces }) =>
                             namespaces
                             .map(({id, namespace}) => 
                             <tr>
-                                <td className="text-secondary">{id}</td>
-                                <td className="text-secondary">{namespace}</td>
                                 <td>
-                                    <div className="btn-list flex-nowrap">
-                                        <button className="btn btn-1">manage</button>
-                                    </div>
+                                    <button className="btn btn-purple btn-sm" onClick={() => onManageRepository({ id, namespace })}>
+                                        manage repository
+                                    </button>
                                 </td>
+                                <td>{id} | {namespace}</td>
                             </tr>)
                         }
                     </tbody>
