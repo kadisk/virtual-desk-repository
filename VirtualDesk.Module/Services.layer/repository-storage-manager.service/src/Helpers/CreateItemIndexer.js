@@ -81,7 +81,7 @@ const CreateItemIndexer = ({
         const itemData = await _AddRepositoryItem({ repositoryId, itemName, itemType, itemPath, parentId })
     
         ScanPackageItemType({
-            itemsDirPath: itemAbsolutPath,
+            parentDirPath: itemAbsolutPath,
             callbackfn: (dirItem) => {
                 _IndexPackage({
                     repositoryId,

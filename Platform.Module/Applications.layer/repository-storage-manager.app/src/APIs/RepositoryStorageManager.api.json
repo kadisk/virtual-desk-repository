@@ -153,27 +153,27 @@
 			"summary": "RegisterImportedRepository",
 			"parameters": [
 				{
-					"name": "username",
-					"in": "body",
-					"type": "string",
-					"required": true
-				},
-				{
-					"name": "repositoryNamespace",
-					"in": "body",
-					"type": "string",
-					"required": true
-				},
-				{
 					"name": "namespaceId",
 					"in": "body",
 					"type": "string",
 					"required": true
 				},
 				{
-					"name": "repositoryFilePath",
+					"name": "repositoryCodePath",
 					"in": "body",
 					"type": "string",
+					"required": true
+				},
+				{
+					"name": "sourceType",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "sourceParams",
+					"in": "body",
+					"type": "json",
 					"required": true
 				}
 			]

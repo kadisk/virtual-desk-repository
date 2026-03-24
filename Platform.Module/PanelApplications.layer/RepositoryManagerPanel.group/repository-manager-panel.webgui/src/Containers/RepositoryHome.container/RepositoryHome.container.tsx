@@ -123,14 +123,7 @@ const RepositoryHomeContainer = ({
                 {
                     interfaceModeType === DEFAULT_MODE
                     && <div className="col-auto ms-auto d-print-none">
-                        <div className="btn-list">
-                            <span className="d-none d-sm-inline">
-                                <button className="btn btn-outline-purple" onClick={() => changeMode(REPOSITORIES_MANAGER_MODE)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folders"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" /><path d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2" /></svg>
-                                    Repository manager
-                                </button>
-                            </span>
-                            
+                        <div className="btn-list">     
                             <button className="btn btn-purple" onClick={() => changeMode(IMPORT_SELECT_MODE)}>
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder-up"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-7a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v3.5" /><path d="M19 22v-6" /><path d="M22 19l-3 -3l-3 3" /></svg>
                                 Import new repository
