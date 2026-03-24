@@ -79,7 +79,6 @@ const CreateServiceRuntimeStateManager = () => {
         switch (status) {
             case CREATED:
                 if(serviceData.serviceName){
-                    debugger
                     _RequestData(RequestTypes.BUILD_NEW_IMAGE, {
                         serviceId,
                         instanceId,

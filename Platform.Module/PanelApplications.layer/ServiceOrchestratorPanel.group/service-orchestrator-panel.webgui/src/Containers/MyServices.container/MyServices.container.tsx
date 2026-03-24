@@ -14,7 +14,6 @@ import GetAPI from "../../Utils/GetAPI"
 import WelcomeMyServices from "./WelcomeMyServices"
 import ImportRepositoryModal from "./ImportRepository.modal"
 import ServiceProvisioningModal from "./ServiceProvisioning.modal"
-import NamespaceAndRepositoryManagerModal from "./NamespaceAndRepositoryManager.modal"
 import ImportingModal from "./Importing.modal"
 import ServiceDetailsOffcanvas from "./ServiceDetails.offcanvas"
 
@@ -31,7 +30,7 @@ const IMPORTING_MODE = Symbol()
 const NO_REPOSITORIES_MODE = Symbol()
 const LOADING_MODE = Symbol()
 const SERVICE_PROVISIONING_MODE = Symbol()
-const REPOSITORIES_MANAGER_MODE = Symbol()
+
 
 const OVERVIEW_TAB = Symbol()
 const DETAILS_TAB = Symbol()
@@ -47,13 +46,11 @@ const MyServicesContainer = ({
     const navigate = useNavigate()
     const queryParams = qs.parse(location.search.substr(1))
 
-    const [importDataCurrent, setImportDataCurrent] = useState<{ repositoryNamespace: string, sourceCodeURL: string }>()
-    const [interfaceModeType, changeMode] = useState<any>(LOADING_MODE)
+    const [importDataCurrent, setImportDataCurrent]             = useState<{ repositoryNamespace: string, sourceCodeURL: string }>()
+    const [interfaceModeType, changeMode]                       = useState<any>(LOADING_MODE)
     const [provisionedServicesList, setProvisionedServicesList] = useState([])
-
-    const [serviceIdSelected, setServiceIdSelected] = useState()
-
-    const [tabsCurrent, setTabsCurrent] = useState<any>()
+    const [serviceIdSelected, setServiceIdSelected]             = useState()
+    const [tabsCurrent, setTabsCurrent]                         = useState<any>()
 
     const provisionedServicesListRef = useRef(provisionedServicesList)
 
@@ -191,10 +188,6 @@ const MyServicesContainer = ({
                                     Service provisioning
                                 </button>
                             </span>
-                            <button className="btn btn-outline-cyan" onClick={() => changeMode(REPOSITORIES_MANAGER_MODE)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folders"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" /><path d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2" /></svg>
-                                Repository manager
-                            </button>
                         </div>
                     </div>
                 }
@@ -236,10 +229,6 @@ const MyServicesContainer = ({
         {
             interfaceModeType === SERVICE_PROVISIONING_MODE
             && <ServiceProvisioningModal onClose={() => changeMode(DEFAULT_MODE)} />
-        }
-        {
-            interfaceModeType === REPOSITORIES_MANAGER_MODE
-            && <NamespaceAndRepositoryManagerModal onImportNew={() => changeMode(IMPORT_SELECT_MODE)} onClose={() => changeMode(DEFAULT_MODE)} />
         }
         {
             interfaceModeType === NO_REPOSITORIES_MODE
