@@ -105,18 +105,21 @@ const UpdateRepositoryManagerModal = ({
 
         if(importType === GIT_CLONE_IMPORT_TYPE){
             const { repositoryGitUrl, personalAccessToken } = formUpdateValues
-            await _GetRepositoryServiceManager().UpdateRepositoryWithGitClone({
-                namespaceId,
-                repositoryGitUrl,
-                personalAccessToken
-            })
+            await _GetRepositoryServiceManager()
+                .UpdateRepositoryWithGitClone({
+                    namespaceId,
+                    repositoryGitUrl,
+                    personalAccessToken
+                })
         } else if(importType === TAR_GZ_UPLOAD_IMPORT_TYPE){
             await _GetRepositoryServiceManager()
-            .UpdateRepositoryWithUpload({
-                namespaceId,
-                repositoryFile: repositoryFileForUpload
-            })
+                .UpdateRepositoryWithUpload({
+                    namespaceId,
+                    repositoryFile: repositoryFileForUpload
+                })
         }
+
+        onClose()
     }
 
     return <div className="modal modal-blur show" role="dialog" aria-hidden="false" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.8)" }}>
@@ -127,7 +130,7 @@ const UpdateRepositoryManagerModal = ({
                     <button type="button" className="btn-close" onClick={onClose}/>
                 </div>
                 {
-                    (mode === UPDATE_REPOSITORY_MODE ||  mode === UPDATING_REPOSITORY_MODE)
+                    (mode === UPDATE_REPOSITORY_MODE)
                     && namespace
                     && <div className="modal-body bg-purple-lt">
                             {namespace}
