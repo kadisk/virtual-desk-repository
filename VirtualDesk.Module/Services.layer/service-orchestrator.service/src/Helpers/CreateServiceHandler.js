@@ -4,6 +4,11 @@ const PrepareDirPath = require("./PrepareDirPath")
 const CopyDirRepository = require("./CopyDirRepository")
 const GetContextTarStream = require("./GetContextTarStream")
 
+
+const GetISODate = () => {
+  return new Date().toISOString().replace(/:/g, '-').split('.')[0];
+}
+
 const CreateServiceHandler = ({
     absolutInstanceDataDirPath,
     MyWorkspaceDomainService,
@@ -33,42 +38,25 @@ const CreateServiceHandler = ({
 
     }
 
-    const _MountPathInstanceRepositoriesSourceCodeDirPath = ({ username, repositoryNamespace, serviceDataDirName }) => {
-        const repositoriesCodePath = resolve(absolutInstanceDataDirPath, username, serviceDataDirName, repositoryNamespace)
-        PrepareDirPath(repositoriesCodePath)
-        return repositoriesCodePath
-    }
-
     const CreateService = async ({
-        username,
         serviceName,
         serviceDescription,
-        originRepositoryId,
         originRepositoryNamespace,
         originRepositoryCodePath,
-        originPackageId,
-        originPackageName,
-        originPackageType,
         originPackagePath
     }) => {
 
-        const instanceRepositoryCodePath = _MountPathInstanceRepositoriesSourceCodeDirPath({
-            username, 
-            repositoryNamespace: originRepositoryNamespace,
-            serviceDataDirName:serviceName
-        })
+        const instanceRepositoryCodePath = resolve(absolutInstanceDataDirPath, serviceName+"-"+GetISODate())
+        
+        PrepareDirPath(instanceRepositoryCodePath)
 
         const serviceData = await MyWorkspaceDomainService
             .RegisterServiceProvisioning({
                 serviceName,
                 serviceDescription,
                 instanceRepositoryCodePath,
-                originRepositoryId,
                 originRepositoryNamespace,
                 originRepositoryCodePath,
-                originPackageId,
-                originPackageName,
-                originPackageType,
                 originPackagePath
         })
         await CopyDirRepository(originRepositoryCodePath, instanceRepositoryCodePath)

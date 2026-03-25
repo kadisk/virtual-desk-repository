@@ -14,7 +14,7 @@ const CreateMyWorkspaceDomainService = ({
         return items
     }
     
-    const ListServicesByRepositoryIds = async (repositoryIds) => {
+    const ListProvisionedServices = async () => {
         const items = await ServiceModel.findAll({
             include: [
                 {
@@ -24,11 +24,6 @@ const CreateMyWorkspaceDomainService = ({
                     }]
                 }
             ],
-            where: {
-                originRepositoryId: {
-                    [Op.in]: repositoryIds
-                }
-            },
             distinct: true 
         })
         return items
@@ -52,12 +47,8 @@ const CreateMyWorkspaceDomainService = ({
         serviceName,
         serviceDescription,
         instanceRepositoryCodePath,
-        originRepositoryId,
         originRepositoryNamespace,
         originRepositoryCodePath,
-        originPackageId,
-        originPackageName,
-        originPackageType,
         originPackagePath
     }) => 
         ServiceModel
@@ -65,12 +56,8 @@ const CreateMyWorkspaceDomainService = ({
                 serviceName,
                 serviceDescription,
                 instanceRepositoryCodePath,
-                originRepositoryId,
                 originRepositoryNamespace,
                 originRepositoryCodePath,
-                originPackageId,
-                originPackageName,
-                originPackageType,
                 originPackagePath
             })
 
@@ -169,7 +156,7 @@ const CreateMyWorkspaceDomainService = ({
         RegisterBuildedImage,
         ListAllServiceId,
         ListServices,
-        ListServicesByRepositoryIds,
+        ListProvisionedServices,
         GetServiceById,
         ListImageBuildHistoryByServiceId,
         ListInstancesByServiceId,

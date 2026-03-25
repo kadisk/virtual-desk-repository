@@ -145,7 +145,7 @@ const ServiceProvisioningModal = ({
         setStartupParamsData(response.data)
     }
 
-    const GetProvisionPayload = () => ({
+    const MountProvisionPayload = () => ({
         packageId: selectedPackageData?.id,
         serviceName,
         serviceDescription,
@@ -163,7 +163,7 @@ const ServiceProvisioningModal = ({
         const { ProvisionService } = _GetMyServicesManagerAPI()
 
         try {
-            await ProvisionService(GetProvisionPayload())
+            await ProvisionService(MountProvisionPayload())
             changeTypeMode(PROVISIONING_COMPLETION_MODE)
         } catch (error) {
             console.log(error)

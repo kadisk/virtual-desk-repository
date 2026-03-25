@@ -50,12 +50,8 @@ const MyServicesManagerController = (params) => {
         })
     }
 
-    const ListProvisionedServices = ( { authenticationData:{ userId } } ) => {
-        return ServiceOrchestratorCommand(async (API) => {
-            const repositories = await RepositoryStorageCommand((API) => API.ListRepositoriesByUserId({ userId }))
-            const repositoryIds = repositories.map(({id}) => id)
-            return API.ListServicesByRepositoryIds({ repositoryIds })
-        })
+    const ListProvisionedServices = ( ) => {
+        return ServiceOrchestratorCommand(async (API) => API.ListProvisionedServices())
     }
 
     const GetServiceData                 = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.GetService({ serviceId }))
@@ -85,31 +81,22 @@ const MyServicesManagerController = (params) => {
         startupParams,
         ports,
         networkmode
-    }, { authenticationData }) => {
-         const { userId, username } = authenticationData
+    }) => {
 
         const packageData = await RepositoryStorageCommand((API) => API.GetPackageById({ packageId }))
         
         const { 
-            repositoryId,
             repositoryNamespace,
             repositoryCodePath,
-            packageName,
-            packageType,
             packagePath
         } = packageData
 
         await ServiceOrchestratorCommand((API) => 
             API.ProvisionService({
-                username,
                 serviceName,
                 serviceDescription,
-                originRepositoryId: repositoryId,
                 originRepositoryNamespace: repositoryNamespace,
                 originRepositoryCodePath: repositoryCodePath,
-                originPackageId: packageId,
-                originPackageName: packageName,
-                originPackageType: packageType,
                 originPackagePath: packagePath,
                 startupParams, 
                 ports,
@@ -138,7 +125,8 @@ const MyServicesManagerController = (params) => {
         GetNetworkModeData,
         UpdateServicePorts,
         UpdateServiceStartupParams,
-        ProvisionService
+        ProvisionService,
+        ///GetContainerLogs: (serviceId, containerId) => ServiceOrchestratorCommand((API) => API.GetContainerLogs({ serviceId, containerId }))
     }
 
     return Object.freeze(controllerServiceObject)

@@ -83,7 +83,6 @@ const CreateServiceRuntimeStateManager = () => {
                         serviceId,
                         instanceId,
                         serviceName               : serviceData.serviceName,
-                        originPackageId           : serviceData.originPackageId,
                         originRepositoryCodePath  : serviceData.originRepositoryCodePath,
                         originRepositoryNamespace : serviceData.originRepositoryNamespace,
                         originPackagePath         : serviceData.originPackagePath,
@@ -294,12 +293,8 @@ const CreateServiceRuntimeStateManager = () => {
                         serviceName               : serviceData.serviceName,
                         serviceDescription        : serviceData.serviceDescription,
                         repositoryCodePath        : serviceData.instanceRepositoryCodePath,
-                        originRepositoryId        : serviceData.originRepositoryId,
                         originRepositoryNamespace : serviceData.originRepositoryNamespace,
-                        originRepositoryCodePath  : serviceData.originRepositoryCodePath,   
-                        originPackageId           : serviceData.originPackageId,
-                        originPackageName         : serviceData.originPackageName,
-                        originPackageType         : serviceData.originPackageType,
+                        originRepositoryCodePath  : serviceData.originRepositoryCodePath,
                         originPackagePath         : serviceData.originPackagePath,
                     })
                     ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, requestData.nextStatus)

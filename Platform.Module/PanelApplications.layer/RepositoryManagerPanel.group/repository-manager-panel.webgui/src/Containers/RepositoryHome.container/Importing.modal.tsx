@@ -41,13 +41,6 @@ const ImportingModal = ({
 
     }, [importData])
 
-
-    const _GetMyServicesManagerAPI = () => 
-        GetAPI({ 
-            apiName:"MyServicesManager",  
-            serverManagerInformation: HTTPServerManager
-        })
-
     const _GetRepositoryServiceManagerAPI = () =>
         GetAPI({
             apiName: "RepositoryServiceManager",

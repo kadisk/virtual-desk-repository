@@ -8,16 +8,8 @@
 		},
 		{
 			"path": "/provisioned-services",
-			"method": "POST",
-			"summary": "ListServicesByRepositoryIds",
-			"parameters": [
-				{
-					"name": "repositoryIds",
-					"in": "body",
-					"type": "json",
-					"required": true
-				}
-			]
+			"method": "GET",
+			"summary": "ListProvisionedServices"
 		},
 		{
 			"path": "/service/data",
@@ -264,12 +256,6 @@
 			"parameters": [
 				{
 					"in": "body",
-					"name": "username",
-					"type": "string",
-					"required": true
-				},
-				{
-					"in": "body",
 					"name": "serviceName",
 					"type": "string",
 					"required": true
@@ -282,12 +268,6 @@
 				},
 				{
 					"in": "body",
-					"name": "originRepositoryId",
-					"type": "number",
-					"required": true
-				},
-				{
-					"in": "body",
 					"name": "originRepositoryNamespace",
 					"type": "string",
 					"required": true
@@ -295,24 +275,6 @@
 				{
 					"in": "body",
 					"name": "originRepositoryCodePath",
-					"type": "string",
-					"required": true
-				},
-				{
-					"in": "body",
-					"name": "originPackageId",
-					"type": "number",
-					"required": true
-				},
-				{
-					"in": "body",
-					"name": "originPackageName",
-					"type": "string",
-					"required": true
-				},
-				{
-					"in": "body",
-					"name": "originPackageType",
 					"type": "string",
 					"required": true
 				},

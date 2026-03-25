@@ -162,13 +162,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
 
     const repositoryInformation = repositoriesImportedList[0]
 
-    const packageId = await RepositoryStorageCommand((API) => API.GetPackageId({
-        repositoryId : repositoryInformation.id,
-        packageName  : provisionData.packageName,
-        packageType  : provisionData.packageType,
-        packagePath  : provisionData.packagePath
-    }))
-
     try {
 
         const ServiceOrchestratorCommand = MountCommand({ 
@@ -182,14 +175,9 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
         console.log('Iniciando provisionamento...'.highlight)
 
         await ServiceOrchestratorCommand((API) => API.ProvisionService({
-            originRepositoryId        : repositoryInformation.id,
             originRepositoryCodePath  : repositoryInformation.repositoryCodePath,
-            originPackageId           : packageId,
-            originPackageName         : provisionData.packageName,
-            originPackageType         : provisionData.packageType,
             originPackagePath         : provisionData.packagePath,
             originRepositoryNamespace : provisionData.repositoryNamespace,
-            username                  : credentials.username,
             serviceName               : provisionData.serviceName,
             serviceDescription        : provisionData.serviceDescription,
             startupParams             : provisionData.startupParams,

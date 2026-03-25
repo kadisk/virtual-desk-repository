@@ -25,27 +25,11 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        originRepositoryId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         originRepositoryNamespace: {
             type: DataTypes.STRING,
             allowNull: false
         },
         originRepositoryCodePath: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        originPackageId: {
-            type: DataTypes.INTEGER,
-            allowNull: false 
-        },
-        originPackageName: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        originPackageType: {
             type: DataTypes.STRING,
             allowNull: false
         },

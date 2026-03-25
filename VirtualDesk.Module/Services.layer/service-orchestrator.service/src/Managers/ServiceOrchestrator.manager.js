@@ -247,32 +247,21 @@ const ServiceOrchestratorManager = (params) => {
     }
 
     const ProvisionService = async ({
-        username,
         serviceName,
         serviceDescription,
-        originRepositoryId,
         originRepositoryNamespace,
         originRepositoryCodePath,
-        originPackageId,
-        originPackageName,
-        originPackageType,
         originPackagePath,
         startupParams,
         ports = [],
         networkmode= "bridge"
     }) => {
 
-
         const serviceData = await CreateService({
-                username,
                 serviceName,
                 serviceDescription,
-                originRepositoryId,
                 originRepositoryNamespace,
                 originRepositoryCodePath,
-                originPackageId,
-                originPackageName,
-                originPackageType,
                 originPackagePath
             })
 
@@ -287,10 +276,6 @@ const ServiceOrchestratorManager = (params) => {
         const { 
             id: serviceId,
             serviceName,
-            originPackageId,
-            originPackageName,
-            originPackageType,
-            originRepositoryId,
             originRepositoryNamespace
         } = serviceData   
 
@@ -298,10 +283,6 @@ const ServiceOrchestratorManager = (params) => {
             status : GetServiceStatus(serviceId),
             serviceId,
             serviceName,
-            originPackageId,
-            originPackageName,
-            originPackageType,
-            originRepositoryId,
             originRepositoryNamespace
         }
     }
@@ -313,8 +294,8 @@ const ServiceOrchestratorManager = (params) => {
         return provisionedServicesData
     }
 
-    const ListServicesByRepositoryIds = async (repositoryIds) => {
-        const servicesData = await MyWorkspaceDomainService.ListServicesByRepositoryIds(repositoryIds)
+    const ListProvisionedServices = async () => {
+        const servicesData = await MyWorkspaceDomainService.ListProvisionedServices()
         const provisionedServicesData = servicesData
             .map((servicesData) => _GetProvisionedServiceInfo(servicesData))
         return provisionedServicesData
@@ -330,12 +311,8 @@ const ServiceOrchestratorManager = (params) => {
             serviceDescription,
             appType,
             instanceRepositoryCodePath,
-            originRepositoryId,
             originRepositoryNamespace,
             originRepositoryCodePath,
-            originPackageId,
-            originPackageName,
-            originPackageType,
             originPackagePath
         } = serviceData
 
@@ -345,12 +322,8 @@ const ServiceOrchestratorManager = (params) => {
             serviceDescription,
             appType,
             instanceRepositoryCodePath,
-            originRepositoryId,
             originRepositoryNamespace,
             originRepositoryCodePath,
-            originPackageId,
-            originPackageName,
-            originPackageType,
             originPackagePath
         }
 
@@ -406,7 +379,7 @@ const ServiceOrchestratorManager = (params) => {
 
     return {
         ProvisionService,
-        ListServicesByRepositoryIds,
+        ListProvisionedServices,
         GetService,
         ListServices,
         ListInstances,
