@@ -334,12 +334,6 @@ const ServiceOrchestratorManager = (params) => {
         return instanceData?.startupParams || {}
     }
 
-    const GetInstanceStartupParamsSchema = async (serviceId) => {
-        const serviceData = await MyWorkspaceDomainService.GetServiceById(serviceId)
-        const metadata = await GetMetadataByPackageId(serviceData.originPackageId)
-        return metadata?.schema || {}
-    }
-
     const GetInstancePortsData = async (serviceId) => {
         const instanceData = await MyWorkspaceDomainService.GetLastInstanceByServiceId(serviceId)
         return instanceData.ports || []
@@ -394,7 +388,6 @@ const ServiceOrchestratorManager = (params) => {
         StartService,
         StopService,
         GetInstanceStartupParamsData,
-        GetInstanceStartupParamsSchema,
         GetInstancePortsData,
         GetNetworkModeData,
         UpdateServicePorts,

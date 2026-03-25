@@ -83,7 +83,8 @@ const ServiceDetailsOffcanvas = ({
 
     useEffect(() => {
         if(isUpdateStartupParamsMode){
-            fetchInstanceStartupParamsSchema()
+            // TODO é preciso trazer o Schema do pacote usado no serviço
+            //fetchInstanceStartupParamsSchema()
         }else {
             startupParamsValidate.current = undefined
         }

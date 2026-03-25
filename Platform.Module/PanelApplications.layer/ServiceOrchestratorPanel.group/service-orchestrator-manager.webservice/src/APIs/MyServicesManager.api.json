@@ -181,19 +181,6 @@
 			]
 		},
 		{
-			"path": "/service/instance/startup-params-schema",
-			"method": "GET",
-			"summary": "GetInstanceStartupParamsSchema",
-			"parameters": [
-				{
-					"name": "serviceId",
-					"in": "query",
-					"type": "string",
-					"required": true
-				}
-			]
-		},
-		{
 			"path": "/service/instance/ports",
 			"method": "GET",
 			"summary": "GetInstancePortsData",
