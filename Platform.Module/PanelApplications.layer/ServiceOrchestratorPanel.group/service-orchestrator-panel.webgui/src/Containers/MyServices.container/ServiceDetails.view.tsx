@@ -46,8 +46,7 @@ const ServiceDetails = ({
                             <th></th>
                             <th>Status</th>
                             <th><strong>Service</strong> ID | Name</th>
-                            <th><strong>Package</strong> ID | Name | Type</th>
-                            <th><strong>Repository</strong> ID | Namespace</th>
+                            <th><strong>Repository</strong> Namespace</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -65,8 +64,7 @@ const ServiceDetails = ({
                                     </td>
                                     <td><span className={`${GetStatusBadgeClasses(provisionedService.status)} me-2`}>{provisionedService.status}</span></td>
                                     <td>{provisionedService.serviceId} | {provisionedService.serviceName}</td>
-                                    <td className="text-secondary">{provisionedService.originPackageId} | {provisionedService.originPackageName} | {provisionedService.originPackageType}</td>
-                                    <td className="text-secondary">{provisionedService.originRepositoryId} | {provisionedService.originRepositoryNamespace}</td>
+                                    <td className="text-secondary">{provisionedService.originRepositoryNamespace}</td>
                                     <td>
                                         {
                                             ( provisionedService.status === "STOPPED"

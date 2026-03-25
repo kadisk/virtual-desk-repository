@@ -40,8 +40,6 @@ const ServiceCard = ({
     onSelectService,
     serviceName,
     originRepositoryNamespace,
-    originPackageName,
-    originPackageType,
     onStartService,
     onStopService
 }) => {
@@ -51,7 +49,7 @@ const ServiceCard = ({
                 <div className="card-header py-2">
                     <div>
                         <h4 className="card-title"><span className={`${GetStatusBadgeClasses(status)} me-2`}>{status}</span><strong>{serviceName}</strong></h4>
-                        <p className="card-subtitle">{originRepositoryNamespace}/{originPackageName}/{originPackageType}</p>
+                        <p className="card-subtitle mt-2"><strong>REPOSITORY NAMESPACE</strong><br/>{originRepositoryNamespace}</p>
                     </div>
                 </div>
                 {
