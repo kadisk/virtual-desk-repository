@@ -10,8 +10,8 @@ const NamespaceTable = ({
                 <table className="table table-vcenter card-table table-striped">
                     <thead>
                         <tr>
-                            <th></th>
                             <th>ID | Namespace</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -19,12 +19,12 @@ const NamespaceTable = ({
                             namespaces
                             .map(({id, namespace}) => 
                             <tr>
+                                <td>{id} | {namespace}</td>
                                 <td>
                                     <button className="btn btn-purple btn-sm" onClick={() => onManageRepository({ id, namespace })}>
                                         manage repository
                                     </button>
                                 </td>
-                                <td>{id} | {namespace}</td>
                             </tr>)
                         }
                     </tbody>

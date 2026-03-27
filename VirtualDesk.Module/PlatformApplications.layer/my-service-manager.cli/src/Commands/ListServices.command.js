@@ -26,8 +26,7 @@ const ListServicesCommand = async ({ startupParams, params }) => {
         head: [
             'Status',
             '[ID] Service',
-            '[ID] Origin Package',
-            '[ID] Origin Repository'
+            'Repository Namespace'
         ]
     })
 
@@ -35,8 +34,7 @@ const ListServicesCommand = async ({ startupParams, params }) => {
         table.push([
             service.status,
             `[${service.serviceId}] ${service.serviceName}`,
-            `[${service.originPackageId}] ${service.originPackageName}.${service.originPackageType}`,
-            `[${service.originRepositoryId}] ${service.originRepositoryNamespace}`
+            `${service.originRepositoryNamespace}`
         ])
     })
 

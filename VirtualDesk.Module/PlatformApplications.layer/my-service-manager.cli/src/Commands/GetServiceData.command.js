@@ -21,13 +21,9 @@ const PrintServiceInfo = (info) => {
     printLine('Service Name:', info.serviceName)
     printLine('Service Description:', info.serviceDescription)
     printLine('Instance Repo Code Path:', info.instanceRepositoryCodePath)
-    printLine('Origin Repository ID:', info.originRepositoryId)
-    printLine('Origin Repository NS:', info.originRepositoryNamespace)
-    printLine('Origin Repo Code Path:', info.originRepositoryCodePath)
-    printLine('Origin Package ID:', info.originPackageId)
-    printLine('Origin Package Name:', info.originPackageName)
-    printLine('Origin Package Type:', info.originPackageType)
-    printLine('Origin Package Path:', info.originPackagePath)
+    printLine('Repository Namespace:', info.originRepositoryNamespace)
+    printLine('Repository Code Path:', info.originRepositoryCodePath)
+    printLine('Package Path:', info.originPackagePath)
 
     console.log(colors.gray('-'.repeat(totalWidth)) + '\n')
 }
