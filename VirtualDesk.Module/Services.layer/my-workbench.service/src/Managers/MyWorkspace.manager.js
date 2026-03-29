@@ -45,6 +45,7 @@ const MyWorkspaceManager = (params) => {
     _Start()
 
     const CreateNewRepository = async ({userId, repositoryCodePath, repositoryNamespace}) => {
+        //TODO userId será removido
         const existingNamespace = await RepositoryStorageCommand((API) => API.GetRepositoriesImportedList({ repositoryNamespace, userId }))
 
         if (existingNamespace) 

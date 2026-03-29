@@ -41,9 +41,9 @@ const MyWorkspaceController = (params) => {
         return myWorkspaceManagerService.CreateNewRepository({ userId, username, repositoryNamespace })
     }
 
-    const ListRepositoryNamespace = ({ authenticationData }) => {
+    const ListNamespace = ({ authenticationData }) => {
         const { userId } = authenticationData
-        return RepositoryStorageCommand((API) => API.ListRepositoryNamespace({ userId }))
+        return RepositoryStorageCommand((API) => API.ListNamespace())
     }
 
     const ImportRepository = ({ repositoryNamespace, sourceCodeURL }, { authenticationData }) => {
@@ -94,8 +94,6 @@ const MyWorkspaceController = (params) => {
 
             const repoData = await myWorkspaceManagerService
                 .RegisterNamespaceAndRepositoryUploadedAndExtract({
-                    userId, 
-                    username,
                     repositoryNamespace: params.repositoryNamespace, 
                     repositoryFilePath
                 })
@@ -106,19 +104,19 @@ const MyWorkspaceController = (params) => {
 
     }
 
-    const ListRepositories = async (namespaceId, {authenticationData}) => {
-        const { userId } = authenticationData
-        const repositories = await RepositoryStorageCommand((API) => API.ListRepositories({ namespaceId }))
+    const ListRepositoriesByNamespace = async (namespaceId, {authenticationData}) => {
+        //const { userId } = authenticationData
+        const repositories = await RepositoryStorageCommand((API) => API.ListRepositoriesByNamespace({ namespaceId }))
         return repositories
     }
     
     const controllerServiceObject = {
         controllerName : "MyWorkspaceController",
         CreateNewRepository,
-        ListRepositoryNamespace,
+        ListNamespace,
         ImportRepository,
         UploadRepository,
-        ListRepositories,
+        ListRepositoriesByNamespace,
         GetItemHierarchy                    : myWorkspaceManagerService.GetItemHierarchy,
         GetRepositoryGeneralInformation     : myWorkspaceManagerService.GetRepositoryGeneralInformation,
         GetItemInformation                  : myWorkspaceManagerService.GetItemInformation,

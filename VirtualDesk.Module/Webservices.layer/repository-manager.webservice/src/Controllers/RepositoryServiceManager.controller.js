@@ -5,6 +5,8 @@ const os = require('os')
 const git = require('isomorphic-git')
 const http = require('isomorphic-git/http/node')
 
+const crypto = require('crypto')
+
 const ConvertPathToAbsolutPath = (_path) => join(_path).replace('~', os.homedir())
 const GetRequestParams = ({body, params:path, query}) => ({...path, ...body, ...query})
 
@@ -36,22 +38,18 @@ const RepositoryServiceManagerController = (params) => {
 
     const uploadAbsolutDirPath = ConvertPathToAbsolutPath(uploadDirPath)
 
-    const ListRepositories = async (namespaceId, {authenticationData}) => {
-        const { userId } = authenticationData
-        const repositories = await RepositoryStorageCommand((API) => API.ListRepositories({ namespaceId }))
+    const ListRepositoriesByNamespace = async (namespaceId) => {
+        const repositories = await RepositoryStorageCommand((API) => API.ListRepositoriesByNamespace({ namespaceId }))
         return repositories
     }
 
-    const ListNamespaces = async ({authenticationData}) => {
-        const { userId } = authenticationData
-        const namespaces = await RepositoryStorageCommand((API) => API.ListRepositoryNamespace({ userId }))
+    const ListNamespaces = async () => {
+        const namespaces = await RepositoryStorageCommand((API) => API.ListNamespace())
         return namespaces
     }
 
-    const CheckRepositoryImported = async ({ authenticationData }) => {
-        const { userId } = authenticationData
-
-       const repositoryCount = await RepositoryStorageCommand((API) => API.GetTotalNamespaceByUserId({ userId }))
+    const CheckRepositoryImported = async () => {
+        const repositoryCount = await RepositoryStorageCommand((API) => API.GetTotalNamespace())
 
         if (repositoryCount > 0) {
             return "READY"
@@ -64,11 +62,10 @@ const RepositoryServiceManagerController = (params) => {
         request, 
         response,
         next,
-        username,
         onUpload
     }) => {
         
-        const repositoriesDirPath = join(uploadAbsolutDirPath, username)
+        const repositoriesDirPath = join(uploadAbsolutDirPath, crypto.randomUUID())
 
         if (!fs.existsSync(repositoriesDirPath)) fs.mkdirSync(repositoriesDirPath, { recursive: true })
 
@@ -97,20 +94,16 @@ const RepositoryServiceManagerController = (params) => {
     }
     
     const UploadRepository = (request, response, next) => {
-        const { authenticationData } = request
-        const { userId, username } = authenticationData
+
         UploadProcess({
             request, 
             response,
             next,
-            username,
             onUpload: async (repositoryFilePath) => {
                 const params = GetRequestParams(request)
 
                 return await RepositoryStorageCommand((API) => 
                     API.RegisterNamespaceAndRepositoryUploadedAndExtract({
-                        userId, 
-                        username,
                         repositoryNamespace: params.repositoryNamespace, 
                         repositoryFilePath
                     }))
@@ -119,13 +112,10 @@ const RepositoryServiceManagerController = (params) => {
     }
 
     const UpdateRepositoryWithUpload = (request, response, next) => {
-        const { authenticationData } = request
-        const { userId, username } = authenticationData
         UploadProcess({
             request, 
             response,
             next,
-            username,
             onUpload: async (repositoryFilePath) => {
                 const params = GetRequestParams(request)
       
@@ -133,7 +123,6 @@ const RepositoryServiceManagerController = (params) => {
 
                 const repositoryImportedData =  await RepositoryStorageCommand((API) => 
                     API.ExtractAndRegisterRepository({ 
-                        username, 
                         repositoryNamespace: namespaceData.namespace,
                         namespaceId: namespaceData.id,
                         repositoryFilePath
@@ -147,12 +136,9 @@ const RepositoryServiceManagerController = (params) => {
     }
 
     const GetRepositoryCodePath = ({
-        repositoryNamespace,
-        userId,
-        username
+        repositoryNamespace
     }) => {
-        const uniqueRandomHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-        return join(uploadAbsolutDirPath, username+userId, `${repositoryNamespace}-${uniqueRandomHash}`)
+        return join(uploadAbsolutDirPath, `${repositoryNamespace}-${crypto.randomUUID()}`)
     }
 
     const Clone = async ({
@@ -176,16 +162,12 @@ const RepositoryServiceManagerController = (params) => {
         namespaceId,
         repositoryGitUrl,
         personalAccessToken
-    }, { authenticationData }) => {
-        const { userId, username } = authenticationData
+    }) => {
 
         const namespaceData = await RepositoryStorageCommand((API) => API.GetNamespace({ namespaceId }))
         
         const repositoryCodePath = GetRepositoryCodePath({
-            repositoryNamespace: namespaceData.namespace,
-            userId,
-            username
-        })
+            repositoryNamespace: namespaceData.namespace})
         await Clone({
             repositoryCodePath,
             repositoryGitUrl,
@@ -212,13 +194,10 @@ const RepositoryServiceManagerController = (params) => {
         repositoryNamespace,
         repositoryGitUrl,
         personalAccessToken
-    }, { authenticationData }) => {
+    }) => {
 
-        const { userId, username } = authenticationData
         const repositoryCodePath = GetRepositoryCodePath({
-            repositoryNamespace,
-            userId,
-            username
+            repositoryNamespace
         })
 
         await Clone({
@@ -228,7 +207,6 @@ const RepositoryServiceManagerController = (params) => {
         })
 
         const data = await RepositoryStorageCommand((API) => API.RegisterNamespaceAndRepositoryCloned({
-                userId, 
                 repositoryNamespace, 
                 repositoryCodePath,
                 sourceParams:{
@@ -240,9 +218,8 @@ const RepositoryServiceManagerController = (params) => {
         return data
     }
 
-    const ListBootablePackages = ({ authenticationData }) => {
-        const { userId, username } = authenticationData
-        return RepositoryStorageCommand((API) => API.ListBootablePackages({ userId, username }))
+    const ListBootablePackages = () => {
+        return RepositoryStorageCommand((API) => API.ListBootablePackages())
     }
 
     const GetStartupParamsData = async (packageId) => { 
@@ -253,7 +230,7 @@ const RepositoryServiceManagerController = (params) => {
     const controllerServiceObject = {
         controllerName: "RepositoryServiceManagerController",
         ListNamespaces,
-        ListRepositories,
+        ListRepositoriesByNamespace,
         CheckRepositoryImported,
         UploadRepository,
         UpdateRepositoryWithUpload,

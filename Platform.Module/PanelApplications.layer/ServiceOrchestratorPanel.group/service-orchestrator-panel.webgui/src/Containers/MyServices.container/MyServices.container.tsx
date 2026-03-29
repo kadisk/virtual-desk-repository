@@ -12,9 +12,7 @@ import {
 import GetAPI from "../../Utils/GetAPI"
 
 import WelcomeMyServices from "./WelcomeMyServices"
-import ImportRepositoryModal from "./ImportRepository.modal"
 import ServiceProvisioningModal from "./ServiceProvisioning.modal"
-import ImportingModal from "./Importing.modal"
 import ServiceDetailsOffcanvas from "./ServiceDetails.offcanvas"
 
 import useWebSocket from "../../Hooks/useWebSocket"
@@ -25,8 +23,6 @@ import ServiceDetails from "./ServiceDetails.view"
 import QueryParamsActionsCreator    from "../../Actions/QueryParams.actionsCreator"
 
 const DEFAULT_MODE = Symbol()
-const IMPORT_SELECT_MODE = Symbol()
-const IMPORTING_MODE = Symbol()
 const NO_REPOSITORIES_MODE = Symbol()
 const LOADING_MODE = Symbol()
 const SERVICE_PROVISIONING_MODE = Symbol()
@@ -46,7 +42,6 @@ const MyServicesContainer = ({
     const navigate = useNavigate()
     const queryParams = qs.parse(location.search.substr(1))
 
-    const [importDataCurrent, setImportDataCurrent]             = useState<{ repositoryNamespace: string, sourceCodeURL: string }>()
     const [interfaceModeType, changeMode]                       = useState<any>(LOADING_MODE)
     const [provisionedServicesList, setProvisionedServicesList] = useState([])
     const [serviceIdSelected, setServiceIdSelected]             = useState()
@@ -150,23 +145,9 @@ const MyServicesContainer = ({
         setProvisionedServicesList(response.data)
     }
 
-    const handleUseFromMyWorkspace = () => {
-        console.log("== handleUseFromMyWorkspace")
-    }
-
     const handleStartService = (serviceId) => startService(serviceId)
-
     const handleStopService = (serviceId) => stopService(serviceId)
-
-    const handleImportingMode = (importData) => {
-        setImportDataCurrent(importData)
-        changeMode(IMPORTING_MODE)
-    }
-
-    const handleFinishedImportModal = () => changeMode(LOADING_MODE)
-
     const handleSelectService = (serviceId) => setServiceIdSelected(serviceId)
-
     const handleCloseServiceDetails = () => setServiceIdSelected(undefined)
 
     return <>
@@ -200,8 +181,6 @@ const MyServicesContainer = ({
                     <a className={`nav-link ${tabsCurrent === DETAILS_TAB ? "active" : ""}`} onClick={() => AddQueryParam("serviceView", "DETAILS_TAB")}>Details</a>
                 </li>
             </ul>
-
-
             {
                 tabsCurrent === OVERVIEW_TAB
                 && <ServiceOverview
@@ -211,7 +190,6 @@ const MyServicesContainer = ({
                     onStartService={handleStartService}
                     onStopService={handleStopService} />
             }
-
             {
                 tabsCurrent === DETAILS_TAB
                 && <ServiceDetails
@@ -223,20 +201,12 @@ const MyServicesContainer = ({
             }
         </div>
         {
-            interfaceModeType === IMPORT_SELECT_MODE
-            && <ImportRepositoryModal onImport={handleImportingMode} onClose={() => changeMode(DEFAULT_MODE)} />
-        }
-        {
             interfaceModeType === SERVICE_PROVISIONING_MODE
             && <ServiceProvisioningModal onClose={() => changeMode(DEFAULT_MODE)} />
         }
         {
             interfaceModeType === NO_REPOSITORIES_MODE
-            && <WelcomeMyServices onImportNew={() => changeMode(IMPORT_SELECT_MODE)} onUseFromMyWorkspace={handleUseFromMyWorkspace} />
-        }
-        {
-            interfaceModeType === IMPORTING_MODE
-            && <ImportingModal importData={importDataCurrent} onFinishedImport={handleFinishedImportModal} />
+            && <WelcomeMyServices/>
         }
         {
             interfaceModeType === LOADING_MODE

@@ -17,10 +17,11 @@ virtual-desk
 
 iam-panel
 service-panel
-
+repository-manager-panel
 
 
 virtualdesk.app.local:9000
 service-panel.app.local:9000
 iam-panel.app.local:9000
 user-space.app.local:9000
+repository-manager-panel.app.local:9000

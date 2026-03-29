@@ -8,16 +8,15 @@ const CreateRepositoryStorageDomainService = ({
     RepositoryItemModel
 }) => {
 
-    const ListRepositoryNamespace = (userId) => RepositoryNamespaceModel.findAll({where: { userId }})
+    const ListNamespace = () => RepositoryNamespaceModel.findAll()
 
     const ListRepositoriesByNamespace = (namespaceId) => RepositoryImportedModel.findAll({ where: { namespaceId }, order: [['createdAt', 'DESC']]})
 
-    const ListRepositoriesByUserId = async (userId) => {
+    const ListRepositories = async () => {
         const repositories = await RepositoryImportedModel.findAll({
             include: [{
                 model: RepositoryNamespaceModel,
-                attributes: [],
-                where: { userId }
+                attributes: []
             }],
             raw: true
         })
@@ -54,20 +53,20 @@ const CreateRepositoryStorageDomainService = ({
 
     const GetRepositoryImported = (id) => RepositoryImportedModel.findOne({ where: { id } })
 
-    const GetRepositoriesImportedList = ({ repositoryNamespace, userId }) => {
+    const GetRepositoriesImportedList = ({ repositoryNamespace }) => {
         return RepositoryImportedModel.findAll({
             attributes: { exclude: ['sourceParams'] },
             include: [{
                 model: RepositoryNamespaceModel,
                 attributes: [],
-                where: { namespace: repositoryNamespace, userId }
+                where: { namespace: repositoryNamespace }
             }],
             raw: true
         })
     }
 
-    const RegisterRepositoryNamespace = ({ namespace , userId }) => 
-        RepositoryNamespaceModel.create({ namespace, userId })
+    const RegisterRepositoryNamespace = ({ namespace }) => 
+        RepositoryNamespaceModel.create({ namespace })
 
     const RegisterRepositoryImported = ({ namespaceId, repositoryCodePath, sourceType, sourceParams }) => 
         RepositoryImportedModel.create({ namespaceId, repositoryCodePath, sourceType, sourceParams })
@@ -115,15 +114,14 @@ const CreateRepositoryStorageDomainService = ({
         }
     }
 
-    const ListLatestPackageItemsByUserId = async (userId) => {
+    const ListLatestPackageItems = async () => {
         const items = await RepositoryItemModel.findAll({
             include: [{
                 model: RepositoryImportedModel,
                 attributes: ['repositoryCodePath'],
                 include: [{
                     model: RepositoryNamespaceModel,
-                    attributes: ['namespace'],
-                    where: { userId }
+                    attributes: ['namespace']
                 }],
                 where: {
                     createdAt: {
@@ -132,8 +130,7 @@ const CreateRepositoryStorageDomainService = ({
                             FROM "RepositoryImporteds" AS ri
                             INNER JOIN "RepositoryNamespaces" AS rn
                                 ON rn.id = ri."namespaceId"
-                            WHERE rn."userId" = "${userId}"
-                            AND rn.id = "RepositoryImported"."namespaceId"
+                            WHERE rn.id = "RepositoryImported"."namespaceId"
                         )`)
                     }
                 }
@@ -151,14 +148,13 @@ const CreateRepositoryStorageDomainService = ({
         }))
     }
 
-    const GetPackageItemByPath = async ({ path, userId }) => {
+    const GetPackageItemByPath = async ({ path }) => {
         const item = await RepositoryItemModel.findOne({
             include: [{
                 model: RepositoryImportedModel,
                 attributes: ['repositoryCodePath'],
                 include: [{
                     model: RepositoryNamespaceModel,
-                    where: { userId },
                     attributes: ['namespace']
                 }]
             }],
@@ -228,16 +224,16 @@ const CreateRepositoryStorageDomainService = ({
         GetPackageId,
         RegisterRepositoryNamespace,
         RegisterRepositoryImported,
-        ListRepositoryNamespace,
+        ListNamespace,
         ListRepositoriesByNamespace,
-        ListRepositoriesByUserId,
+        ListRepositories,
         GetRepositoryNamespaceId,
         GetRepositoryNamespaceByRepositoryId,
         GetRepositoryImported,
         GetRepositoriesImportedList,
         ListItemByRepositoryId,
         GetItemById,
-        ListLatestPackageItemsByUserId,
+        ListLatestPackageItems,
         GetPackageById,
         GetPackageItemByPath,
         GetNamespace,

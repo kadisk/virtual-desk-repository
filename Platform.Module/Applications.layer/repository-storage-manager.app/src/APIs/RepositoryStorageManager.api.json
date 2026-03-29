@@ -4,20 +4,12 @@
 		{
 			"path": "/total-namespaces",
 			"method": "GET",
-			"summary": "GetTotalNamespaceByUserId",
-			"parameters": [
-				{
-					"name": "userId",
-					"in": "query",
-					"type": "string",
-					"required": true
-				}
-			]
+			"summary": "GetTotalNamespace"
 		},
 		{
-			"path": "/repositories",
+			"path": "/namespace/repositories",
 			"method": "GET",
-			"summary": "ListRepositories",
+			"summary": "ListRepositoriesByNamespace",
 			"parameters": [
 				{
 					"name": "namespaceId",
@@ -30,15 +22,7 @@
 		{
 			"path": "/namespaces",
 			"method": "GET",
-			"summary": "ListRepositoryNamespace",
-			"parameters": [
-				{
-					"name": "userId",
-					"in": "query",
-					"type": "string",
-					"required": true
-				}
-			]
+			"summary": "ListNamespace"
 		},
 		{
 			"path": "/items",
@@ -54,9 +38,9 @@
 			]
 		},
 		{
-			"path": "/user/repositories",
+			"path": "/repositories",
 			"method": "GET",
-			"summary": "ListRepositoriesByUserId",
+			"summary": "ListRepositories",
 			"parameters": [
 				{
 					"name": "userId",
@@ -69,21 +53,7 @@
 		{
 			"path": "/bootable-packages",
 			"method": "GET",
-			"summary": "ListBootablePackages",
-			"parameters": [
-				{
-					"name": "userId",
-					"in": "query",
-					"type": "string",
-					"required": true
-				},
-				{
-					"name": "username",
-					"in": "query",
-					"type": "string",
-					"required": true
-				}
-			]
+			"summary": "ListBootablePackages"
 		},
 		{
 			"path": "/register-namespace-upload-extract",
@@ -121,12 +91,6 @@
 			"method": "POST",
 			"summary": "ExtractAndRegisterRepository",
 			"parameters": [
-				{
-					"name": "username",
-					"in": "body",
-					"type": "string",
-					"required": true
-				},
 				{
 					"name": "repositoryNamespace",
 					"in": "body",
@@ -183,12 +147,6 @@
 			"method": "POST",
 			"summary": "RegisterNamespaceAndRepositoryCloned",
 			"parameters": [
-				{
-					"name": "userId",
-					"in": "body",
-					"type": "string",
-					"required": true
-				},
 				{
 					"name": "repositoryNamespace",
 					"in": "body",

@@ -1,4 +1,3 @@
-const inquirer = require('inquirer').default
 const colors = require('colors')
 
 const ConvertPathToAbsolutPath = require("../Utils/ConvertPathToAbsolutPath")
@@ -12,8 +11,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
     const { 
         serviceOrchestratorServerManagerUrl,
         serviceOrchestratorSocketPath,
-        iamManagerSocketPath,
-        iamManagerServerManagerUrl,
         repositoryStorageSocketPath,
         repositoryStorageServerManagerUrl
     } = startupParams
@@ -101,48 +98,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
     console.log('-'.repeat(70).label)
     console.log('')
 
-    console.log('AUTENTICAÇÃO REQUERIDA:'.title)
-    console.log('-'.repeat(70).label)
-    const credentials = await inquirer.prompt([
-        {
-            type: 'input',
-            name: 'username',
-            message: 'Username:'.label,
-            validate: (input) => input ? true : 'Username é obrigatório'.error
-        },
-        {
-            type: 'password',
-            name: 'password',
-            message: 'Password:'.label,
-            mask: '*',
-            validate: (input) => input ? true : 'Password é obrigatório'.error
-        },
-        {
-            type: 'confirm',
-            name: 'confirm',
-            message: 'Deseja prosseguir com o provisionamento?'.label,
-            default: true
-        }
-    ])
-
-    if (!credentials.confirm) {
-        console.log('Provisionamento cancelado pelo usuário.'.warning)
-        return
-    }
-
-    const IAMCommand = MountCommand({ 
-        serverManagerUrl: iamManagerServerManagerUrl,
-        socketPath: iamManagerSocketPath, 
-        commandExecutorLib,
-        ExtractAPI: (APIs) => APIs.IAMAppInstance.IdentityManagement
-    })
-
-    const { username, password } = credentials
-
-    const userInfo = await IAMCommand((API) => API.VerifyPasswordAndGetUser({ username, password }))
-
-    if (!userInfo) throw new Error('Falha na autenticação. Verifique suas credenciais e tente novamente.')
-
     console.log('')
     console.log(`Buscando dados de repositório de origem "${provisionData.repositoryNamespace}"...`.highlight)
 
@@ -155,7 +110,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
 
     const repositoriesImportedList = 
         await RepositoryStorageCommand((API) => API.GetRepositoriesImportedList({
-            userId: userInfo.id,
             repositoryNamespace: provisionData.repositoryNamespace
         }))
 

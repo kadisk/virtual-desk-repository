@@ -44,7 +44,7 @@ const MyWorkspaceContainer = ({ HTTPServerManager }) => {
     const fetchRepositoryNamespace = async () => {
         setRepositoryNamespacesCurrent(undefined)
         const api = _GetMyWorkspaceAPI()
-        const response = await api.ListRepositoryNamespace()
+        const response = await api.ListNamespace()
         setRepositoryNamespacesCurrent(response.data)
     }
 

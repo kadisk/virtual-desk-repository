@@ -13,10 +13,6 @@ const InitializeRepositoryPersistentStoreManager = (storage) => {
             autoIncrement: true,
             primaryKey: true
         },
-        userId: {
-            type: DataTypes.UUID,
-            allowNull: false
-        },
         namespace: {
             type: DataTypes.STRING,
             allowNull: false

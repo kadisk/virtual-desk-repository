@@ -9,6 +9,10 @@ const CreateItemIndexer                          = require("../Helpers/CreateIte
 const CreateRepositoryStorageDomainService       = require("../Helpers/CreateRepositoryStorageDomainService")
 const PrepareDirPath                             = require("../Helpers/PrepareDirPath")
 
+const GetISODate = () => {
+  return new Date().toISOString().replace(/:/g, '-').split('.')[0];
+}
+
 const RepositoryStorageManagerService = (params) => {
 
     const {
@@ -51,9 +55,8 @@ const RepositoryStorageManagerService = (params) => {
         GetPackageById,
         GetRepositoryNamespaceId,
         GetItemById,
-        ListLatestPackageItemsByUserId,
-        ListRepositoriesByUserId,
-        ListRepositoriesByNamespace,
+        ListLatestPackageItems,
+        ListRepositories,
         GetNamespace,
         GetNamespaceByRepositoryId,
         RegisterRepositoryNamespace,
@@ -63,8 +66,8 @@ const RepositoryStorageManagerService = (params) => {
         GetRepositoriesImportedList
     } = RepositoryStorageDomainService
 
-    const _MountPathImportedRepositoriesSourceCodeDirPath = ({username, repositoryNamespace}) => {
-        const repositoriesCodePath = resolve(absolutImportedRepositoriesSourceCodeDirPath, username, repositoryNamespace)
+    const _MountPathImportedRepositoriesSourceCodeDirPath = ({repositoryNamespace}) => {
+        const repositoriesCodePath = resolve(absolutImportedRepositoriesSourceCodeDirPath, repositoryNamespace+"-"+GetISODate())
         PrepareDirPath(repositoriesCodePath)
         return repositoriesCodePath
     }
@@ -74,10 +77,10 @@ const RepositoryStorageManagerService = (params) => {
         onReady()
     }
 
-    const GetTotalNamespaceByUserId = (userId) =>  RepositoryNamespaceModel.count({ where: { userId } })
+    const GetTotalNamespace = () =>  RepositoryNamespaceModel.count()
 
-    const ListRepositoryNamespace = async (userId) => {
-        const repositoryNamespaceDataList  = await RepositoryStorageDomainService.ListRepositoryNamespace(userId)
+    const ListNamespace = async () => {
+        const repositoryNamespaceDataList  = await RepositoryStorageDomainService.ListNamespace()
         
         const repositories = repositoryNamespaceDataList
             .map((repositoryData) => {
@@ -88,8 +91,8 @@ const RepositoryStorageManagerService = (params) => {
         return repositories
     }
 
-    const ListRepositories = async (namespaceId) => {
-        const repositories = await ListRepositoriesByNamespace(namespaceId)
+    const ListRepositoriesByNamespace = async (namespaceId) => {
+        const repositories = await RepositoryStorageDomainService.ListRepositoriesByNamespace(namespaceId)
         return repositories.map(({ id, createdAt, sourceType, sourceParams }) => ({
             id,
             createdAt,
@@ -133,23 +136,22 @@ const RepositoryStorageManagerService = (params) => {
 
     }
 
-    const CreateNamespace = async ({ userId, repositoryNamespace }) => {
+    const CreateNamespace = async ({ repositoryNamespace }) => {
         const existingNamespaceId = await GetRepositoryNamespaceId(repositoryNamespace)
 
         if (existingNamespaceId !== undefined) 
             throw new Error('Repository Namespace already exists')
 
-        const newNamespaceData = await RegisterRepositoryNamespace({ namespace: repositoryNamespace , userId })
+        const newNamespaceData = await RegisterRepositoryNamespace({ namespace: repositoryNamespace })
             
         return newNamespaceData
     }
 
-    const RegisterNamespaceAndRepositoryUploadedAndExtract = async ({ repositoryNamespace, userId, username , repositoryFilePath }) => {
+    const RegisterNamespaceAndRepositoryUploadedAndExtract = async ({ repositoryNamespace, repositoryFilePath }) => {
         
-        const namespaceData = await CreateNamespace({ userId, repositoryNamespace })
+        const namespaceData = await CreateNamespace({ repositoryNamespace })
         
         const repositoryImportedData = await ExtractAndRegisterRepository({ 
-            username, 
             repositoryNamespace,
             namespaceId: namespaceData.id,
             repositoryFilePath
@@ -161,9 +163,9 @@ const RepositoryStorageManagerService = (params) => {
         }
     }
 
-    const ExtractAndRegisterRepository = async ({ namespaceId, username, repositoryNamespace, repositoryFilePath }) => {
+    const ExtractAndRegisterRepository = async ({ namespaceId, repositoryNamespace, repositoryFilePath }) => {
         
-        const repositoriesCodePath = _MountPathImportedRepositoriesSourceCodeDirPath({ username, repositoryNamespace })
+        const repositoriesCodePath = _MountPathImportedRepositoriesSourceCodeDirPath({ repositoryNamespace })
         
         const newRepositoryCodePath = await ExtractTarGz(repositoryFilePath, repositoriesCodePath)
 
@@ -180,13 +182,12 @@ const RepositoryStorageManagerService = (params) => {
     }
 
     const RegisterNamespaceAndRepositoryCloned = async ({
-            userId, 
             repositoryNamespace, 
             repositoryCodePath,
             sourceParams
     }) => {
 
-        const namespaceData = await CreateNamespace({ userId, repositoryNamespace })
+        const namespaceData = await CreateNamespace({ repositoryNamespace })
         
         const repositoryImportedData = await RegisterImportedRepository({
             namespaceId: namespaceData.id,
@@ -221,11 +222,11 @@ const RepositoryStorageManagerService = (params) => {
 
     }
 
-    const ListBootablePackages = async ({ userId, username }) => {
+    const ListBootablePackages = async () => {
 
         const ecosystemDefaults = await ReadJsonFile(ecosystemDefaultFilePath)
-        const packageItems  = await ListLatestPackageItemsByUserId(userId)
-        console.log(`[INFO] Found ${packageItems.length} package items for user ${username} userId ${userId}`)
+        const packageItems  = await ListLatestPackageItems()
+
 
         const packageItemsWithMetadataPromises = packageItems
             .map(async (packageItem) => {
@@ -254,16 +255,16 @@ const RepositoryStorageManagerService = (params) => {
     _Start()
 
     return {
-        GetTotalNamespaceByUserId, 
+        GetTotalNamespace, 
         GetPackageId,
         RegisterNamespaceAndRepositoryUploadedAndExtract,
         ExtractAndRegisterRepository,
         RegisterImportedRepository,
         RegisterNamespaceAndRepositoryCloned,
         GetPackageById,
-        ListRepositoriesByUserId,
         ListRepositories,
-        ListRepositoryNamespace,
+        ListRepositoriesByNamespace,
+        ListNamespace,
         GetNamespace,
         GetMetadataByPackageId,
         ListBootablePackages,

@@ -30,7 +30,7 @@ const ImportedRepositoriesOffcanvas = ({
 	const fetchImportedRepositoriesData = async () => {
         setRepositories([])
 		const api = getMyServicesManagerAPI()
-		const response = await api.ListRepositories({ namespaceId })
+		const response = await api.ListRepositoriesByNamespace({ namespaceId })
         setRepositories(response.data)
 	}
 

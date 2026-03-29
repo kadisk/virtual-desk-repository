@@ -13,6 +13,7 @@ CLI para gerenciamento de serviços e suas instâncias.
 | `provision <arquivo.provision.json>` | Provisiona um novo serviço |
 | `instances <serviceId>` | Lista instâncias de um serviço |
 | `builds <serviceId>` | Mostra histórico de builds de um serviço |
+| `service <serviceId> update <arquivo.provision.json>` | Atualiza o serviço baseado nos novos parametros enviados|
 
 ## Uso
 
@@ -46,19 +47,20 @@ my-services instances 12
 my-services builds 12
 ```
 
+
+### Atualizar um serviço provisionado
+```bash
+# Provisionar novo serviço
+my-services service 12 update ./config/meu-servico.provision.json
+
+
 ## Parâmetros
 
 | Comando | Parâmetro | Tipo | Obrigatório | Descrição |
 |---------|-----------|------|-------------|-----------|
-| `service` | `serviceId` | number | ✅ | ID do serviço |
-| `start` | `serviceId` | number | ✅ | ID do serviço a iniciar |
-| `stop` | `serviceId` | number | ✅ | ID do serviço a parar |
-| `provision` | `provisionFilePath` | string | ✅ | Caminho do arquivo `.provision.json` |
-| `instances` | `serviceId` | number | ✅ | ID do serviço |
-| `builds` | `serviceId` | number | ✅ | ID do serviço |
-
-## Bibliotecas Internas
-
-- `jsonFileUtilitiesLib`: Utilitários para arquivos JSON
-- `commandExecutorLib`: Execução de comandos CLI
-
+| `service` | `serviceId` | number | sim | ID do serviço |
+| `start` | `serviceId` | number | sim | ID do serviço a iniciar |
+| `stop` | `serviceId` | number | sim | ID do serviço a parar |
+| `provision` | `provisionFilePath` | string | sim | Caminho do arquivo `.provision.json` |
+| `instances` | `serviceId` | number | sim | ID do serviço |
+| `builds` | `serviceId` | number | sim | ID do serviço |

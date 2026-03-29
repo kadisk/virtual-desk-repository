@@ -4,12 +4,12 @@
 		{
 			"path": "/namespaces",
 			"method": "GET",
-			"summary": "ListRepositoryNamespace"
+			"summary": "ListNamespace"
 		},
 		{
-			"path": "/repositories",
+			"path": "/namespace/repositories",
 			"method": "GET",
-			"summary": "ListRepositories",
+			"summary": "ListRepositoriesByNamespace",
 			"parameters": [
 				{
 					"name": "namespaceId",
