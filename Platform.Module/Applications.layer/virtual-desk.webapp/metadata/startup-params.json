@@ -13,7 +13,5 @@
     "iamStorageSocketPath"                            : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
     "eventManagerServiceStorageFilePath"              : "~/virtual-desk-state/local-databases/event-manager-service.sqlite",
     "instanceMonitoringManagerServiceStorageFilePath" : "~/virtual-desk-state/local-databases/instance-monitoring-manager-service.sqlite",
-    "myServicesRepositoriesUploadDirPath"             : "~/virtual-desk-state/local-app-data/my-services-uploded-repositories",
-    "myServicesRepositoriesClonedDirPath"             : "~/virtual-desk-state/local-app-data/my-services-cloned-repositories",
     "myWorkbenchRepositoriesUploadDirPath"            : "~/virtual-desk-state/local-app-data/my-workbench-uploded-repositories"
 }

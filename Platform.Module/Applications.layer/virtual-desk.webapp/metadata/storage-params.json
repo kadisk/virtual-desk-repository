@@ -1,7 +1,5 @@
 {
     "eventManagerServiceStorageFilePath"              : "event-manager-service.sqlite",
     "instanceMonitoringManagerServiceStorageFilePath" : "instance-monitoring-manager-service.sqlite",
-    "myServicesRepositoriesUploadDirPath"             : "my-services-uploded-repositories",
-    "myServicesRepositoriesClonedDirPath"             : "my-services-cloned-repositories",
     "myWorkbenchRepositoriesUploadDirPath"            : "my-workbench-uploded-repositories"
 }
