@@ -1,4 +1,4 @@
 {
-    "repositoryStorageSocketPath"   : "repository-storage-manager.app.sock",
-    "iamStorageSocketPath"          : "iam.app.sock"
+    "repositoryStorageSocketPath" : "repository-storage-manager.app.sock",
+    "iamStorageSocketPath"        : "iam.app.sock"
 }

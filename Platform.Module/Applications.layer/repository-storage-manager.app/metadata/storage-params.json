@@ -1,0 +1,5 @@
+{
+    "eventManagerServiceStorageFilePath"    : "event-manager-service.sqlite",
+    "importedRepositoriesSourceCodeDirPath" : "my-services-imported-repositories",
+    "repositoryStorageFilePath"             : "repository-storage-manager-service.sqlite"
+}

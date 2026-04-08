@@ -1,0 +1,4 @@
+{
+    "serviceStorageFilePath" : "service-orchestrator-service.sqlite",
+    "servicesInstanceDataDirPath" : "services-instance-data"
+}
