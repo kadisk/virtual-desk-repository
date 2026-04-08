@@ -1,0 +1,15 @@
+{
+    "serviceName": "iam-manager",
+    "serviceDescription": "Serviço de Indentidade e Acesso",
+    "repositoryNamespace": "VirtualDeskRepo",
+    "packageName": "identity-and-access-management",
+    "packageType": "app",
+    "packagePath": "Platform.Module/Applications.layer/identity-and-access-management.app",
+    "startupParams": {
+        "socket"          : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
+        "serverName"      : "IAMAppInstance",
+        "storageFilePath" : "~/virtual-desk-state/local-databases/iam-manager-service.sqlite"
+    },
+    "ports": [],
+    "networkmode": "host"
+}
