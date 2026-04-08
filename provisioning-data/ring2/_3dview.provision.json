@@ -1,0 +1,16 @@
+{
+    "serviceName": "_3dview",
+    "serviceDescription": "Visualizador 3D Front-End",
+    "repositoryNamespace": "WormsSolutions",
+    "packageName": "3d-viewer",
+    "packageType": "webgui",
+    "packagePath": "ResearchAndDevelopment.Module/GraphicalInterface.layer/3d-viewer.webgui",
+    "startupParams": {
+        "port":"8081",
+        "serverName":"3DViewerWebserviceInstance",
+        "serverManagerUrl": "http://localhost:8085/server-manager/status",
+        "RT_ENV_GENERATED_DIR_NAME":".generated_data"
+    },
+    "ports": [],
+    "networkmode": "host"
+}

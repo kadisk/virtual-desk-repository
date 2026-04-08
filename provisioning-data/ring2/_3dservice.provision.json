@@ -1,0 +1,20 @@
+{
+    "serviceName": "_3dservice",
+    "serviceDescription": "Visualizador 3D Back-End",
+    "repositoryNamespace": "WormsSolutions",
+    "packageName": "3d-viewer",
+    "packageType": "webservice",
+    "packagePath": "ResearchAndDevelopment.Module/GraphicalInterface.layer/3d-viewer.webservice",
+    "startupParams": {
+        "modelDirPath":"/home/kadisk/Workspaces/Organizations/WormsSolutions/_3dviewer_data/",
+        "port":"8085",
+        "serverName":"3DViewerWebserviceInstance",
+        "dialect": "sqlite",
+        "storage": "_3d_mydatabase.sqlite",
+        "STORAGE_DIR_NAME": "_3d_storage",
+        "OBJECT_CACHE_DIR_NAME":"_3d_object_cache",
+        "EXECUTIONDATA_CONF_DIRNAME_DEPENDENCIES": ".dependencies"
+    },
+    "ports": [],
+    "networkmode": "host"
+}

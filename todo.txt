@@ -2,7 +2,7 @@
 - Repository Manager Panel + Workspace Panel
 - Ecosystem Data Panel + Host Information 
 
-nvm use stable
+nvm use 22.13
 
 
 repository-storage-manager
