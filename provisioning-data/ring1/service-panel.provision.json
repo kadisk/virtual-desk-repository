@@ -1,0 +1,22 @@
+{
+    "serviceName": "service-panel",
+    "serviceDescription": "Painel de Administração de serviços em execução",
+    "repositoryNamespace": "VirtualDeskRepo",
+    "packageName": "service-orchestrator-panel",
+    "packageType": "webapp",
+    "packagePath": "Platform.Module/PanelApplications.layer/ServiceOrchestratorPanel.group/service-orchestrator-panel.webapp",
+    "startupParams": {
+        "port"                                : "8545",
+        "serverName"                          : "ServiceOrchestratorPanelWebAppInstance",
+        "serverManagerUrl"                    : "http://service-panel.app.local:9000/server-manager/status",
+        "RT_ENV_GENERATED_DIR_NAME"           : ".generated_data",
+        "isWatch"                             : true,
+        "serviceOrchestratorServerManagerUrl" : "/server-manager/status",
+        "repositoryStorageServerManagerUrl"   : "/server-manager/status",
+        "serviceOrchestratorSocketPath"       : "/home/kadisk/EcosystemData/sockets/service-orchestrator.app.sock",
+        "repositoryStorageSocketPath"         : "/home/kadisk/EcosystemData/sockets/repository-storage-manager.app.sock",
+        "myServicesRepositoriesUploadDirPath" : "~/virtual-desk-state/local-app-data/my-services-uploded-repositories"
+    },
+    "ports": [],
+    "networkmode": "host"
+}

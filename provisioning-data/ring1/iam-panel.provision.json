@@ -1,0 +1,19 @@
+{
+    "serviceName": "iam-panel",
+    "serviceDescription": "Painel de Administração de Identidades de Acessos",
+    "repositoryNamespace": "VirtualDeskRepo",
+    "packageName": "identity-access-manager-panel",
+    "packageType": "webapp",
+    "packagePath": "Platform.Module/PanelApplications.layer/IdentityAccessManagerPanel.group/identity-access-manager-panel.webapp",
+    "startupParams": {
+        "port": "9999",
+        "serverName": "IdentityAccessManagerPanelWebAppInstance",
+        "serverManagerUrl": "http://iam-panel.app.local:9000/server-manager/status",
+        "isWatch": true,
+        "RT_ENV_GENERATED_DIR_NAME": ".generated_data",
+        "iamManagerSocketPath": "/home/kadisk/EcosystemData/sockets/iam.app.sock",
+        "iamManagerServerManagerUrl": "/server-manager/status"
+    },
+    "ports": [],
+    "networkmode": "host"
+}
