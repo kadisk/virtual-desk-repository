@@ -58,6 +58,7 @@ const ServiceOrchestratorManager = (params) => {
     const {
         LoadServiceInStateManagement,
         CreateServiceInStateManagement,
+        TriggerDecommissioningProcess,
         SwapRunningInstance,
         GetServiceStatus,
         GetNetworksSettings,
@@ -181,6 +182,9 @@ const ServiceOrchestratorManager = (params) => {
                     })
 
                     return containerData
+                case RequestTypes.MARK_AS_DECOMMISSIONED:
+                    await MyWorkspaceDomainService.MarkServiceAsDecommissioned(data.serviceId)
+                    break
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }
@@ -373,6 +377,7 @@ const ServiceOrchestratorManager = (params) => {
 
     return {
         ProvisionService,
+        DecommissioningService: TriggerDecommissioningProcess,
         ListProvisionedServices,
         GetService,
         ListServices,

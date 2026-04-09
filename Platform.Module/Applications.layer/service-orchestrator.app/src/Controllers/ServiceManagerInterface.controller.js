@@ -20,7 +20,8 @@ const ServiceManagerInterfaceController = (params) => {
         GetNetworkModeData,
         UpdateServicePorts,
         UpdateServiceStartupParams,
-        ProvisionService
+        ProvisionService,
+        DecommissioningService,
     } = servicesOrchestratorService
 
     const ServicesStatusChange = async (websocket) => {
@@ -72,7 +73,8 @@ const ServiceManagerInterfaceController = (params) => {
         GetNetworkModeData,
         UpdateServicePorts,
         UpdateServiceStartupParams,
-        ProvisionService
+        ProvisionService,
+        DecommissioningService
     }
 
     return Object.freeze(controllerServiceObject)

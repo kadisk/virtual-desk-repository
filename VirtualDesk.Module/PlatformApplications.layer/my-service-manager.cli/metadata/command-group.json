@@ -86,7 +86,7 @@
 		{
 			"namespace": "ListImageBuildHistory",
 			"path": "Commands/ListImageBuildHistory.command",
-			"command": "builds  [serviceId]",
+			"command": "builds [serviceId]",
 			"description": "Mostra os histórico de construção de imagens",
 			"parameters": [
 				{
@@ -97,6 +97,21 @@
 				}
 			],
             "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "DecommissionService",
+			"path": "Commands/DecommissionService.command",
+			"command": "decommission [serviceId]",
+			"description": "Descomissiona um serviço que deve estar parado",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+			"parametersToLoad": [ "commandExecutorLib" ]
 		}
 	]
 }

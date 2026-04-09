@@ -3,18 +3,19 @@ const EventEmitter = require("events")
 
 const CreateStateManager = require("./CreateStateManager")
 
-const UNKNOWN    = Symbol("UNKNOWN")
-const CREATED    = Symbol("CREATED")
-const RESTARTING = Symbol("RESTARTING")
-const WAITING    = Symbol("WAITING")
-const LOADING    = Symbol("LOADING")
-const STARTING   = Symbol("STARTING")
-const STOPPING   = Symbol("STOPPING")
-const STOPPED    = Symbol("STOPPED")
-const RUNNING    = Symbol("RUNNING")
-const FAILURE    = Symbol("FAILURE")
-const FINISHED   = Symbol("FINISHED")
-const TERMINATED = Symbol("TERMINATED")
+const UNKNOWN        = Symbol("UNKNOWN")
+const CREATED        = Symbol("CREATED")
+const RESTARTING     = Symbol("RESTARTING")
+const WAITING        = Symbol("WAITING")
+const LOADING        = Symbol("LOADING")
+const STARTING       = Symbol("STARTING")
+const STOPPING       = Symbol("STOPPING")
+const STOPPED        = Symbol("STOPPED")
+const RUNNING        = Symbol("RUNNING")
+const FAILURE        = Symbol("FAILURE")
+const FINISHED       = Symbol("FINISHED")
+const TERMINATED     = Symbol("TERMINATED")
+const DECOMMISSIONED = Symbol("DECOMMISSIONED")
 
 const RequestTypes  = require("./Request.types")
 
@@ -252,6 +253,20 @@ const CreateServiceRuntimeStateManager = () => {
         _RequestData(RequestTypes.CREATE_NEW_INSTANCE, {serviceId, ...params})
         ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
     }
+
+    const TriggerDecommissioningProcess = (serviceId) => {
+        const state = GetState(SERVICE_STATE_GROUP, serviceId)
+        if (!state) {
+            throw new Error(`Service with ID ${serviceId} does not exist`)
+        }
+        const { status } = state
+        if(status === TERMINATED){
+            _RequestData(RequestTypes.MARK_AS_DECOMMISSIONED, { serviceId })
+        } else {
+            throw `Service[${serviceId}] must be [TERMINATED] to be decommissioned. Current status: [${status}].`
+        }
+    }
+
     
     const GetServiceStatus = (serviceId) => {
         try{
@@ -346,6 +361,8 @@ const CreateServiceRuntimeStateManager = () => {
                     } = newImageBuildData
                     AddNewBuildState(buildId, { tag, hashId, instanceId, serviceId:requestData.serviceId})
                     break
+                case RequestTypes.MARK_AS_DECOMMISSIONED:
+                    ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DECOMMISSIONED)
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }
@@ -557,6 +574,7 @@ const CreateServiceRuntimeStateManager = () => {
     return {
         LoadServiceInStateManagement,
         CreateServiceInStateManagement,
+        TriggerDecommissioningProcess,
         ListRunningInstances,
         SwapRunningInstance,
         GetServiceStatus,

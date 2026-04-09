@@ -290,6 +290,19 @@
 					"required": true
 				}
 			]
+		},
+		{
+			"path": "/decommission-service",
+			"method": "POST",
+			"summary":"DecommissioningService",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "serviceId",
+					"type": "string",
+					"required": true
+				}
+			]
 		}
 	]
 }

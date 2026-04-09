@@ -10,12 +10,19 @@ const CreateMyWorkspaceDomainService = ({
 }) => {
 
     const ListServices = async () => {
-        const items = await ServiceModel.findAll()
+        const items = await ServiceModel.findAll({
+            where: {
+                isDecommissioned: false
+            }
+        })
         return items
     }
     
     const ListProvisionedServices = async () => {
         const items = await ServiceModel.findAll({
+            where: {
+                isDecommissioned: false
+            },
             include: [
                 {
                     model: InstanceModel,
@@ -30,7 +37,11 @@ const CreateMyWorkspaceDomainService = ({
     }
 
     const ListAllServiceId = async () => {
-        const items = await ServiceModel.findAll()
+        const items = await ServiceModel.findAll({
+            where: {
+                isDecommissioned: false
+            }
+        })
         return items?.map( item => item.id )
     }
 
@@ -60,6 +71,17 @@ const CreateMyWorkspaceDomainService = ({
                 originRepositoryCodePath,
                 originPackagePath
             })
+
+    const MarkAsDecommissioned = async (serviceId) =>
+        ServiceModel.update({
+            isDecommissioned: true,
+            decommissionedAt: new Date()
+        }, {
+            where: {
+                id: serviceId,
+                isDecommissioned: false
+            }
+        })
 
     const RegisterBuildedImage = ({
         instanceId,
@@ -165,6 +187,7 @@ const CreateMyWorkspaceDomainService = ({
         GetLastInstanceByServiceId,
         GetContainerInfoByInstanceId,
         RegisterContainer,
+        MarkAsDecommissioned
     }
 }
 

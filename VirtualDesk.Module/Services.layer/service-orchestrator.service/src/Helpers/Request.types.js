@@ -9,7 +9,8 @@ const RequestTypes = Object.freeze({
     CONTAINER_INSPECTION_DATA : Symbol(),
     START_CONTAINER           : Symbol(),
     STOP_CONTAINER            : Symbol(),
-    REMOVE_CONTAINER          : Symbol()
+    REMOVE_CONTAINER          : Symbol(),
+    MARK_AS_DECOMMISSIONED    : Symbol()
 })
 
 module.exports = RequestTypes

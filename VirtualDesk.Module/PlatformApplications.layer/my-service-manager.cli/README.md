@@ -13,7 +13,7 @@ CLI para gerenciamento de serviços e suas instâncias.
 | `provision <arquivo.provision.json>` | Provisiona um novo serviço |
 | `instances <serviceId>` | Lista instâncias de um serviço |
 | `builds <serviceId>` | Mostra histórico de builds de um serviço |
-| `service <serviceId> update <arquivo.provision.json>` | Atualiza o serviço baseado nos novos parametros enviados|
+| `decommission <serviceId> | Lista remove todas as informações sobre o serviço |
 
 ## Uso
 
