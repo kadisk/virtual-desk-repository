@@ -72,16 +72,24 @@ const CreateMyWorkspaceDomainService = ({
                 originPackagePath
             })
 
-    const MarkAsDecommissioned = async (serviceId) =>
-        ServiceModel.update({
+    const MarkAsDecommissioned = async (serviceId) => {
+        const service = await ServiceModel.findOne({
+            where: { id: serviceId }
+        })
+
+        if (!service) {
+            throw new Error(`Service with ID ${serviceId} does not exist`)
+        }
+
+        if (service.isDecommissioned) {
+            throw new Error(`Service with ID ${serviceId} is already decommissioned`)
+        }
+
+        return service.update({
             isDecommissioned: true,
             decommissionedAt: new Date()
-        }, {
-            where: {
-                id: serviceId,
-                isDecommissioned: false
-            }
         })
+    }
 
     const RegisterBuildedImage = ({
         instanceId,

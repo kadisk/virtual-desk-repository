@@ -183,7 +183,7 @@ const ServiceOrchestratorManager = (params) => {
 
                     return containerData
                 case RequestTypes.MARK_AS_DECOMMISSIONED:
-                    await MyWorkspaceDomainService.MarkServiceAsDecommissioned(data.serviceId)
+                    await MyWorkspaceDomainService.MarkAsDecommissioned(data.serviceId)
                     break
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)

@@ -263,7 +263,9 @@ const CreateServiceRuntimeStateManager = () => {
         if(status === TERMINATED){
             _RequestData(RequestTypes.MARK_AS_DECOMMISSIONED, { serviceId })
         } else {
-            throw `Service[${serviceId}] must be [TERMINATED] to be decommissioned. Current status: [${status}].`
+            throw new Error(
+                `Service[${serviceId}] must be [TERMINATED] to be decommissioned. Current status: [${status.description}].`
+            )
         }
     }
 
@@ -362,7 +364,9 @@ const CreateServiceRuntimeStateManager = () => {
                     AddNewBuildState(buildId, { tag, hashId, instanceId, serviceId:requestData.serviceId})
                     break
                 case RequestTypes.MARK_AS_DECOMMISSIONED:
+                    await onRequestData(requestType, { serviceId: requestData.serviceId })
                     ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DECOMMISSIONED)
+                    break
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }
