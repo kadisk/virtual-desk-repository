@@ -6,9 +6,13 @@
     "packageType": "app",
     "packagePath": "Platform.Module/Applications.layer/identity-and-access-management.app",
     "startupParams": {
-        "socket"          : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
-        "serverName"      : "IAMAppInstance",
-        "storageFilePath" : "~/virtual-desk-state/local-databases/iam-manager-service.sqlite"
+        "serverName" : "IAMAppInstance"
+    },
+    "socketParams":{
+        "socket" : "iam.app.sock"
+    },
+    "storageParams":{
+        "storageFilePath" : "iam-manager-service.sqlite"
     },
     "ports": [],
     "networkmode": "host"

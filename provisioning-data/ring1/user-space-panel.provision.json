@@ -6,14 +6,16 @@
     "packageType": "webapp",
     "packagePath": "Platform.Module/PanelApplications.layer/UserSpacePanel.group/user-space-panel.webapp",
     "startupParams": {
-        "port" : "7005",
-        "serverName" : "UserSpaceWebAppInstance",
-        "secretKey" : "g09sj3kf@#,ndf",
-        "serverManagerUrl" : "http://user-space.app.local:9000/server-manager/status",
-        "RT_ENV_GENERATED_DIR_NAME" : ".generated_data",
-        "isWatch" : true,
-        "iamStorageSocketPath" : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
+        "port"                       : "7005",
+        "serverName"                 : "UserSpaceWebAppInstance",
+        "secretKey"                  : "g09sj3kf@#,ndf",
+        "serverManagerUrl"           : "http://user-space.app.local:9000/server-manager/status",
+        "RT_ENV_GENERATED_DIR_NAME"  : ".generated_data",
+        "isWatch"                    : true,
         "iamStorageServerManagerUrl" : "/server-manager/status"
+    },
+    "socketParams":{
+        "iamStorageSocketPath" : "iam.app.sock"
     },
     "ports": [],
     "networkmode": "host"

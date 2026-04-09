@@ -6,21 +6,25 @@
     "packageType": "webapp",
     "packagePath": "Platform.Module/Applications.layer/virtual-desk.webapp",
     "startupParams": {
-        "port"                                            : "7001",
-        "serverName"                                      : "KadiskVirtualDeskWebAppInstance",
-        "serverManagerUrl"                                : "http://virtualdesk.app.local:9000/server-manager/status",
-        "RT_ENV_GENERATED_DIR_NAME"                       : ".generated_data",
-        "isWatch"                                         : true,
-        "installDataDirPath"                              : "~/EcosystemData",
-        "ecosystemDefaultsFileRelativePath"               : "./config-files/ecosystem-defaults.json",
-        "secretKey"                                       : "kajsdhfg&(#Ndg",
-        "repositoryStorageServerManagerUrl"               : "/server-manager/status",
-        "iamStorageServerManagerUrl"                      : "/server-manager/status",
-        "repositoryStorageSocketPath"                     : "/home/kadisk/EcosystemData/sockets/repository-storage-manager.app.sock",
-        "iamStorageSocketPath"                            : "/home/kadisk/EcosystemData/sockets/iam.app.sock",
-        "eventManagerServiceStorageFilePath"              : "~/virtual-desk-state/local-databases/event-manager-service.sqlite",
-        "instanceMonitoringManagerServiceStorageFilePath" : "~/virtual-desk-state/local-databases/instance-monitoring-manager-service.sqlite",
-        "myWorkbenchRepositoriesUploadDirPath"            : "~/virtual-desk-state/local-app-data/my-workbench-uploded-repositories"
+        "port"                              : "7001",
+        "serverName"                        : "KadiskVirtualDeskWebAppInstance",
+        "serverManagerUrl"                  : "http://virtualdesk.app.local:9000/server-manager/status",
+        "RT_ENV_GENERATED_DIR_NAME"         : ".generated_data",
+        "isWatch"                           : true,
+        "installDataDirPath"                : "~/EcosystemData",
+        "ecosystemDefaultsFileRelativePath" : "./config-files/ecosystem-defaults.json",
+        "secretKey"                         : "kajsdhfg&(#Ndg",
+        "repositoryStorageServerManagerUrl" : "/server-manager/status",
+        "iamStorageServerManagerUrl"        : "/server-manager/status"
+    },
+    "socketParams":{
+        "repositoryStorageSocketPath": "repository-storage-manager.app.sock",
+        "iamStorageSocketPath": "iam.app.sock"
+    },
+    "storageParams":{
+        "eventManagerServiceStorageFilePath" : "event-manager-service.sqlite",
+        "instanceMonitoringManagerServiceStorageFilePath": "instance-monitoring-manager-service.sqlite",
+        "myWorkbenchRepositoriesUploadDirPath": "my-workbench-uploded-repositories"
     },
     "ports": [],
     "networkmode": "host"

@@ -6,13 +6,15 @@
     "packageType": "webapp",
     "packagePath": "Platform.Module/PanelApplications.layer/IdentityAccessManagerPanel.group/identity-access-manager-panel.webapp",
     "startupParams": {
-        "port": "9999",
-        "serverName": "IdentityAccessManagerPanelWebAppInstance",
-        "serverManagerUrl": "http://iam-panel.app.local:9000/server-manager/status",
-        "isWatch": true,
-        "RT_ENV_GENERATED_DIR_NAME": ".generated_data",
-        "iamManagerSocketPath": "/home/kadisk/EcosystemData/sockets/iam.app.sock",
-        "iamManagerServerManagerUrl": "/server-manager/status"
+        "port"                       : "9999",
+        "serverName"                 : "IdentityAccessManagerPanelWebAppInstance",
+        "serverManagerUrl"           : "http://iam-panel.app.local:9000/server-manager/status",
+        "isWatch"                    : true,
+        "RT_ENV_GENERATED_DIR_NAME"  : ".generated_data",
+        "iamManagerServerManagerUrl" : "/server-manager/status"
+    },
+    "socketParams":{
+        "iamManagerSocketPath" : "iam.app.sock"
     },
     "ports": [],
     "networkmode": "host"

@@ -12,10 +12,14 @@
         "RT_ENV_GENERATED_DIR_NAME"           : ".generated_data",
         "isWatch"                             : true,
         "serviceOrchestratorServerManagerUrl" : "/server-manager/status",
-        "repositoryStorageServerManagerUrl"   : "/server-manager/status",
-        "serviceOrchestratorSocketPath"       : "/home/kadisk/EcosystemData/sockets/service-orchestrator.app.sock",
-        "repositoryStorageSocketPath"         : "/home/kadisk/EcosystemData/sockets/repository-storage-manager.app.sock",
-        "myServicesRepositoriesUploadDirPath" : "~/virtual-desk-state/local-app-data/my-services-uploded-repositories"
+        "repositoryStorageServerManagerUrl"   : "/server-manager/status"
+    },
+    "socketParams":{
+        "serviceOrchestratorSocketPath" : "service-orchestrator.app.sock",
+        "repositoryStorageSocketPath": "repository-storage-manager.app.sock"
+    },
+    "storageParams":{
+        "myServicesRepositoriesUploadDirPath" : "my-services-uploded-repositories"
     },
     "ports": [],
     "networkmode": "host"
