@@ -14,10 +14,10 @@
         "repositoryStorageServerManagerUrl" : "/server-manager/status"
     },
     "socketParams":{
-        "repositoryStorageSocketPath" : "repository-storage-manager.app.sock"
+        "repositoryStorageSocketPath" : "repository-storage-manager-socket"
     },
     "storageParams":{
-        "myServicesRepositoriesUploadDirPath" : "my-services-uploded-repositories"
+        "uploadDirPath" : "repository-manager-repositories-storage"
     },
     "ports": [],
     "networkmode": "host"

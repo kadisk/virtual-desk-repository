@@ -14,7 +14,7 @@
         "iamManagerServerManagerUrl" : "/server-manager/status"
     },
     "socketParams":{
-        "iamManagerSocketPath" : "iam.app.sock"
+        "iamManagerSocketPath" : "iam-socket"
     },
     "ports": [],
     "networkmode": "host"

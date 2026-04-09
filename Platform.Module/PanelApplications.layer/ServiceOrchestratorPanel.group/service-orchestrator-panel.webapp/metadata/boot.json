@@ -5,7 +5,7 @@
         "serverManagerUrl",
         "RT_ENV_GENERATED_DIR_NAME",
         "isWatch",
-        "myServicesRepositoriesUploadDirPath",
+        "uploadDirPath",
         "serviceOrchestratorSocketPath",
         "serviceOrchestratorServerManagerUrl",
         "repositoryStorageSocketPath",
@@ -65,7 +65,7 @@
                 "commandExecutorLib": "@/command-executor.lib"
             },
             "params":{
-                "uploadDirPath":"{{myServicesRepositoriesUploadDirPath}}",
+                "uploadDirPath":"{{uploadDirPath}}",
                 "repositoryStorageSocketPath":"{{repositoryStorageSocketPath}}",
                 "repositoryStorageServerManagerUrl":"{{repositoryStorageServerManagerUrl}}"
             }

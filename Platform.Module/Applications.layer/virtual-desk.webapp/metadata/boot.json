@@ -7,7 +7,7 @@
         "isWatch",
         "eventManagerServiceStorageFilePath",
         "instanceMonitoringManagerServiceStorageFilePath",
-        "myWorkbenchRepositoriesUploadDirPath",
+        "uploadDirPath",
         "installDataDirPath",
         "ecosystemDefaultsFileRelativePath",
         "secretKey",
@@ -166,7 +166,7 @@
                 "commandExecutorLib": "@/command-executor.lib"
             },
             "params":{
-                "uploadDirPath": "{{myWorkbenchRepositoriesUploadDirPath}}",
+                "uploadDirPath": "{{uploadDirPath}}",
                 "repositoryStorageSocketPath":"{{repositoryStorageSocketPath}}",
                 "repositoryStorageServerManagerUrl":"{{repositoryStorageServerManagerUrl}}",
                 "needsAuth": true

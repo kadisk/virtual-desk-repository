@@ -18,13 +18,24 @@
         "iamStorageServerManagerUrl"        : "/server-manager/status"
     },
     "socketParams":{
-        "repositoryStorageSocketPath": "repository-storage-manager.app.sock",
-        "iamStorageSocketPath": "iam.app.sock"
+        "repositoryStorageSocketPath": "repository-storage-manager-socket",
+        "iamStorageSocketPath": "iam-socket"
     },
     "storageParams":{
-        "eventManagerServiceStorageFilePath" : "event-manager-service.sqlite",
-        "instanceMonitoringManagerServiceStorageFilePath": "instance-monitoring-manager-service.sqlite",
-        "myWorkbenchRepositoriesUploadDirPath": "my-workbench-uploded-repositories"
+        "eventManagerServiceStorageFilePath" : {
+            "namespace": "event-manager-service-database-file",
+            "filename": "event-manager-service.sqlite",
+            "owner": true
+        },
+        "instanceMonitoringManagerServiceStorageFilePath": {
+            "namespace": "instance-monitoring-manager-service-database-file",
+            "filename": "instance-monitoring-manager-service.sqlite",
+            "owner": true
+        },
+        "uploadDirPath": {
+            "namespace": "my-workbench-repositories-storage",
+            "owner": true
+        }
     },
     "ports": [],
     "networkmode": "host"

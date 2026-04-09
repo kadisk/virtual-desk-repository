@@ -9,10 +9,17 @@
         "serverName" : "IAMAppInstance"
     },
     "socketParams":{
-        "socket" : "iam.app.sock"
+        "socket" : {
+            "namespace":"iam-socket",
+            "owner": true
+        }
     },
     "storageParams":{
-        "storageFilePath" : "iam-manager-service.sqlite"
+        "storageFilePath" : {
+            "namespace": "iam-manager-service-database-file",
+            "filename": "iam-manager-service.sqlite",
+            "owner": true
+        }
     },
     "ports": [],
     "networkmode": "host"

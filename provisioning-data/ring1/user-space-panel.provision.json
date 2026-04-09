@@ -15,7 +15,7 @@
         "iamStorageServerManagerUrl" : "/server-manager/status"
     },
     "socketParams":{
-        "iamStorageSocketPath" : "iam.app.sock"
+        "iamStorageSocketPath" : "iam-socket"
     },
     "ports": [],
     "networkmode": "host"
