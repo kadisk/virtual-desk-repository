@@ -113,6 +113,12 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
             repositoryNamespace: provisionData.repositoryNamespace
         }))
 
+    if (!Array.isArray(repositoriesImportedList) || repositoriesImportedList.length === 0) {
+        const repositoryNamespace = provisionData.repositoryNamespace || 'N/A'
+        const coloredMessage = `Repository namespace ${`"${repositoryNamespace}"`.highlight} não localizado entre os repositórios importados.\nVerifique se o namespace informado está correto e se o repositório de origem foi importado com sucesso para o sistema.\n\n\n`.error
+        console.error('\n\n\nErro durante o provisionamento:'.error, coloredMessage)
+        return
+    }
 
     const repositoryInformation = repositoriesImportedList[0]
 
