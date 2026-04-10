@@ -22,7 +22,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
 
     const ReadJsonFile = jsonFileUtilitiesLib.require("ReadJsonFile")
     const absolutProvisionFilePath = resolve(process.cwd(), ConvertPathToAbsolutPath(provisionFilePath))
-    const provisionData = await ReadJsonFile(absolutProvisionFilePath)
 
     colors.setTheme({
         header: ['white', 'bold'],
@@ -30,6 +29,7 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
         label: ['gray'],
         value: ['white', 'bold'],
         highlight: ['yellow'],
+        alertPath: ['yellow', 'bold'],
         success: ['green', 'bold'],
         error: ['red', 'bold'],
         warning: ['yellow'],
@@ -38,6 +38,14 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
         boolean: ['magenta'],
         path: ['cyan']
     })
+
+    const provisionData = await ReadJsonFile(absolutProvisionFilePath)
+
+    if(!provisionData){
+        console.error('\nErro ao obter os dados de provisionamento.'.error)
+        console.error('Arquivo de provisionamento: '.error + absolutProvisionFilePath.alertPath)
+        return
+    }
 
     console.log('')
     console.log('='.repeat(70).header)
