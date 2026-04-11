@@ -27,8 +27,10 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
             header: ['white', 'bold'],
             title: ['cyan', 'bold'],
             label: ['gray'],
+            muted: ['gray'],
             value: ['white', 'bold'],
             highlight: ['yellow'],
+            updated: ['yellow', 'bold'],
             alertPath: ['yellow', 'bold'],
             success: ['green', 'bold'],
             error: ['red', 'bold'],
@@ -40,14 +42,12 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
         })
     
     
-    const provisionData = await ReadJsonFile(absolutProvisionFilePath)
-
-    if(!provisionData){
-        console.error('\nErro ao obter os dados de provisionamento.'.error)
-        console.error('Arquivo de provisionamento: '.error + absolutProvisionFilePath.alertPath)
-        return
-    }
-
+    const RepositoryStorageCommand = MountCommand({ 
+        serverManagerUrl: repositoryStorageServerManagerUrl,
+        socketPath: repositoryStorageSocketPath,
+        commandExecutorLib,
+        ExtractAPI: (APIs) => APIs.RepositoryStorageManagerAppInstance.RepositoryStorageManager
+    })
 
     const ServiceOrchestratorCommand = MountCommand({ 
         serverManagerUrl: serviceOrchestratorServerManagerUrl,
@@ -56,6 +56,30 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
         ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
     })
 
+    const provisionData = await ReadJsonFile(absolutProvisionFilePath)
+
+    if(!provisionData){
+        console.error('\nErro ao obter os dados de provisionamento.'.error)
+        console.error('Arquivo de provisionamento: '.error + absolutProvisionFilePath.alertPath)
+        return
+    }
+
+    console.log(`Buscando dados de repositório de origem "${provisionData.repositoryNamespace}"...`.highlight)
+
+    const repositoriesImportedList = 
+        await RepositoryStorageCommand((API) => API.GetRepositoriesImportedList({
+            repositoryNamespace: provisionData.repositoryNamespace
+        }))
+
+    if (!Array.isArray(repositoriesImportedList) || repositoriesImportedList.length === 0) {
+        const repositoryNamespace = provisionData.repositoryNamespace || 'N/A'
+        const coloredMessage = `Repository namespace ${`"${repositoryNamespace}"`.highlight} não localizado entre os repositórios importados.\nVerifique se o namespace informado está correto e se o repositório de origem foi importado com sucesso para o sistema.\n\n\n`.error
+        console.error('\n\n\nErro durante o provisionamento:'.error, coloredMessage)
+        return
+    }
+
+    const repositoryInformation = repositoriesImportedList[0]
+    
     console.log(`\nBuscando serviço "${serviceId}"...`.highlight)
 
     const serviceInformation = 
@@ -73,81 +97,113 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
     console.log('ATUALIZAÇÃO DE SERVIÇO'.padStart(41).title)
     console.log('='.repeat(70).header)
 
-    console.log('INFORMAÇÕES DO SERVIÇO ENCONTRADO:'.title)
+    console.log('INFORMAÇÕES DO SERVIÇO:'.title)
     console.log('-'.repeat(70).label)
     console.log(`${'ID:'.padEnd(22).label} ${String(serviceInformation.serviceId || 'N/A').value}`)
-    console.log(`${'Nome:'.padEnd(22).label} ${String(serviceInformation.serviceName || 'N/A').value}`)
-    console.log(`${'Descrição:'.padEnd(22).label} ${String(serviceInformation.serviceDescription || 'N/A').value}`)
-    console.log(`${'Namespace origem:'.padEnd(22).label} ${String(serviceInformation.originRepositoryNamespace || 'N/A').highlight}`)
-    console.log(`${'Pacote origem:'.padEnd(22).label} ${String(serviceInformation.originPackagePath || 'N/A').path}`)
-    console.log(`${'Repo origem:'.padEnd(22).label} ${String(serviceInformation.originRepositoryCodePath || 'N/A').path}`)
-    console.log(`${'Instância:'.padEnd(22).label} ${String(serviceInformation.instanceRepositoryCodePath || 'N/A').path}`)
-    console.log('-'.repeat(70).label)
-    console.log('')
 
-    console.log(`Carregando dados de provisionamento do arquivo "${provisionFilePath}"...`.highlight)
-    console.log(`${'Arquivo:'.padEnd(22).label} ${absolutProvisionFilePath.alertPath}`)
+    const stringifyValue = (value) => {
+        if (value === undefined || value === null) {
+            return 'N/A'
+        }
 
-    console.log('')
-    console.log('DADOS DE PROVISIONAMENTO PARA ATUALIZAÇÃO:'.title)
+        return typeof value === 'object' ? JSON.stringify(value) : String(value)
+    }
+
+    const printComparedField = ({ label, currentValue, nextValue, currentColor = 'value', nextColor = 'updated', unchangedColor = 'muted' }) => {
+        const currentStr = stringifyValue(currentValue)
+        const nextStr = stringifyValue(nextValue)
+
+        if (currentStr === nextStr) {
+            console.log(`${`${label}`.padEnd(22).label} ${currentStr[unchangedColor]}`)
+            return
+        }
+
+        console.log(`${`${label}`.padEnd(22).label} ${currentStr[currentColor]} ${'->'.label} ${nextStr[nextColor]}`)
+    }
+
+    const formatStartupParamValue = (key, value) => {
+        if (value === undefined || value === null) {
+            return { formattedValue: '', color: 'value' }
+        }
+
+        if (typeof value === 'boolean') {
+            return { formattedValue: value.toString(), color: 'boolean' }
+        }
+
+        if (key.includes('port') || key.includes('Port')) {
+            return { formattedValue: String(value), color: 'port' }
+        }
+
+        if (key.includes('url') || key.includes('Url') || key.includes('host') || key.includes('Host')) {
+            return { formattedValue: String(value), color: 'url' }
+        }
+
+        if (key.includes('path') || key.includes('Path') || key.includes('dir') || key.includes('Dir')) {
+            return { formattedValue: String(value), color: 'path' }
+        }
+
+        return {
+            formattedValue: typeof value === 'object' ? JSON.stringify(value) : String(value),
+            color: 'value'
+        }
+    }
+
+    printComparedField({
+        label: 'Nome:',
+        currentValue: serviceInformation.serviceName,
+        nextValue: provisionData.serviceName
+    })
+    printComparedField({
+        label: 'Descrição:',
+        currentValue: serviceInformation.serviceDescription,
+        nextValue: provisionData.serviceDescription
+    })
+    printComparedField({
+        label: 'Namespace origem:',
+        currentValue: serviceInformation.originRepositoryNamespace,
+        nextValue: provisionData.repositoryNamespace,
+        currentColor: 'highlight'
+    })
+    printComparedField({
+        label: 'Repo origem:',
+        currentValue: serviceInformation.originRepositoryCodePath,
+        nextValue: repositoryInformation.repositoryCodePath,
+        currentColor: 'path',
+        nextColor: 'updated'
+    })
+    printComparedField({
+        label: 'Pacote origem:',
+        currentValue: serviceInformation.originPackagePath,
+        nextValue: provisionData.packagePath,
+        currentColor: 'path',
+        nextColor: 'updated'
+    })
+    console.log(`${'Instância:'.padEnd(22).label} ${String(serviceInformation.instanceRepositoryCodePath || 'N/A').muted}`)
+    console.log(`${'Arquivo prov.:'.padEnd(22).label} ${absolutProvisionFilePath.alertPath}`)
     console.log('-'.repeat(70).label)
-    console.log(`${'Nome:'.padEnd(22).label} ${String(provisionData.serviceName || 'N/A').value}`)
-    console.log(`${'Descrição:'.padEnd(22).label} ${String(provisionData.serviceDescription || 'N/A').value}`)
-    console.log(`${'Tipo:'.padEnd(22).label} ${String(provisionData.packageType || 'N/A').highlight}`)
-    console.log(`${'Namespace:'.padEnd(22).label} ${String(provisionData.repositoryNamespace || 'N/A').highlight}`)
-    console.log(`${'Pacote:'.padEnd(22).label} ${String(provisionData.packageName || 'N/A').value}`)
-    console.log(`${'Caminho:'.padEnd(22).label} ${String(provisionData.packagePath || 'N/A').path}`)
-    console.log(`${'Network Mode:'.padEnd(22).label} ${String(provisionData.networkmode || 'N/A').highlight}`)
 
     if (provisionData.startupParams) {
         console.log('')
-        console.log('PARÂMETROS DE INICIALIZAÇÃO (NOVOS):'.title)
+        console.log('PARÂMETROS DE INICIALIZAÇÃO:'.title)
         console.log('-'.repeat(70).label)
 
         Object.entries(provisionData.startupParams).forEach(([key, value]) => {
             if (key !== 'password' && key !== 'username') {
-                let formattedValue
-                let color = 'value'
-
-                if (typeof value === 'boolean') {
-                    formattedValue = value.toString()
-                    color = 'boolean'
-                } else if (key.includes('port') || key.includes('Port')) {
-                    formattedValue = String(value)
-                    color = 'port'
-                } else if (key.includes('url') || key.includes('Url') || key.includes('host') || key.includes('Host')) {
-                    formattedValue = String(value)
-                    color = 'url'
-                } else if (key.includes('path') || key.includes('Path') || key.includes('dir') || key.includes('Dir')) {
-                    formattedValue = String(value)
-                    color = 'path'
-                } else {
-                    formattedValue = typeof value === 'object' ? JSON.stringify(value) : String(value)
-                }
-
-                const valueStr = formattedValue
+                const nextParam = formatStartupParamValue(key, value)
                 const keyLabel = `${key.padEnd(25)}`.label
 
-                if (valueStr.length > 45) {
-                    console.log(`${keyLabel} ${valueStr.substring(0, 45)[color]}`)
-                    let remaining = valueStr.substring(45)
+                if (nextParam.formattedValue.length > 45) {
+                    console.log(`${keyLabel} ${nextParam.formattedValue.substring(0, 45)[nextParam.color]}`)
+                    let remaining = nextParam.formattedValue.substring(45)
                     while (remaining.length > 0) {
-                        console.log(`${''.padEnd(25)} ${remaining.substring(0, 45)[color]}`)
+                        console.log(`${''.padEnd(25)} ${remaining.substring(0, 45)[nextParam.color]}`)
                         remaining = remaining.substring(45)
                     }
                 } else {
-                    console.log(`${keyLabel} ${valueStr[color]}`)
+                    console.log(`${keyLabel} ${nextParam.formattedValue[nextParam.color]}`)
                 }
             }
         })
-    }
-
-    if (Array.isArray(provisionData.ports)) {
-        const portsValue = provisionData.ports.length > 0
-            ? JSON.stringify(provisionData.ports)
-            : '[]'
-
-        console.log(`${'Ports:'.padEnd(22).label} ${portsValue.port}`)
     }
 
     console.log('-'.repeat(70).label)

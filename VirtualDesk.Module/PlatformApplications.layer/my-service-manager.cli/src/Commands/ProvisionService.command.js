@@ -106,7 +106,6 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
     console.log('-'.repeat(70).label)
     console.log('')
 
-    console.log('')
     console.log(`Buscando dados de repositório de origem "${provisionData.repositoryNamespace}"...`.highlight)
 
     const RepositoryStorageCommand = MountCommand({ 
