@@ -56,6 +56,10 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
         ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
     })
 
+    console.log('')
+    console.log(`Carregando arquivo de provisionamento: `.highlight + `${absolutProvisionFilePath}`.path + '...'.highlight)
+    console.log('')
+
     const provisionData = await ReadJsonFile(absolutProvisionFilePath)
 
     if(!provisionData){
@@ -97,28 +101,14 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
     console.log('ATUALIZAÇÃO DE SERVIÇO'.padStart(41).title)
     console.log('='.repeat(70).header)
 
-    console.log('INFORMAÇÕES DO SERVIÇO:'.title)
-    console.log('-'.repeat(70).label)
-    console.log(`${'ID:'.padEnd(22).label} ${String(serviceInformation.serviceId || 'N/A').value}`)
-
-    const stringifyValue = (value) => {
-        if (value === undefined || value === null) {
-            return 'N/A'
-        }
-
-        return typeof value === 'object' ? JSON.stringify(value) : String(value)
-    }
 
     const printComparedField = ({ label, currentValue, nextValue, currentColor = 'value', nextColor = 'updated', unchangedColor = 'muted' }) => {
-        const currentStr = stringifyValue(currentValue)
-        const nextStr = stringifyValue(nextValue)
-
-        if (currentStr === nextStr) {
-            console.log(`${`${label}`.padEnd(22).label} ${currentStr[unchangedColor]}`)
+        if (currentValue === nextValue) {
+            console.log(`${`${label}`.padEnd(15).label} ${currentValue[unchangedColor]}`)
             return
         }
 
-        console.log(`${`${label}`.padEnd(22).label} ${currentStr[currentColor]} ${'->'.label} ${nextStr[nextColor]}`)
+        console.log(`${`${label}`.padEnd(15).label} ${currentValue[currentColor]} ${'->'.label} ${nextValue[nextColor]}`)
     }
 
     const formatStartupParamValue = (key, value) => {
@@ -178,8 +168,7 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
         currentColor: 'path',
         nextColor: 'updated'
     })
-    console.log(`${'Instância:'.padEnd(22).label} ${String(serviceInformation.instanceRepositoryCodePath || 'N/A').muted}`)
-    console.log(`${'Arquivo prov.:'.padEnd(22).label} ${absolutProvisionFilePath.alertPath}`)
+    
     console.log('-'.repeat(70).label)
 
     if (provisionData.startupParams) {
