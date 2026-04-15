@@ -4,7 +4,6 @@ const PrepareDirPath = require("./PrepareDirPath")
 const CopyDirRepository = require("./CopyDirRepository")
 const GetContextTarStream = require("./GetContextTarStream")
 
-
 const GetISODate = () => {
   return new Date().toISOString().replace(/:/g, '-').split('.')[0];
 }
@@ -15,7 +14,6 @@ const CreateServiceHandler = ({
     BuildImageFromDockerfileString,
     CreateNewContainer
 }) => {
-
 
     const _CreateAndStartContainer = async ({
         containerName,
@@ -63,6 +61,33 @@ const CreateServiceHandler = ({
         return serviceData
     }
 
+    const UpdateService = async ({
+        serviceId,
+        serviceName,
+        serviceDescription,
+        originRepositoryNamespace,
+        originRepositoryCodePath,
+        originPackagePath
+    }) => {
+
+        const instanceRepositoryCodePath = resolve(absolutInstanceDataDirPath, serviceName+"-"+GetISODate())
+        
+        PrepareDirPath(instanceRepositoryCodePath)
+
+        const serviceData = await MyWorkspaceDomainService
+            .UpdateServiceProvisioning({
+                serviceId,
+                serviceName,
+                serviceDescription,
+                originRepositoryNamespace,
+                originRepositoryCodePath,
+                originPackagePath
+            })
+
+        await CopyDirRepository(originRepositoryCodePath, instanceRepositoryCodePath)
+        return serviceData
+    }
+
     const CreateInstance = async({
         serviceId,
         startupParams,
@@ -80,7 +105,6 @@ const CreateServiceHandler = ({
 
         return instanceData
     }
-
 
     const BuildImage = async ({
         imageTagName,
@@ -162,11 +186,11 @@ const CreateServiceHandler = ({
 
         await _CreateAndStartContainer({ containerName, imageName, ports, networkmode })
 
-
         return containerData
     }
 
     return {
+        UpdateService,
         CreateService,
         CreateInstance,
         BuildImage,

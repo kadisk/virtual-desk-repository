@@ -5,6 +5,8 @@ const CreateStateManager = require("./CreateStateManager")
 
 const UNKNOWN        = Symbol("UNKNOWN")
 const CREATED        = Symbol("CREATED")
+const UPDATED        = Symbol("UPDATED")
+const UPDATING       = Symbol("UPDATING")
 const RESTARTING     = Symbol("RESTARTING")
 const WAITING        = Symbol("WAITING")
 const LOADING        = Symbol("LOADING")
@@ -65,6 +67,9 @@ const CreateServiceRuntimeStateManager = () => {
                 } else 
                     _RequestData(RequestTypes.SERVICE_DATA, { serviceId, nextStatus: WAITING  })
                 break
+            case UPDATED:
+                break
+            case RESTARTING:
             case LOADING:
                 break
             default:
@@ -254,6 +259,11 @@ const CreateServiceRuntimeStateManager = () => {
         ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
     }
 
+    const UpdateServiceInStateManagement = (serviceId, params) => {
+        ChangeStatus(SERVICE_STATE_GROUP, serviceId, UPDATING)
+       _RequestData(RequestTypes.SERVICE_DATA, { serviceId, nextStatus: UPDATED,  instanceParams: params })
+    }
+
     const TriggerDecommissioningProcess = (serviceId) => {
         const state = GetState(SERVICE_STATE_GROUP, serviceId)
         if (!state) {
@@ -269,7 +279,6 @@ const CreateServiceRuntimeStateManager = () => {
         }
     }
 
-    
     const GetServiceStatus = (serviceId) => {
         try{
             const state = GetState(SERVICE_STATE_GROUP, serviceId)
@@ -315,6 +324,9 @@ const CreateServiceRuntimeStateManager = () => {
                         originPackagePath         : serviceData.originPackagePath,
                     })
                     ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, requestData.nextStatus)
+                    if(requestData.nextStatus === UPDATED){
+                        SwapRunningInstance(requestData.serviceId, requestData.instanceParams)
+                    }
                     break
                 case RequestTypes.CONTAINER_DATA:
                     ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, LOADING)
@@ -578,6 +590,7 @@ const CreateServiceRuntimeStateManager = () => {
     return {
         LoadServiceInStateManagement,
         CreateServiceInStateManagement,
+        UpdateServiceInStateManagement,
         TriggerDecommissioningProcess,
         ListRunningInstances,
         SwapRunningInstance,

@@ -1,6 +1,3 @@
-const { Op } = require('sequelize')
-
-
 const CreateMyWorkspaceDomainService = ({
     ServiceModel,
     ImageBuildHistoryModel,
@@ -53,7 +50,6 @@ const CreateMyWorkspaceDomainService = ({
             raw: true
         })
 
-
     const RegisterServiceProvisioning = ({ 
         serviceName,
         serviceDescription,
@@ -70,6 +66,25 @@ const CreateMyWorkspaceDomainService = ({
                 originRepositoryNamespace,
                 originRepositoryCodePath,
                 originPackagePath
+            })
+    
+    const UpdateServiceProvisioning = async ({
+        serviceId,
+        serviceName,
+        serviceDescription,
+        originRepositoryNamespace,
+        originRepositoryCodePath,
+        originPackagePath
+    }) => 
+        ServiceModel
+            .update({ 
+                serviceName,
+                serviceDescription,
+                originRepositoryNamespace,
+                originRepositoryCodePath,
+                originPackagePath
+            }, {
+                where: { id: serviceId }
             })
 
     const MarkAsDecommissioned = async (serviceId) => {
@@ -181,6 +196,7 @@ const CreateMyWorkspaceDomainService = ({
 
     return {
         RegisterServiceProvisioning,
+        UpdateServiceProvisioning,
         RegisterInstanceCreation,
         RegisterTerminateInstance,
         RegisterBuildedImage,

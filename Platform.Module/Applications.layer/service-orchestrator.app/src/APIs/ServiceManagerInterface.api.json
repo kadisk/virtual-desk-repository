@@ -292,6 +292,67 @@
 			]
 		},
 		{
+			"path": "/update-provision-service/package",
+			"method": "POST",
+			"summary":"UpdateProvisionService",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "serviceId",
+					"type": "string",
+					"required": true
+				},
+				{
+					"in": "body",
+					"name": "serviceName",
+					"type": "string",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "serviceDescription",
+					"type": "string",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "originRepositoryNamespace",
+					"type": "string",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "originRepositoryCodePath",
+					"type": "string",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "originPackagePath",
+					"type": "string",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "startupParams",
+					"type": "json",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "ports",
+					"type": "json",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "networkmode",
+					"type": "string",
+					"required": false
+				}
+			]
+		},
+		{
 			"path": "/decommission-service",
 			"method": "POST",
 			"summary":"DecommissioningService",

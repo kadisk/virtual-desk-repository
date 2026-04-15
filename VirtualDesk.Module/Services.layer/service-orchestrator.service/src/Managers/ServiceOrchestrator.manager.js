@@ -58,6 +58,7 @@ const ServiceOrchestratorManager = (params) => {
     const {
         LoadServiceInStateManagement,
         CreateServiceInStateManagement,
+        UpdateServiceInStateManagement,
         TriggerDecommissioningProcess,
         SwapRunningInstance,
         GetServiceStatus,
@@ -78,6 +79,7 @@ const ServiceOrchestratorManager = (params) => {
 
     const {
         CreateService,
+        UpdateService,
         BuildImage,
         CreateContainer,
         CreateInstance
@@ -124,8 +126,6 @@ const ServiceOrchestratorManager = (params) => {
                 default:
                     //console.log(eventData) 
             }
-                    
-
 
         })
 
@@ -200,7 +200,6 @@ const ServiceOrchestratorManager = (params) => {
         serviceIds.forEach(serviceId => LoadServiceInStateManagement(serviceId))
     }
     
-
     const _BuildImage = async ({
         serviceName,
         serviceId,
@@ -274,6 +273,35 @@ const ServiceOrchestratorManager = (params) => {
             ports,
             networkmode
         })
+    }
+
+    const UpdateProvisionService = async ({
+        serviceId,
+        serviceName,
+        serviceDescription,
+        originRepositoryNamespace,
+        originRepositoryCodePath,
+        originPackagePath,
+        startupParams,
+        ports,
+        networkmode
+    }) => {
+
+        await UpdateService({
+            serviceId,
+            serviceName,
+            serviceDescription,
+            originRepositoryNamespace,
+            originRepositoryCodePath,
+            originPackagePath
+        })
+
+        UpdateServiceInStateManagement(serviceId, {
+            startupParams,
+            ports,
+            networkmode
+        })
+        
     }
 
     const _GetProvisionedServiceInfo = (serviceData) => {
@@ -396,7 +424,8 @@ const ServiceOrchestratorManager = (params) => {
         GetInstancePortsData,
         GetNetworkModeData,
         UpdateServicePorts,
-        UpdateServiceStartupParams
+        UpdateServiceStartupParams,
+        UpdateProvisionService
     }
 
 }

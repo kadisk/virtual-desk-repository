@@ -41,7 +41,6 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
             path: ['cyan']
         })
     
-    
     const RepositoryStorageCommand = MountCommand({ 
         serverManagerUrl: repositoryStorageServerManagerUrl,
         socketPath: repositoryStorageSocketPath,
@@ -100,7 +99,6 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
     console.log('='.repeat(70).header)
     console.log('ATUALIZAÇÃO DE SERVIÇO'.padStart(41).title)
     console.log('='.repeat(70).header)
-
 
     const printComparedField = ({ label, currentValue, nextValue, currentColor = 'value', nextColor = 'updated', unchangedColor = 'muted' }) => {
         if (currentValue === nextValue) {
@@ -197,6 +195,27 @@ const UpdateProvisionServiceCommand = async ({ args, startupParams, params }) =>
 
     console.log('-'.repeat(70).label)
     console.log('')
+
+    try {
+        console.log('Iniciando atualização do serviço...'.highlight)
+
+        await ServiceOrchestratorCommand((API) => API.UpdateProvisionService({
+            serviceId                 : serviceInformation.serviceId,
+            originRepositoryCodePath  : repositoryInformation.repositoryCodePath,
+            originPackagePath         : provisionData.packagePath,
+            originRepositoryNamespace : provisionData.repositoryNamespace,
+            serviceName               : provisionData.serviceName,
+            serviceDescription        : provisionData.serviceDescription,
+            startupParams             : provisionData.startupParams,
+            ports                     : provisionData.ports,
+            networkmode               : provisionData.networkmode,
+        }))
+
+        console.log('Atualização do serviço concluída com sucesso!'.success)
+    } catch (error) {
+        console.error('Erro durante a atualização do serviço:'.error, error.message)
+        throw error
+    }
 }
 
 module.exports = UpdateProvisionServiceCommand
