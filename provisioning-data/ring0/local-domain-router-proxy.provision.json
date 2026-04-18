@@ -4,7 +4,7 @@
     "repositoryNamespace": "VirtualDeskRepo",
     "packageName": "local-domain-router-proxy",
     "packageType": "app",
-    "packagePath": "VirtualDesk.Module/Applications.layer/local-domain-router-proxy.app",
+    "packagePath": "Platform.Module/Applications.layer/local-domain-router-proxy.app",
     "startupParams": {
         "entryPort": "7000",
         "routeMappingTable": [

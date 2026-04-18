@@ -20,8 +20,10 @@ import VolumesTable from "./Volumes.table"
 import ContainerLogHistoryOffcanvas from "./ContainerLogHistory.offcanvas"
 import ContainerDetailsOffcanvas from "./ContainerDetails.offcanvas"
 import NewNetworkOffcanvas from "./NewNetwork.offcanvas"
+import NewVolumeOffcanvas from "./NewVolumeOffcanvas.offcanvas"
 import NetworkDetailsOffcanvas from "./NetworkDetails.offcanvas"
 import VolumeDetailsOffcanvas from "./VolumeDetails.offcanvas"
+import { set } from "react-hook-form"
 
 const CONTAINERS_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-box"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /></svg>
 const IMAGES_ICON = <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-3"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2l-8 4l8 4l8 -4l-8 -4" /><path d="M4 10l8 4l8 -4" /><path d="M4 18l8 4l8 -4" /><path d="M4 14l8 4l8 -4" /></svg>
@@ -57,6 +59,7 @@ const ContainerManager = ({
     const [containerIdDetailsSelected, setContainerIdDetailsSelected] = useState<string>()
 
     const [newNetworkModalVisible, setNewNetworkModalVisible] = useState(false)
+    const [newVolumeModalVisible, setNewVolumeModalVisible] = useState(false)
     const [networkIdSelected, setNetworkIdSelected] = useState<string>()
     const [volumeNameSelected, setVolumeNameSelected] = useState<string>()
 
@@ -214,6 +217,8 @@ const ContainerManager = ({
     
     const handleShowNewNetworkModal = () => setNewNetworkModalVisible(true)
 
+    const handleShowNewVolumeModal = () => setNewVolumeModalVisible(true)
+
     return <div className="pt-4">
 
         {
@@ -229,6 +234,11 @@ const ContainerManager = ({
             && <ImageDetailsOffcanvas
                 imageId={imageIdSelected}
                 onClose={() => setImageIdSelected(undefined)} />
+        }
+
+        {
+            newVolumeModalVisible
+            && <NewVolumeOffcanvas onClose={() => setNewVolumeModalVisible(false)} />
         }
 
         {
@@ -362,7 +372,7 @@ const ContainerManager = ({
                             <div className="row g-2 align-items-center">
                                 <div className="col-auto ms-auto d-print-none mt-0 mb-3">
                                     <div className="btn-list">
-                                        <button className="btn btn-outline-blue">
+                                        <button className="btn btn-outline-blue" onClick={handleShowNewVolumeModal}>
                                             New Volume
                                         </button>
                                     </div>

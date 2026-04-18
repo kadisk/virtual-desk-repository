@@ -304,6 +304,10 @@ const ServiceOrchestratorManager = (params) => {
         
     }
 
+    const TerminateService = async ({ serviceId }) => {
+        
+    }
+
     const _GetProvisionedServiceInfo = (serviceData) => {
         const { 
             id: serviceId,
@@ -405,7 +409,7 @@ const ServiceOrchestratorManager = (params) => {
 
     return {
         ProvisionService,
-        DecommissioningService: TriggerDecommissioningProcess,
+        DecommissionService: TriggerDecommissioningProcess,
         ListProvisionedServices,
         GetService,
         ListServices,
@@ -425,7 +429,8 @@ const ServiceOrchestratorManager = (params) => {
         GetNetworkModeData,
         UpdateServicePorts,
         UpdateServiceStartupParams,
-        UpdateProvisionService
+        UpdateProvisionService,
+        TerminateService
     }
 
 }

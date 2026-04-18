@@ -4,7 +4,7 @@
     "repositoryNamespace": "VirtualDeskRepo",
     "packageName": "local-transit-proxy",
     "packageType": "app",
-    "packagePath": "VirtualDesk.Module/Applications.layer/local-transit-proxy.app",
+    "packagePath": "Platform.Module/Applications.layer/local-transit-proxy.app",
     "startupParams": {
         "entryPort": "9000",
         "targetHost": "http://localhost:7000"
