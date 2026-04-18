@@ -355,7 +355,20 @@
 		{
 			"path": "/decommission-service",
 			"method": "POST",
-			"summary":"DecommissioningService",
+			"summary":"DecommissionService",
+			"parameters": [
+				{
+					"in": "body",
+					"name": "serviceId",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/terminate-service",
+			"method": "POST",
+			"summary":"TerminateService",
 			"parameters": [
 				{
 					"in": "body",

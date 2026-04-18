@@ -4,14 +4,16 @@ const { stdin: input, stdout: output } = require('node:process')
 
 const MountCommand = require('../Helpers/MountCommand')
 
-const AskForDecommissionConfirmation = async () => {
+const AskForTerminationConfirmation = async () => {
     const rl = readline.createInterface({ input, output })
     try {
         const answer = await rl.question(
-            colors.yellow('Confirma o descomissionamento deste serviço? (s/N): ')
+            colors.yellow('Confirma a finalização deste serviço? (s/N): ')
         )
 
-        return ['s', 'sim', 'y', 'yes'].includes(String(answer || '').trim().toLowerCase())
+        return ['s', 'sim', 'y', 'yes'].includes(
+            String(answer || '').trim().toLowerCase()
+        )
     } finally {
         rl.close()
     }
@@ -25,21 +27,25 @@ const PrintServiceInfo = (info) => {
     const printLine = (l, v) =>
         console.log(label(l) + value(v))
 
-    const title = 'Service to be Decommissioned'
+    const title = 'Informações do serviço que será terminado'
     const totalWidth = labelWidth + 40
     const titlePad = Math.floor((totalWidth - title.length) / 2)
 
     console.log('\n' + colors.bold(' '.repeat(titlePad) + title + ' '.repeat(titlePad)))
     console.log(colors.gray('-'.repeat(totalWidth)))
 
-    printLine('Service ID:', String(info.id ?? info.serviceId ?? ''))
+    printLine('Service ID:', info.serviceId ?? info.id ?? '')
     printLine('Service Name:', info.serviceName)
+    printLine('Service Description:', info.serviceDescription)
+    printLine('Instance Repo Code Path:', info.instanceRepositoryCodePath)
     printLine('Repository Namespace:', info.originRepositoryNamespace)
+    printLine('Repository Code Path:', info.originRepositoryCodePath)
+    printLine('Package Path:', info.originPackagePath)
 
     console.log(colors.gray('-'.repeat(totalWidth)) + '\n')
 }
 
-const DecommissionServiceCommand = async ({ args, startupParams, params }) => {
+const TerminateProvisionServiceCommand = async ({ args, startupParams, params }) => {
 
     const { serviceId } = args
 
@@ -54,15 +60,14 @@ const DecommissionServiceCommand = async ({ args, startupParams, params }) => {
 
     const ServiceOrchestratorCommand = MountCommand({ 
         serverManagerUrl: serviceOrchestratorServerManagerUrl,
-        socketPath: serviceOrchestratorSocketPath,
+        socketPath: serviceOrchestratorSocketPath, 
         commandExecutorLib,
         ExtractAPI: (APIs) => APIs.ServiceOrchestratorAppInstance.ServiceManagerInterface
     })
 
-    const services = await ServiceOrchestratorCommand((API) => API.ListServices())
-    const serviceInfo = Array.isArray(services)
-        ? services.find((item) => String(item.id ?? item.serviceId) === String(serviceId))
-        : null
+    const serviceInfo = await ServiceOrchestratorCommand((API) =>
+        API.GetService({ serviceId })
+    )
 
     if (!serviceInfo) {
         console.error(colors.red.bold(`Serviço com ID ${serviceId} não foi encontrado.`))
@@ -71,19 +76,23 @@ const DecommissionServiceCommand = async ({ args, startupParams, params }) => {
 
     PrintServiceInfo(serviceInfo)
 
-    const confirmed = await AskForDecommissionConfirmation()
+    const confirmed = await AskForTerminationConfirmation()
     if (!confirmed) {
         console.log(colors.yellow('Operação cancelada pelo usuário.'))
         return
     }
 
     try {
-        await ServiceOrchestratorCommand((API) => API.DecommissionService({ serviceId }))
-        console.log(colors.green.bold('Serviço descomissionado com sucesso!'))
+        await ServiceOrchestratorCommand((API) =>
+            API.TerminateService({ serviceId })
+        )
+
+        console.log(colors.green.bold('Serviço finalizado com sucesso!'))
     } catch (error) {
-        console.error(colors.red.bold(`Não foi possível descomissionar o serviço ${serviceId}.`))
-        return
+        console.error(
+            colors.red.bold(`Não foi possível finalizar o serviço ${serviceId}.`)
+        )
     }
 }
 
-module.exports = DecommissionServiceCommand
+module.exports = TerminateProvisionServiceCommand

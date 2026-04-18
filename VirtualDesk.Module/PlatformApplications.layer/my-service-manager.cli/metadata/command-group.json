@@ -133,6 +133,21 @@
 				}
 			],
 			"parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "TerminateProvisionService",
+			"path": "Commands/TerminateProvisionService.command",
+			"command": "terminate [serviceId]",
+			"description": "Encerra o provisionamento de um serviço que deve estar em processo de provisionamento",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+			"parametersToLoad": [ "commandExecutorLib" ]
 		}
 	]
 }
