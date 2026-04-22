@@ -267,6 +267,18 @@
 				},
 				{
 					"in": "body",
+					"name": "socketParams",
+					"type": "json",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "storageParams",
+					"type": "json",
+					"required": false
+				},
+				{
+					"in": "body",
 					"name": "ports",
 					"type": "json",
 					"required": true

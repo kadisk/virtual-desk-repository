@@ -256,6 +256,8 @@ const ServiceOrchestratorManager = (params) => {
         originRepositoryCodePath,
         originPackagePath,
         startupParams,
+        socketParams,
+        storageParams,
         ports = [],
         networkmode= "bridge"
     }) => {
@@ -270,6 +272,8 @@ const ServiceOrchestratorManager = (params) => {
 
         CreateServiceInStateManagement(serviceData.id, {
             startupParams,
+            socketParams,
+            storageParams,
             ports,
             networkmode
         })
@@ -283,6 +287,8 @@ const ServiceOrchestratorManager = (params) => {
         originRepositoryCodePath,
         originPackagePath,
         startupParams,
+        socketParams,
+        storageParams,
         ports,
         networkmode
     }) => {
@@ -298,6 +304,8 @@ const ServiceOrchestratorManager = (params) => {
 
         UpdateServiceInStateManagement(serviceId, {
             startupParams,
+            socketParams,
+            storageParams,
             ports,
             networkmode
         })

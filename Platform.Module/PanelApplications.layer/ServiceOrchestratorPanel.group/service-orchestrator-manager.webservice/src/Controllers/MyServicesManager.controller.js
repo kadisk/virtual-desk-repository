@@ -78,6 +78,8 @@ const MyServicesManagerController = (params) => {
         serviceName,
         serviceDescription,
         startupParams,
+        socketParams,
+        storageParams,
         ports,
         networkmode
     }) => {
@@ -98,6 +100,8 @@ const MyServicesManagerController = (params) => {
                 originRepositoryCodePath: repositoryCodePath,
                 originPackagePath: packagePath,
                 startupParams, 
+                socketParams,
+                storageParams,
                 ports,
                 networkmode
             }))

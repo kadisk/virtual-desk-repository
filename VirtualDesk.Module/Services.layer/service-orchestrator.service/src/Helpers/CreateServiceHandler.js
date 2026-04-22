@@ -91,6 +91,8 @@ const CreateServiceHandler = ({
     const CreateInstance = async({
         serviceId,
         startupParams,
+        socketParams,
+        storageParams,
         ports,
         networkmode
     }) => {
@@ -99,6 +101,8 @@ const CreateServiceHandler = ({
             .RegisterInstanceCreation({
                 serviceId,
                 startupParams,
+                socketParams,
+                storageParams,
                 ports,
                 networkmode
             })
