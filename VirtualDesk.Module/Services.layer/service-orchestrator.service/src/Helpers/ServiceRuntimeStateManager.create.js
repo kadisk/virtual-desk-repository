@@ -29,32 +29,21 @@ const IMAGE_BUILD_HISTORY_STATE_GROUP = Symbol("IMAGE_BUILD_HISTORY_STATE_GROUP"
 
 const CreateServiceRuntimeStateManager = () => {
 
-    const {
-        AddNewState,
-        ChangeStatus,
-        GetState,
-        ListStatesByPropertyData,
-        FindData,
-        onChangeStatus,
-        SetData,
-        UpdateData,
-        FindKeyByPropertyData,
-        GetDataByKey
-    } = CreateStateManager()
+    const stateManager = CreateStateManager()
 
     const eventEmitter = new EventEmitter()
 
     const REQUEST_EVENT = Symbol()
 
     const _ValidateServiceDoesNotExist = (serviceId) => {
-        if (GetState(SERVICE_STATE_GROUP, serviceId))
+        if (stateManager.GetState(SERVICE_STATE_GROUP, serviceId))
             throw new Error(`Service with ID ${serviceId} already exists`)
     }
 
     const _RequestData = (requestType, requestData) => eventEmitter.emit(REQUEST_EVENT, { requestType, ... requestData})
 
     const _ProcessServiceStatusChange = (serviceId) => {
-        const { status, data } = GetState(SERVICE_STATE_GROUP, serviceId)
+        const { status, data } = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
         switch (status) {
             case CREATED:
                 if(!data.serviceName) {
@@ -74,14 +63,14 @@ const CreateServiceRuntimeStateManager = () => {
             case LOADING:
                 break
             default:
-                console.warn(`Service ${serviceId} has an unknown status: ${GetState(SERVICE_STATE_GROUP, serviceId).status.description}`)
+                console.warn(`Service ${serviceId} has an unknown status: ${stateManager.GetState(SERVICE_STATE_GROUP, serviceId).status.description}`)
         }
     }
 
     const _ProcessInstanceStatusChange = (instanceId) => {
-        const { status, data } = GetState(INSTANCE_STATE_GROUP, instanceId)
+        const { status, data } = stateManager.GetState(INSTANCE_STATE_GROUP, instanceId)
         const { serviceId } = data
-        const { status:serviceStatus, data: serviceData } = GetState(SERVICE_STATE_GROUP, serviceId)
+        const { status:serviceStatus, data: serviceData } = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
 
         switch (status) {
             case CREATING:
@@ -112,13 +101,13 @@ const CreateServiceRuntimeStateManager = () => {
                 _RequestData(RequestTypes.CONTAINER_DATA, { serviceId, instanceId })
                 break
             case RUNNING:
-                ChangeStatus(SERVICE_STATE_GROUP, serviceId, RUNNING)
+                stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, RUNNING)
                 break
             case STOPPING:
             case STOPPED:
             case TERMINATED:
                 if(serviceStatus !== RESTARTING && ListRunningInstances(serviceId).length === 0)
-                    ChangeStatus(SERVICE_STATE_GROUP, serviceId, status)
+                    stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, status)
                 break
             case STARTING:
             case LOADING:
@@ -129,7 +118,7 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const _ProcessContainerStatusChange = (containerId) => {
-        const { status, data } = GetState(CONTAINER_STATE_GROUP, containerId)
+        const { status, data } = stateManager.GetState(CONTAINER_STATE_GROUP, containerId)
         switch (status) {
             case WAITING:
                 _RequestData(RequestTypes.CONTAINER_INSPECTION_DATA, { 
@@ -148,22 +137,22 @@ const CreateServiceRuntimeStateManager = () => {
                     })
                 break
             case RUNNING:
-                ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, RUNNING)
+                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, RUNNING)
                 break
             case STOPPING:
-                ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPING)
+                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPING)
                 break
             case STOPPED:
-                const { status:instanceStatus, data:instanceData } = GetState(INSTANCE_STATE_GROUP, data.instanceId)
+                const { status:instanceStatus, data:instanceData } = stateManager.GetState(INSTANCE_STATE_GROUP, data.instanceId)
                 if(instanceStatus === TERMINATED) {
                     _RequestData(RequestTypes.REMOVE_CONTAINER, { 
                         instanceId      : instanceData.instanceId,
                         containerHashId : instanceData.Id
                     })
-                } else ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPED)
+                } else stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPED)
                 break
             case TERMINATED:
-                ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, TERMINATED)
+                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, TERMINATED)
                 break
             default:
                 console.warn(`Container ${containerId} has an unknown status: ${status.description}`)
@@ -172,9 +161,9 @@ const CreateServiceRuntimeStateManager = () => {
 
     const _ProcessImageBuildHistoryStatusChange = (buildId) => {
 
-        const { status, data } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
-        const { status: statusService, data:serviceData } = GetState(SERVICE_STATE_GROUP, data.serviceId)
-        const { status:instanceStatus, data:instanceData } = GetState(INSTANCE_STATE_GROUP, data.instanceId) || {}
+        const { status, data } = stateManager.GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
+        const { status: statusService, data:serviceData } = stateManager.GetState(SERVICE_STATE_GROUP, data.serviceId)
+        const { status:instanceStatus, data:instanceData } = stateManager.GetState(INSTANCE_STATE_GROUP, data.instanceId) || {}
 
         switch (status) {
             case WAITING:
@@ -199,7 +188,7 @@ const CreateServiceRuntimeStateManager = () => {
             case FINISHED:
                 if(instanceStatus === STARTING){
                     if(statusService === RESTARTING){
-                        ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
+                        stateManager.ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
                     } else {
                         _RequestData(RequestTypes.CREATE_NEW_CONTAINER, { 
                             buildId,
@@ -218,15 +207,15 @@ const CreateServiceRuntimeStateManager = () => {
         }
     }
 
-    onChangeStatus(SERVICE_STATE_GROUP,             ({ key: serviceId })   => _ProcessServiceStatusChange(serviceId))
-    onChangeStatus(INSTANCE_STATE_GROUP,            ({ key: instanceId })  => _ProcessInstanceStatusChange(instanceId))
-    onChangeStatus(CONTAINER_STATE_GROUP,           ({ key: containerId }) => _ProcessContainerStatusChange(containerId))
-    onChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, ({ key: buildId })     => _ProcessImageBuildHistoryStatusChange(buildId))
+    stateManager.onChangeStatus(SERVICE_STATE_GROUP,             ({ key: serviceId })   => _ProcessServiceStatusChange(serviceId))
+    stateManager.onChangeStatus(INSTANCE_STATE_GROUP,            ({ key: instanceId })  => _ProcessInstanceStatusChange(instanceId))
+    stateManager.onChangeStatus(CONTAINER_STATE_GROUP,           ({ key: containerId }) => _ProcessContainerStatusChange(containerId))
+    stateManager.onChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, ({ key: buildId })     => _ProcessImageBuildHistoryStatusChange(buildId))
 
     const _AddNewState = (group, key, data, status=WAITING) => {
-        AddNewState(group, key)
-        SetData(group, key, data)
-        ChangeStatus(group, key, status)
+        stateManager.AddNewState(group, key)
+        stateManager.SetData(group, key, data)
+        stateManager.ChangeStatus(group, key, status)
     }
 
     const AddNewContainerState = (containerId, { instanceId, serviceId, containerName  }) => 
@@ -238,44 +227,44 @@ const CreateServiceRuntimeStateManager = () => {
     const _ReceiveInspectionData = ({ containerId, inspectionData }) => {
         if(inspectionData){
             const { Id, State, NetworkSettings } = inspectionData
-            UpdateData(CONTAINER_STATE_GROUP, containerId, { Id, State, NetworkSettings })
+            stateManager.UpdateData(CONTAINER_STATE_GROUP, containerId, { Id, State, NetworkSettings })
             _ReconcileContainerStatus(containerId)
         } else 
-            ChangeStatus(CONTAINER_STATE_GROUP, containerId, TERMINATED)
+            stateManager.ChangeStatus(CONTAINER_STATE_GROUP, containerId, TERMINATED)
     }
 
     const _ReconcileContainerStatus = (containerId) => {
-        const containerData = GetDataByKey(CONTAINER_STATE_GROUP, containerId)
+        const containerData = stateManager.GetDataByKey(CONTAINER_STATE_GROUP, containerId)
         const { State } = containerData
         if (State.Running) {
-            ChangeStatus(CONTAINER_STATE_GROUP, containerId, RUNNING)
+            stateManager.ChangeStatus(CONTAINER_STATE_GROUP, containerId, RUNNING)
         } else if (State.Status === "exited") {
-            ChangeStatus(CONTAINER_STATE_GROUP, containerId, STOPPED)
+            stateManager.ChangeStatus(CONTAINER_STATE_GROUP, containerId, STOPPED)
         } else {
-            ChangeStatus(CONTAINER_STATE_GROUP, containerId, TERMINATED)
+            stateManager.ChangeStatus(CONTAINER_STATE_GROUP, containerId, TERMINATED)
         }
     }
 
     const LoadServiceInStateManagement = (serviceId) => {
         _ValidateServiceDoesNotExist()
-        AddNewState(SERVICE_STATE_GROUP, serviceId)
-        ChangeStatus(SERVICE_STATE_GROUP, serviceId, WAITING)
+        stateManager.AddNewState(SERVICE_STATE_GROUP, serviceId)
+        stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, WAITING)
     }
 
     const CreateServiceInStateManagement = (serviceId, params) => {
-        AddNewState(SERVICE_STATE_GROUP, serviceId)
-        ChangeStatus(SERVICE_STATE_GROUP, serviceId, CREATED)
+        stateManager.AddNewState(SERVICE_STATE_GROUP, serviceId)
+        stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, CREATED)
         _RequestData(RequestTypes.CREATE_NEW_INSTANCE, {serviceId, ...params})
-        ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
+        stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
     }
 
     const UpdateServiceInStateManagement = (serviceId, params) => {
-        ChangeStatus(SERVICE_STATE_GROUP, serviceId, UPDATING)
+        stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, UPDATING)
        _RequestData(RequestTypes.SERVICE_DATA, { serviceId, nextStatus: UPDATED,  instanceParams: params })
     }
 
     const TriggerDecommissioningProcess = (serviceId) => {
-        const state = GetState(SERVICE_STATE_GROUP, serviceId)
+        const state = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
         if (!state) {
             throw new Error(`Service with ID ${serviceId} does not exist`)
         }
@@ -291,7 +280,7 @@ const CreateServiceRuntimeStateManager = () => {
 
     const GetServiceStatus = (serviceId) => {
         try{
-            const state = GetState(SERVICE_STATE_GROUP, serviceId)
+            const state = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
             if (!state) {
                 throw new Error(`Service with ID ${serviceId} does not exist`)
             }
@@ -309,7 +298,7 @@ const CreateServiceRuntimeStateManager = () => {
 
             switch (requestType) {
                 case RequestTypes.INSTANCE_DATA_LIST:
-                    ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, LOADING)
+                    stateManager.ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, LOADING)
                     const instanceDataList = await onRequestData(requestType, { serviceId: requestData.serviceId })
                     if(instanceDataList.length > 0)
                         instanceDataList
@@ -322,10 +311,10 @@ const CreateServiceRuntimeStateManager = () => {
                             .forEach(({ id:buildId , tag, hashId, instanceId }) => AddNewBuildState(buildId, { tag, hashId, instanceId, serviceId:requestData.serviceId}))
                     break
                 case RequestTypes.SERVICE_DATA:
-                    ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, LOADING)
+                    stateManager.ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, LOADING)
                     const serviceData = await onRequestData(requestType, { serviceId: requestData.serviceId })
 
-                    UpdateData(SERVICE_STATE_GROUP, requestData.serviceId, { 
+                    stateManager.UpdateData(SERVICE_STATE_GROUP, requestData.serviceId, { 
                         serviceName               : serviceData.serviceName,
                         serviceDescription        : serviceData.serviceDescription,
                         repositoryCodePath        : serviceData.instanceRepositoryCodePath,
@@ -333,13 +322,13 @@ const CreateServiceRuntimeStateManager = () => {
                         originRepositoryCodePath  : serviceData.originRepositoryCodePath,
                         originPackagePath         : serviceData.originPackagePath,
                     })
-                    ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, requestData.nextStatus)
+                    stateManager.ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, requestData.nextStatus)
                     if(requestData.nextStatus === UPDATED){
                         SwapRunningInstance(requestData.serviceId, requestData.instanceParams)
                     }
                     break
                 case RequestTypes.CONTAINER_DATA:
-                    ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, LOADING)
+                    stateManager.ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, LOADING)
                     const containerData = await onRequestData(requestType, { instanceId: requestData.instanceId })
                     if(containerData){
                         const { id:containerId, containerName  } = containerData
@@ -347,7 +336,7 @@ const CreateServiceRuntimeStateManager = () => {
                     }
                     break
                 case RequestTypes.CONTAINER_INSPECTION_DATA:
-                    ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, LOADING)
+                    stateManager.ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, LOADING)
                     const inspectionData = await onRequestData(requestType, { containerName: requestData.containerName })
                     _ReceiveInspectionData({ containerId: requestData.containerId, inspectionData })
                     break
@@ -358,7 +347,7 @@ const CreateServiceRuntimeStateManager = () => {
                         await onRequestData(requestType, { containerHashId: requestData.containerHashId })
                     } catch(e){
                         console.log(e)
-                        ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, FAILURE)
+                        stateManager.ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, FAILURE)
                     }
                     break
                 case RequestTypes.CREATE_NEW_INSTANCE:
@@ -381,7 +370,7 @@ const CreateServiceRuntimeStateManager = () => {
                     }, CREATING)
                     break
                 case RequestTypes.CREATE_NEW_CONTAINER:
-                    ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, STARTING)
+                    stateManager.ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, STARTING)
                     const newContainerData = await onRequestData(requestType, requestData)
                     const { id:containerId, containerName  } = newContainerData
                     AddNewContainerState(containerId, {
@@ -389,10 +378,10 @@ const CreateServiceRuntimeStateManager = () => {
                         serviceId:requestData.serviceId,
                         containerName
                     })
-                    ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, requestData.buildId, FINISHED)
+                    stateManager.ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, requestData.buildId, FINISHED)
                     break
                 case RequestTypes.BUILD_NEW_IMAGE:
-                    ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, STARTING)
+                    stateManager.ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, STARTING)
                     const newImageBuildData = await onRequestData(requestType, requestData)
                     const {
                         id:buildId, tag, hashId, instanceId
@@ -401,10 +390,10 @@ const CreateServiceRuntimeStateManager = () => {
                     break
                 case RequestTypes.MARK_AS_DECOMMISSIONED:
                     await onRequestData(requestType, { serviceId: requestData.serviceId })
-                    ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DECOMMISSIONED)
+                    stateManager.ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DECOMMISSIONED)
                     break
                 case RequestTypes.REGISTER_STORAGES:
-                    ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, CREATED)
+                    stateManager.ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, CREATED)
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }
@@ -413,13 +402,13 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const onChangeServiceStatus = (f) => {
-        onChangeStatus(SERVICE_STATE_GROUP, ({ key: serviceId }) => f({serviceId, status: GetServiceStatus(serviceId)}))
+        stateManager.onChangeStatus(SERVICE_STATE_GROUP, ({ key: serviceId }) => f({serviceId, status: GetServiceStatus(serviceId)}))
     }
 
     const _ChangeContainerStatusByHash = (containerHashId, newStatus) => {
-        const containerId = FindKeyByPropertyData(CONTAINER_STATE_GROUP, "Id", containerHashId)
+        const containerId = stateManager.FindKeyByPropertyData(CONTAINER_STATE_GROUP, "Id", containerHashId)
         if(containerId)
-            ChangeStatus(CONTAINER_STATE_GROUP, containerId, newStatus)
+            stateManager.ChangeStatus(CONTAINER_STATE_GROUP, containerId, newStatus)
         else console.log(`the container with hashId ${containerId} is not in the state manager`)
     }
     
@@ -476,7 +465,7 @@ const CreateServiceRuntimeStateManager = () => {
         if(stoppedInstanceStateList.length > 0)
             stoppedInstanceStateList
                 .forEach(({key:instanceId}) => {
-                    const data = FindData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
+                    const data = stateManager.FindData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
                     _RequestData(RequestTypes.START_CONTAINER, {
                         instanceId, 
                         containerHashId: data.Id
@@ -491,7 +480,7 @@ const CreateServiceRuntimeStateManager = () => {
     const StopService = (serviceId) => {
         ListInstanceStateByStatus(serviceId, RUNNING)
         .forEach(({key:instanceId}) => {
-            const data = FindData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
+            const data = stateManager.FindData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
             _RequestData(RequestTypes.STOP_CONTAINER, { 
                 instanceId, 
                 containerHashId: data.Id
@@ -500,7 +489,7 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const GetNetworksSettings  = async (serviceId) => {
-        const containerStateList = ListStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
+        const containerStateList = stateManager.ListStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
 
         const runningStateContainer = containerStateList.find(({status}) => status === RUNNING)
 
@@ -525,7 +514,7 @@ const CreateServiceRuntimeStateManager = () => {
         }
     }
 
-    const ListInstancesState = (serviceId) => ListStatesByPropertyData(INSTANCE_STATE_GROUP, "serviceId", serviceId)
+    const ListInstancesState = (serviceId) => stateManager.ListStatesByPropertyData(INSTANCE_STATE_GROUP, "serviceId", serviceId)
 
     const ListInstances = (serviceId) => {
         const instanceDataList = ListInstancesState(serviceId)
@@ -547,7 +536,7 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const ListContainers = (serviceId) => {
-        const stateList = ListStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
+        const stateList = stateManager.ListStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
         const containerDataList = stateList.map(state => {
             const { key: containerId, status, data } = state
             return {containerId, status:status.description,...data}
@@ -556,7 +545,7 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const ListImageBuildHistory = (serviceId) => {
-        const stateList = ListStatesByPropertyData(IMAGE_BUILD_HISTORY_STATE_GROUP, "serviceId", serviceId)
+        const stateList = stateManager.ListStatesByPropertyData(IMAGE_BUILD_HISTORY_STATE_GROUP, "serviceId", serviceId)
         const buildDataList = stateList.map(state => {
             const { key: buildId, status, data } = state
             return {buildId, status:status.description,...data}
@@ -566,16 +555,16 @@ const CreateServiceRuntimeStateManager = () => {
 
 
     const SwapRunningInstance = (serviceId, params) => {
-        ChangeStatus(SERVICE_STATE_GROUP, serviceId, RESTARTING)
+        stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, RESTARTING)
         const runningInstances = ListRunningInstances(serviceId)
         runningInstances.forEach(({ instanceId }) => {
-            const containerStateList = ListStatesByPropertyData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
+            const containerStateList = stateManager.ListStatesByPropertyData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
             containerStateList.forEach(({ data }) => {
                 _RequestData(RequestTypes.STOP_CONTAINER, { 
                     instanceId, 
                     containerHashId: data.Id
                 })
-                ChangeStatus(INSTANCE_STATE_GROUP, instanceId, TERMINATED)
+                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, instanceId, TERMINATED)
             })
 
         })
@@ -584,8 +573,8 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const onChangeContainerListData = (serviceId, f) => {
-        onChangeStatus(CONTAINER_STATE_GROUP, ({ key }) => {
-            const { data } = GetState(CONTAINER_STATE_GROUP, key)
+        stateManager.onChangeStatus(CONTAINER_STATE_GROUP, ({ key }) => {
+            const { data } = stateManager.GetState(CONTAINER_STATE_GROUP, key)
             if(data.serviceId == serviceId){
                 const containerList = ListContainers(serviceId)
                 f(containerList)
@@ -594,8 +583,8 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const onChangeInstanceListData = (serviceId, f) => {
-        onChangeStatus(INSTANCE_STATE_GROUP, ({ key }) => {
-            const { data } = GetState(INSTANCE_STATE_GROUP, key)
+        stateManager.onChangeStatus(INSTANCE_STATE_GROUP, ({ key }) => {
+            const { data } = stateManager.GetState(INSTANCE_STATE_GROUP, key)
             if(data.serviceId == serviceId){
                 const instanceList = ListInstances(serviceId)
                 f(instanceList)
@@ -604,8 +593,8 @@ const CreateServiceRuntimeStateManager = () => {
     }
 
     const onChangeImageBuildHistoryListData = (serviceId, f) => {
-        onChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, ({ key }) => {
-            const { data } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, key)
+        stateManager.onChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, ({ key }) => {
+            const { data } = stateManager.GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, key)
             if(data.serviceId == serviceId){
                 const buildList = ListImageBuildHistory(serviceId)
                 f(buildList)

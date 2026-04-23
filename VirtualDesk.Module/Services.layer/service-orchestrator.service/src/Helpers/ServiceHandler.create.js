@@ -1,8 +1,8 @@
 const { join, resolve} = require("path")
 
-const PrepareDirPath = require("./PrepareDirPath")
-const CopyDirRepository = require("./CopyDirRepository")
-const GetContextTarStream = require("./GetContextTarStream")
+const PrepareDirPath = require("../Utils/PrepareDirPath")
+const CopyDirRepository = require("../Utils/CopyDirRepository")
+const GetContextTarStream = require("../Utils/GetContextTarStream")
 
 const GetISODate = () => {
   return new Date().toISOString().replace(/:/g, '-').split('.')[0];
