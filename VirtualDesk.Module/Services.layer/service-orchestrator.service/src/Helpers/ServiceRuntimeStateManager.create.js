@@ -1,7 +1,7 @@
 
 const EventEmitter = require("events")
 
-const CreateStateManager = require("./CreateStateManager")
+const CreateStateManager = require("./StateManager.create")
 
 const UNKNOWN        = Symbol("UNKNOWN")
 const CREATING       = Symbol("CREATING")

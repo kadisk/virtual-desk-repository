@@ -6,12 +6,12 @@ const ConvertPathToAbsolutPath = (_path) => join(_path)
 
 const InitializeMyServicesPersistentStoreManager = require("../Helpers/InitializeMyServicesPersistentStoreManager")
 
-const CreateMyWorkspaceDomainService             = require("../Helpers/CreateMyWorkspaceDomainService")
-const CreateServiceRuntimeStateManager           = require("../Helpers/CreateServiceRuntimeStateManager")
+const CreateMyWorkspaceDomainService             = require("../Helpers/MyWorkspaceDomainService.create")
+const CreateServiceRuntimeStateManager           = require("../Helpers/ServiceRuntimeStateManager.create")
 
 const RequestTypes = require("../Helpers/Request.types")
 
-const CreateServiceHandler = require("../Helpers/CreateServiceHandler")
+const CreateServiceHandler = require("../Helpers/ServiceHandler.create")
 
 const ServiceOrchestratorManager = (params) => {
 
