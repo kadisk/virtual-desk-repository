@@ -3,7 +3,7 @@ const EventEmitter = require("events")
 
 const CreateStateManager = require("./StateManager.create")
 
-const{
+const {
     UNKNOWN,
     CREATING,
     CREATED,
@@ -31,6 +31,11 @@ const {
     IMAGE_BUILD_HISTORY_STATE_GROUP
 } = require("../Types/ItemGroup.types")
 
+const CreateServiceProcessStatusChange = require("../ProcessStatusChange/Service.createProcessStatusChange")
+const CreateInstanceProcessStatusChange = require("../ProcessStatusChange/Instance.createProcessStatusChange")
+const CreateContainerProcessStatusChange = require("../ProcessStatusChange/Container.createProcessStatusChange")
+const CreateImageBuildHistoryProcessStatusChange = require("../ProcessStatusChange/ImageBuildHistory.createProcessStatusChange")
+
 const CreateServiceRuntimeStateManager = () => {
 
     const stateManager = CreateStateManager()
@@ -46,170 +51,39 @@ const CreateServiceRuntimeStateManager = () => {
 
     const _RequestData = (requestType, requestData) => eventEmitter.emit(REQUEST_EVENT, { requestType, ... requestData})
 
-    const _ProcessServiceStatusChange = (serviceId) => {
-        const { status, data } = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
-        switch (status) {
-            case CREATED:
-                if(!data.serviceName) {
-                    _RequestData(RequestTypes.SERVICE_DATA, { serviceId, nextStatus: CREATED })
-                }
-                break
-            case WAITING:
-                if(data.serviceName) {
-                    _RequestData(RequestTypes.INSTANCE_DATA_LIST, { serviceId })
-                    _RequestData(RequestTypes.IMAGE_BUILD_DATA_LIST, { serviceId })
-                } else 
-                    _RequestData(RequestTypes.SERVICE_DATA, { serviceId, nextStatus: WAITING  })
-                break
-            case UPDATED:
-                break
-            case RESTARTING:
-            case LOADING:
-                break
-            default:
-                console.warn(`Service ${serviceId} has an unknown status: ${stateManager.GetState(SERVICE_STATE_GROUP, serviceId).status.description}`)
-        }
+    const ListInstancesState = (serviceId) => stateManager.ListStatesByPropertyData(INSTANCE_STATE_GROUP, "serviceId", serviceId)
+
+    const ListRunningInstances = (serviceId) => {
+        const instanceDataList = ListInstancesState(serviceId)
+            .filter(({status}) => status === RUNNING)
+            .map(state => {
+                const { key: instanceId, status, data } = state
+                return { instanceId, status:status.description, ...data }
+            })
+        return instanceDataList
     }
 
-    const _ProcessInstanceStatusChange = (instanceId) => {
-        const { status, data } = stateManager.GetState(INSTANCE_STATE_GROUP, instanceId)
-        const { serviceId } = data
-        const { status:serviceStatus, data: serviceData } = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
+    const _ProcessServiceStatusChange = CreateServiceProcessStatusChange({
+        stateManager,
+        RequestData: _RequestData
+    })
 
-        switch (status) {
-            case CREATING:
-                if(serviceData.serviceName){
-                    _RequestData(RequestTypes.REGISTER_STORAGES, {
-                        serviceId,
-                        instanceId,
-                        storageParams: data.storageParams
-                    })
-                } else setImmediate(() => _ProcessInstanceStatusChange(instanceId)) 
-                break
-            case CREATED:
-                if(serviceData.serviceName){
-                    _RequestData(RequestTypes.BUILD_NEW_IMAGE, {
-                        serviceId,
-                        instanceId,
-                        serviceName               : serviceData.serviceName,
-                        originRepositoryCodePath  : serviceData.originRepositoryCodePath,
-                        originRepositoryNamespace : serviceData.originRepositoryNamespace,
-                        originPackagePath         : serviceData.originPackagePath,
-                        startupParams             : data.startupParams,
-                        networkmode               : data.networkmode,
-                        ports                     : data.ports
-                    })
-                } else setImmediate(() => _ProcessInstanceStatusChange(instanceId))
-                break
-            case WAITING:
-                _RequestData(RequestTypes.CONTAINER_DATA, { serviceId, instanceId })
-                break
-            case RUNNING:
-                stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, RUNNING)
-                break
-            case STOPPING:
-            case STOPPED:
-            case TERMINATED:
-                if(serviceStatus !== RESTARTING && ListRunningInstances(serviceId).length === 0)
-                    stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, status)
-                break
-            case STARTING:
-            case LOADING:
-                break
-            default:
-                console.warn(`Instance ${instanceId} has an unknown status: ${status.description}`)
-        }
-    }
+    const _ProcessInstanceStatusChange = CreateInstanceProcessStatusChange({ 
+        stateManager, 
+        RequestData: _RequestData, 
+        ListRunningInstances
+    })
 
-    const _ProcessContainerStatusChange = (containerId) => {
-        const { status, data } = stateManager.GetState(CONTAINER_STATE_GROUP, containerId)
-        switch (status) {
-            case WAITING:
-                _RequestData(RequestTypes.CONTAINER_INSPECTION_DATA, { 
-                        serviceId     : data.serviceId,
-                        instanceId    : data.instanceId,
-                        containerId,
-                        containerName : data.containerName
-                    })
-                break
-            case STARTING:
-                _RequestData(RequestTypes.CONTAINER_INSPECTION_DATA, { 
-                        serviceId     : data.serviceId,
-                        instanceId    : data.instanceId,
-                        containerId,
-                        containerName : data.containerName
-                    })
-                break
-            case RUNNING:
-                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, RUNNING)
-                break
-            case STOPPING:
-                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPING)
-                break
-            case STOPPED:
-                const { status:instanceStatus, data:instanceData } = stateManager.GetState(INSTANCE_STATE_GROUP, data.instanceId)
-                if(instanceStatus === TERMINATED) {
-                    _RequestData(RequestTypes.REMOVE_CONTAINER, { 
-                        instanceId      : instanceData.instanceId,
-                        containerHashId : instanceData.Id
-                    })
-                } else stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPED)
-                break
-            case TERMINATED:
-                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, TERMINATED)
-                break
-            default:
-                console.warn(`Container ${containerId} has an unknown status: ${status.description}`)
-        }
-    }
+    const _ProcessContainerStatusChange = CreateContainerProcessStatusChange({
+        stateManager,
+        RequestData: _RequestData
+    })
 
-    const _ProcessImageBuildHistoryStatusChange = (buildId) => {
-
-        const { status, data } = stateManager.GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
-        const { status: statusService, data:serviceData } = stateManager.GetState(SERVICE_STATE_GROUP, data.serviceId)
-        const { status:instanceStatus, data:instanceData } = stateManager.GetState(INSTANCE_STATE_GROUP, data.instanceId) || {}
-
-        switch (status) {
-            case WAITING:
-                const instanceRunningOrStoppingList = ListInstancesState(data.serviceId)
-                    .filter(({status}) => status === RUNNING || status === STOPPING)
-                
-                if(instanceRunningOrStoppingList.length === 0 ){
-                    _RequestData(RequestTypes.CREATE_NEW_CONTAINER, { 
-                        buildId,
-                        instanceId  : data.instanceId,
-                        tag         : data.tag,
-                        serviceId   : data.serviceId,
-                        serviceName : serviceData.serviceName,
-                        networkmode : instanceData.networkmode,
-                        ports       : instanceData.ports
-                    })
-                    
-                } else setTimeout(() => {
-                    _ProcessImageBuildHistoryStatusChange(buildId)
-                }, 3000)
-                break
-            case FINISHED:
-                if(instanceStatus === STARTING){
-                    if(statusService === RESTARTING){
-                        stateManager.ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
-                    } else {
-                        _RequestData(RequestTypes.CREATE_NEW_CONTAINER, { 
-                            buildId,
-                            instanceId  : data.instanceId,
-                            tag         : data.tag,
-                            serviceId   : data.serviceId,
-                            serviceName : serviceData.serviceName,
-                            networkmode : instanceData.networkmode,
-                            ports       : instanceData.ports
-                        })
-                    }
-                }
-                /**/
-                break
-            default:
-        }
-    }
+    const _ProcessImageBuildHistoryStatusChange = CreateImageBuildHistoryProcessStatusChange({
+        stateManager,
+        RequestData: _RequestData,
+        ListInstancesState
+    })
 
     stateManager.onChangeStatus(SERVICE_STATE_GROUP,             ({ key: serviceId })   => _ProcessServiceStatusChange(serviceId))
     stateManager.onChangeStatus(INSTANCE_STATE_GROUP,            ({ key: instanceId })  => _ProcessInstanceStatusChange(instanceId))
@@ -518,20 +392,8 @@ const CreateServiceRuntimeStateManager = () => {
         }
     }
 
-    const ListInstancesState = (serviceId) => stateManager.ListStatesByPropertyData(INSTANCE_STATE_GROUP, "serviceId", serviceId)
-
     const ListInstances = (serviceId) => {
         const instanceDataList = ListInstancesState(serviceId)
-            .map(state => {
-                const { key: instanceId, status, data } = state
-                return { instanceId, status:status.description, ...data }
-            })
-        return instanceDataList
-    }
-
-    const ListRunningInstances = (serviceId) => {
-        const instanceDataList = ListInstancesState(serviceId)
-            .filter(({status}) => status === RUNNING)
             .map(state => {
                 const { key: instanceId, status, data } = state
                 return { instanceId, status:status.description, ...data }
