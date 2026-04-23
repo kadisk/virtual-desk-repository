@@ -4,6 +4,7 @@ const EventEmitter = require("events")
 const CreateStateManager = require("./CreateStateManager")
 
 const UNKNOWN        = Symbol("UNKNOWN")
+const CREATING       = Symbol("CREATING")
 const CREATED        = Symbol("CREATED")
 const UPDATED        = Symbol("UPDATED")
 const UPDATING       = Symbol("UPDATING")
@@ -83,6 +84,15 @@ const CreateServiceRuntimeStateManager = () => {
         const { status:serviceStatus, data: serviceData } = GetState(SERVICE_STATE_GROUP, serviceId)
 
         switch (status) {
+            case CREATING:
+                if(serviceData.serviceName){
+                    _RequestData(RequestTypes.REGISTER_STORAGES, {
+                        serviceId,
+                        instanceId,
+                        storageParams: data.storageParams
+                    })
+                } else setImmediate(() => _ProcessInstanceStatusChange(instanceId)) 
+                break
             case CREATED:
                 if(serviceData.serviceName){
                     _RequestData(RequestTypes.BUILD_NEW_IMAGE, {
@@ -353,8 +363,22 @@ const CreateServiceRuntimeStateManager = () => {
                     break
                 case RequestTypes.CREATE_NEW_INSTANCE:
                     const newInstanceData = await onRequestData(requestType, requestData)
-                    const { id:_instanceId , startupParams, ports, networkmode } = newInstanceData
-                    _AddNewState(INSTANCE_STATE_GROUP, _instanceId, {serviceId: requestData.serviceId, startupParams, ports, networkmode}, CREATED)
+                    const { 
+                        id:_instanceId,
+                        startupParams,
+                        storageParams,
+                        socketParams,
+                        ports,
+                        networkmode
+                    } = newInstanceData
+                    _AddNewState(INSTANCE_STATE_GROUP, _instanceId, {
+                        serviceId: requestData.serviceId, 
+                        startupParams,
+                        storageParams,
+                        socketParams,
+                        ports, 
+                        networkmode
+                    }, CREATING)
                     break
                 case RequestTypes.CREATE_NEW_CONTAINER:
                     ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, STARTING)
@@ -379,6 +403,8 @@ const CreateServiceRuntimeStateManager = () => {
                     await onRequestData(requestType, { serviceId: requestData.serviceId })
                     ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DECOMMISSIONED)
                     break
+                case RequestTypes.REGISTER_STORAGES:
+                    ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, CREATED)
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }

@@ -3,7 +3,9 @@ const CreateMyWorkspaceDomainService = ({
     ImageBuildHistoryModel,
     InstanceModel,
     ContainerModel,
-    ContainerEventLogModel
+    ContainerEventLogModel,
+    SocketModel,
+    StorageModel
 }) => {
 
     const ListServices = async () => {
@@ -128,8 +130,8 @@ const CreateMyWorkspaceDomainService = ({
             buildId
         })
 
-    const RegisterInstanceCreation = ({ serviceId, startupParams, ports, networkmode}) => 
-            InstanceModel.create({ serviceId, startupParams, ports, networkmode })
+    const RegisterInstanceCreation = ({ serviceId, startupParams, storageParams, socketParams, ports, networkmode}) => 
+            InstanceModel.create({ serviceId, startupParams, storageParams, socketParams, ports, networkmode })
 
     const RegisterTerminateInstance = async (instanceId) => 
         InstanceModel.update({ terminateDate: new Date() },{ where: { id: instanceId } })
@@ -194,6 +196,18 @@ const CreateMyWorkspaceDomainService = ({
         return instance ? instance.get({ plain: true }) : null
     }
 
+    const RegisterStorages = async ({
+        serviceId,
+        storageList
+    }) => StorageModel
+            .bulkCreate(
+                storageList.map(({ namespace, filename }) => ({
+                    serviceId,
+                    namespace,
+                    filename
+                }))
+            )
+
     return {
         RegisterServiceProvisioning,
         UpdateServiceProvisioning,
@@ -211,7 +225,8 @@ const CreateMyWorkspaceDomainService = ({
         GetLastInstanceByServiceId,
         GetContainerInfoByInstanceId,
         RegisterContainer,
-        MarkAsDecommissioned
+        MarkAsDecommissioned,
+        RegisterStorages
     }
 }
 

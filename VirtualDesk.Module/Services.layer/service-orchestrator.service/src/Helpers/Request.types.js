@@ -2,6 +2,7 @@
 const RequestTypes = Object.freeze({
     INSTANCE_DATA_LIST        : Symbol(),
     IMAGE_BUILD_DATA_LIST     : Symbol(),
+    REGISTER_STORAGES         : Symbol(),
     CREATE_NEW_INSTANCE       : Symbol(),
     CREATE_NEW_CONTAINER      : Symbol(),
     BUILD_NEW_IMAGE           : Symbol(),

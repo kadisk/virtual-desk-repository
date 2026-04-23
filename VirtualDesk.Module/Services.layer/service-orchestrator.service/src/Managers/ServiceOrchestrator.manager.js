@@ -82,7 +82,8 @@ const ServiceOrchestratorManager = (params) => {
         UpdateService,
         BuildImage,
         CreateContainer,
-        CreateInstance
+        CreateInstance,
+        RegisterStorages
     } = CreateServiceHandler({
         absolutInstanceDataDirPath,
         MyWorkspaceDomainService,
@@ -156,10 +157,19 @@ const ServiceOrchestratorManager = (params) => {
                     const instanceData = await CreateInstance({
                         serviceId     : data.serviceId,
                         startupParams : data.startupParams,
+                        socketParams  : data.socketParams,
+                        storageParams : data.storageParams,
                         networkmode   : data.networkmode,
                         ports         : data.ports
                     })
                     return instanceData
+                case RequestTypes.REGISTER_STORAGES:
+                    const storageData = await RegisterStorages({
+                        serviceId: data.serviceId,
+                        storageParams: data.storageParams
+                    })
+                    return storageData
+                    break
                 case RequestTypes.BUILD_NEW_IMAGE:
                     const buildData = await _BuildImage({
                         serviceName         : data.serviceName,

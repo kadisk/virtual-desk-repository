@@ -47,6 +47,31 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             allowNull: true
         }
     })
+
+    const StorageModel = sequelize.define("Storage", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        serviceId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: ServiceModel,
+                key: "id"
+            },
+            onDelete: "CASCADE"
+        },
+        namespace: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        filename: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    })  
     
     const InstanceModel = sequelize.define("Instance", {
         id: {
@@ -86,6 +111,31 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         terminateDate: {
             type: DataTypes.DATE,
             allowNull: true
+        }
+    })
+
+    const SocketModel = sequelize.define("Socket", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        instanceId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: InstanceModel,
+                key: "id"
+            },
+            onDelete: "CASCADE"
+        },
+        namespace: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        socketPath: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     })
 
@@ -180,12 +230,16 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
     ImageBuildHistoryModel  .hasMany(ContainerModel,         { foreignKey: "buildId",     onDelete: "CASCADE" })
     ServiceModel            .hasMany(InstanceModel,          { foreignKey: "serviceId",   onDelete: "CASCADE" })
     ContainerModel          .hasMany(ContainerEventLogModel, { foreignKey: "containerId", onDelete: "CASCADE" })
-
+    ServiceModel            .hasMany(StorageModel,           { foreignKey: "serviceId",   onDelete: "CASCADE" })
+    InstanceModel           .hasMany(SocketModel,            { foreignKey: "instanceId",  onDelete: "CASCADE" })
+    
     ContainerModel         .belongsTo(InstanceModel,            { foreignKey: "instanceId" })
     ContainerModel         .belongsTo(ImageBuildHistoryModel,   { foreignKey: "buildId" })
     ContainerEventLogModel .belongsTo(ImageBuildHistoryModel,   { foreignKey: "containerId" })
     ImageBuildHistoryModel .belongsTo(InstanceModel,            { foreignKey: "instanceId" })
     InstanceModel          .belongsTo(ServiceModel,             { foreignKey: "serviceId" })
+    StorageModel           .belongsTo(ServiceModel,             { foreignKey: "serviceId" })
+    SocketModel            .belongsTo(InstanceModel,            { foreignKey: "instanceId" })
     
 
     return {
@@ -194,7 +248,9 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             ImageBuildHistory: ImageBuildHistoryModel,
             Instance: InstanceModel,
             Container: ContainerModel,
-            ContainerEventLog: ContainerEventLogModel
+            ContainerEventLog: ContainerEventLogModel,
+            Socket: SocketModel,
+            Storage: StorageModel
         },
         ConnectAndSync: async () => {
             await sequelize.authenticate()
