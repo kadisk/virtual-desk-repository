@@ -3,29 +3,33 @@ const EventEmitter = require("events")
 
 const CreateStateManager = require("./StateManager.create")
 
-const UNKNOWN        = Symbol("UNKNOWN")
-const CREATING       = Symbol("CREATING")
-const CREATED        = Symbol("CREATED")
-const UPDATED        = Symbol("UPDATED")
-const UPDATING       = Symbol("UPDATING")
-const RESTARTING     = Symbol("RESTARTING")
-const WAITING        = Symbol("WAITING")
-const LOADING        = Symbol("LOADING")
-const STARTING       = Symbol("STARTING")
-const STOPPING       = Symbol("STOPPING")
-const STOPPED        = Symbol("STOPPED")
-const RUNNING        = Symbol("RUNNING")
-const FAILURE        = Symbol("FAILURE")
-const FINISHED       = Symbol("FINISHED")
-const TERMINATED     = Symbol("TERMINATED")
-const DECOMMISSIONED = Symbol("DECOMMISSIONED")
+const{
+    UNKNOWN,
+    CREATING,
+    CREATED,
+    UPDATED,
+    UPDATING,
+    RESTARTING,
+    WAITING,
+    LOADING,
+    STARTING,
+    STOPPING,
+    STOPPED,
+    RUNNING,
+    FAILURE,
+    FINISHED,
+    TERMINATED,
+    DECOMMISSIONED 
+} = require("../Types/Status.types")
 
-const RequestTypes  = require("./Request.types")
+const RequestTypes  = require("../Types/Request.types")
 
-const SERVICE_STATE_GROUP             = Symbol("SERVICE_STATE_GROUP")
-const INSTANCE_STATE_GROUP            = Symbol("INSTANCE_STATE_GROUP")
-const CONTAINER_STATE_GROUP           = Symbol("CONTAINER_STATE_GROUP")
-const IMAGE_BUILD_HISTORY_STATE_GROUP = Symbol("IMAGE_BUILD_HISTORY_STATE_GROUP")
+const {
+    SERVICE_STATE_GROUP,
+    INSTANCE_STATE_GROUP,
+    CONTAINER_STATE_GROUP,
+    IMAGE_BUILD_HISTORY_STATE_GROUP
+} = require("../Types/ItemGroup.types")
 
 const CreateServiceRuntimeStateManager = () => {
 

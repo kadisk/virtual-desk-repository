@@ -9,7 +9,7 @@ const InitializeMyServicesPersistentStoreManager = require("../Helpers/Initializ
 const CreateMyWorkspaceDomainService             = require("../Helpers/MyWorkspaceDomainService.create")
 const CreateServiceRuntimeStateManager           = require("../Helpers/ServiceRuntimeStateManager.create")
 
-const RequestTypes = require("../Helpers/Request.types")
+const RequestTypes = require("../Types/Request.types")
 
 const CreateServiceHandler = require("../Helpers/ServiceHandler.create")
 
