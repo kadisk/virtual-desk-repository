@@ -3,6 +3,8 @@ const RequestTypes = require("../Types/Request.types")
 const ItemGroupTypes = require("../Types/ItemGroup.types")
 const StatusTypes = require("../Types/Status.types")
 
+const CreateListInstancesState = require("../Helpers/ServiceRuntimeStateManager.utils/ListInstancesState.create")
+
 const { 
     SERVICE_STATE_GROUP,
     INSTANCE_STATE_GROUP,
@@ -18,8 +20,10 @@ const {
     FINISHED
 } = StatusTypes
 
-const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData, ListInstancesState }) => 
+const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData }) => 
     (buildId) => {
+
+        const ListInstancesState = CreateListInstancesState(stateManager)
 
         const { status, data } = stateManager.GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
         const { status: statusService, data:serviceData } = stateManager.GetState(SERVICE_STATE_GROUP, data.serviceId)
