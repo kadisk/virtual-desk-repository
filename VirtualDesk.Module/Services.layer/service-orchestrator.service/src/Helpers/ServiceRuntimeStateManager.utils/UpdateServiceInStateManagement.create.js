@@ -1,7 +1,7 @@
 
-const RequestTypes = require("../Types/Request.types")
-const ItemGroupTypes = require("../Types/ItemGroup.types")
-const StatusTypes = require("../Types/Status.types")
+const RequestTypes = require("../../Types/Request.types")
+const ItemGroupTypes = require("../../Types/ItemGroup.types")
+const StatusTypes = require("../../Types/Status.types")
 
 const { 
     SERVICE_STATE_GROUP

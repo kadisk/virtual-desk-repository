@@ -1,4 +1,4 @@
-const StatusTypes = require("../Types/Status.types")
+const StatusTypes = require("../../Types/Status.types")
 
 const {
     WAITING

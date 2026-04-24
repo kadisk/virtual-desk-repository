@@ -1,4 +1,4 @@
-const ItemGroupTypes = require("../Types/ItemGroup.types")
+const ItemGroupTypes = require("../../Types/ItemGroup.types")
 
 const { INSTANCE_STATE_GROUP } = ItemGroupTypes
 

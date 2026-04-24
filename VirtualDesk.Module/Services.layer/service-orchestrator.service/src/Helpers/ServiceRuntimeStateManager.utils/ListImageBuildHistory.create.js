@@ -1,4 +1,4 @@
-const ItemGroupTypes = require("../Types/ItemGroup.types")
+const ItemGroupTypes = require("../../Types/ItemGroup.types")
 
 const { 
     IMAGE_BUILD_HISTORY_STATE_GROUP

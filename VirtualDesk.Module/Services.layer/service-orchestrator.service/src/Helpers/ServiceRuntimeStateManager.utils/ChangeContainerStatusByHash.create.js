@@ -1,5 +1,5 @@
 
-const ItemGroupTypes = require("../Types/ItemGroup.types")
+const ItemGroupTypes = require("../../Types/ItemGroup.types")
 
 const { 
     CONTAINER_STATE_GROUP

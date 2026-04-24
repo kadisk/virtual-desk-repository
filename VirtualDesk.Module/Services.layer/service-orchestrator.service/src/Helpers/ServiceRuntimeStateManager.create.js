@@ -28,7 +28,8 @@ const CreateListInstances                  = require("./ServiceRuntimeStateManag
 const CreateListContainers                 = require("./ServiceRuntimeStateManager.utils/ListContainers.create")
 const CreateListImageBuildHistory          = require("./ServiceRuntimeStateManager.utils/ListImageBuildHistory.create")
 const CreateGetServiceStatus               = require("./ServiceRuntimeStateManager.utils/GetServiceStatus.create")
-const CreateOnRequestData                  = require("./ServiceRuntimeStateManager.utils/OnRequestData.create")
+const CreateProcessRequest                  = require("./ServiceRuntimeStateManager.utils/ProcessRequest.create")
+const CreateTriggerDecommissioningProcess  = require("./ServiceRuntimeStateManager.utils/TriggerDecommissioningProcess.create")
 
 const CreateServiceRuntimeStateManager = () => {
 
@@ -48,13 +49,17 @@ const CreateServiceRuntimeStateManager = () => {
     const ListImageBuildHistory = CreateListImageBuildHistory(stateManager)
     const GetServiceStatus      = CreateGetServiceStatus(stateManager)
 
+    const onRequestData = (getData) => {
+        eventEmitter.on(REQUEST_EVENT, CreateProcessRequest({ getData, stateManager }))
+    }
+
     return {
         ListInstances,
         ListContainers,
         ListImageBuildHistory,
         GetServiceStatus,
+        onRequestData,
         SwapRunningInstance               : CreateSwapRunningInstance(stateManager),
-        onRequestData                     : CreateOnRequestData({ eventEmitter, stateManager }),
         ListRunningInstances              : CreateListRunningInstances(stateManager),
         TriggerDecommissioningProcess     : CreateTriggerDecommissioningProcess(stateManager),
         NotifyContainerActivity           : CreateNotifyContainerActivity(stateManager),

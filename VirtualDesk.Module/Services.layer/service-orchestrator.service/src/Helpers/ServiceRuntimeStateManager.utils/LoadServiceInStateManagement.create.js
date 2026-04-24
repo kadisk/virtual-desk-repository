@@ -1,6 +1,6 @@
 
-const ItemGroupTypes = require("../Types/ItemGroup.types")
-const StatusTypes = require("../Types/Status.types")
+const ItemGroupTypes = require("../../Types/ItemGroup.types")
+const StatusTypes = require("../../Types/Status.types")
 
 const CreateValidateServiceDoesNotExist = require("./ValidateServiceDoesNotExist.create")
 

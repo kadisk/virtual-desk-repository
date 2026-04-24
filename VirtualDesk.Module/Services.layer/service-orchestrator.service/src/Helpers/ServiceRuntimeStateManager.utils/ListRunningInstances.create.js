@@ -1,3 +1,9 @@
+const StatusTypes = require("../../Types/Status.types")
+
+const {
+    RUNNING
+} = StatusTypes
+
 const CreateListInstancesState = require("./ListInstancesState.create")
 
 const CreateListRunningInstances = (stateManager) => (serviceId) => {
