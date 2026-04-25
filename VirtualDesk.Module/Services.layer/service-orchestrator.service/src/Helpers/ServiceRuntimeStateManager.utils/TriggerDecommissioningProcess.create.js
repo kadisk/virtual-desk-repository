@@ -3,17 +3,15 @@ const RequestTypes = require("../../Types/Request.types")
 const ItemGroupTypes = require("../../Types/ItemGroup.types")
 const StatusTypes = require("../../Types/Status.types")
 
-const { 
-    SERVICE_STATE_GROUP
- } = ItemGroupTypes
+const { SERVICE_STATE_GROUP } = ItemGroupTypes
 
-const {
-    TERMINATED
-} = StatusTypes
-
+const { TERMINATED } = StatusTypes
 
 const CreateTriggerDecommissioningProcess = (stateManager) => (serviceId) => {
-    const state = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
+    
+    const { GetState } = stateManager
+    
+    const state = GetState(SERVICE_STATE_GROUP, serviceId)
     if (!state) {
         throw new Error(`Service with ID ${serviceId} does not exist`)
     }

@@ -1,16 +1,15 @@
 const ItemGroupTypes = require("../../Types/ItemGroup.types")
 const StatusTypes = require("../../Types/Status.types")
 
-const { 
-    CONTAINER_STATE_GROUP
- } = ItemGroupTypes
+const { CONTAINER_STATE_GROUP } = ItemGroupTypes
 
-const {
-    RUNNING
-} = StatusTypes
+const { RUNNING } = StatusTypes
 
 const CreateGetNetworksSettings  = (stateManager) => async (serviceId) => {
-    const containerStateList = stateManager.ListStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
+
+    const { ListStatesByPropertyData } = stateManager
+    
+    const containerStateList = ListStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
 
     const runningStateContainer = containerStateList.find(({status}) => status === RUNNING)
 

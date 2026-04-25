@@ -1,12 +1,13 @@
 const ItemGroupTypes = require("../../Types/ItemGroup.types")
 
-const { 
-    SERVICE_STATE_GROUP
-} = ItemGroupTypes
+const { SERVICE_STATE_GROUP } = ItemGroupTypes
 
 const CreateGetServiceStatus = (stateManager) => (serviceId) => {
+
+    const { GetState } = stateManager
+    
     try{
-        const state = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
+        const state = GetState(SERVICE_STATE_GROUP, serviceId)
         if (!state) {
             throw new Error(`Service with ID ${serviceId} does not exist`)
         }

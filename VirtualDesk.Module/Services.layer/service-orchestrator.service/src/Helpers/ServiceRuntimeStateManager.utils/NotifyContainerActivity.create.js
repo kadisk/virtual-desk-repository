@@ -1,13 +1,7 @@
 
 const StatusTypes = require("../../Types/Status.types")
 
-const {
-    STARTING,
-    STOPPING,
-    TERMINATED,
-    STOPPED
-} = StatusTypes
-
+const { STARTING, STOPPING, TERMINATED, STOPPED } = StatusTypes
 
 const CreateChangeContainerStatusByHash = require("./ChangeContainerStatusByHash.create")
 

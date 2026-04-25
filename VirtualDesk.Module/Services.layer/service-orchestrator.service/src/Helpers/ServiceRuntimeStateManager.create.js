@@ -28,7 +28,7 @@ const CreateListInstances                  = require("./ServiceRuntimeStateManag
 const CreateListContainers                 = require("./ServiceRuntimeStateManager.utils/ListContainers.create")
 const CreateListImageBuildHistory          = require("./ServiceRuntimeStateManager.utils/ListImageBuildHistory.create")
 const CreateGetServiceStatus               = require("./ServiceRuntimeStateManager.utils/GetServiceStatus.create")
-const CreateProcessRequest                  = require("./ServiceRuntimeStateManager.utils/ProcessRequest.create")
+const CreateProcessRequest                 = require("./ServiceRuntimeStateManager.utils/ProcessRequest.create")
 const CreateTriggerDecommissioningProcess  = require("./ServiceRuntimeStateManager.utils/TriggerDecommissioningProcess.create")
 
 const CreateServiceRuntimeStateManager = () => {

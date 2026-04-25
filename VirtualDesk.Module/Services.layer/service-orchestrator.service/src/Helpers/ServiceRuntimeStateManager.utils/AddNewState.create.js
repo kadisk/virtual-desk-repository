@@ -1,13 +1,15 @@
 const StatusTypes = require("../../Types/Status.types")
 
-const {
-    WAITING
-} = StatusTypes
+const { WAITING } = StatusTypes
 
-const CreateAddNewState = (stateManager) => (group, key, data, status=WAITING) => {
-    stateManager.AddNewState(group, key)
-    stateManager.SetData(group, key, data)
-    stateManager.ChangeStatus(group, key, status)
+const CreateCreateObjectState = (stateManager) => (group, key, data, status=WAITING) => {
+    
+    const { AddNewState, ChangeStatus, SetData } = stateManager
+
+    AddNewState(group, key)
+    SetData(group, key, data)
+    ChangeStatus(group, key, status)
+    
 }
 
-module.exports = CreateAddNewState
+module.exports = CreateCreateObjectState

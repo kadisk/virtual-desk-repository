@@ -1,20 +1,15 @@
 const ItemGroupTypes = require("../../Types/ItemGroup.types")
 const StatusTypes = require("../../Types/Status.types")
 
-const { 
-    IMAGE_BUILD_HISTORY_STATE_GROUP
- } = ItemGroupTypes
+const { IMAGE_BUILD_HISTORY_STATE_GROUP } = ItemGroupTypes
 
+const { FINISHED } = StatusTypes
 
-const {
-    FINISHED
-} = StatusTypes
-
-const CreateAddNewState = require("./AddNewState.create")
+const CreateCreateObjectState = require("./CreateObjectState.create")
 
 const CreateAddNewContainerState = (stateManager) => (buildId, { tag, hashId, instanceId, serviceId }) => {
-    const AddNewState = CreateAddNewState(stateManager)
-    AddNewState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, { tag, hashId, instanceId, serviceId }, FINISHED)
+    const CreateObjectState = CreateCreateObjectState(stateManager)
+    CreateObjectState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, { tag, hashId, instanceId, serviceId }, FINISHED)
 }
 
 module.exports = CreateAddNewContainerState
