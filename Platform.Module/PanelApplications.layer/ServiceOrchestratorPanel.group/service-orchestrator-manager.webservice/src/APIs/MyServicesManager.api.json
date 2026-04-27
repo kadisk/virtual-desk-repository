@@ -46,6 +46,32 @@
 			]
 		},
 		{
+			"path": "/service/storages",
+			"method": "GET",
+			"summary": "ListStorages",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/service/sockets",
+			"method": "GET",
+			"summary": "ListSockets",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/service/containers",
 			"method": "GET",
 			"summary": "ListContainers",
@@ -67,6 +93,32 @@
 			"path": "/service/instance-list/:serviceId",
 			"method": "WS",
 			"summary": "InstanceListChange",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/service/storage-list/:serviceId",
+			"method": "WS",
+			"summary": "StorageListChange",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/service/sockets-list/:serviceId",
+			"method": "WS",
+			"summary": "SocketListChange",
 			"parameters": [
 				{
 					"name": "serviceId",

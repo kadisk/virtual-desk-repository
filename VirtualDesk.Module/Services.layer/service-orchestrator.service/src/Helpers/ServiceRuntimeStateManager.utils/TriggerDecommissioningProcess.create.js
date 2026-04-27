@@ -7,7 +7,7 @@ const { SERVICE_STATE_GROUP } = ItemGroupTypes
 
 const { TERMINATED } = StatusTypes
 
-const CreateTriggerDecommissioningProcess = (stateManager) => (serviceId) => {
+const CreateTriggerDecommissioningProcess = ({ stateManager, RequestData }) => (serviceId) => {
     
     const { GetState } = stateManager
     

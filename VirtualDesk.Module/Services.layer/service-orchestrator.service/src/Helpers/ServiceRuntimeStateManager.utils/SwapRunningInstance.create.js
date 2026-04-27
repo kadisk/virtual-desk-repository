@@ -9,7 +9,7 @@ const { RESTARTING, TERMINATED } = StatusTypes
 
 const CreateListRunningInstances = require("./ListRunningInstances.create")
 
-const CreateSwapRunningInstance = (stateManager) => (serviceId, params) => {
+const CreateSwapRunningInstance = ({ stateManager, RequestData }) => (serviceId, params) => {
 
     const { ChangeStatus, ListStatesByPropertyData } = stateManager
 

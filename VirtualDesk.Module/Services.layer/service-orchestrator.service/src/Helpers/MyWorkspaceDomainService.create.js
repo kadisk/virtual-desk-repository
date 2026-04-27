@@ -199,7 +199,9 @@ const CreateMyWorkspaceDomainService = ({
     const RegisterStorages = async ({
         serviceId,
         storageList
-    }) => StorageModel
+    }) => {
+
+        const storages = await StorageModel
             .bulkCreate(
                 storageList.map(({ namespace, filename }) => ({
                     serviceId,
@@ -207,6 +209,9 @@ const CreateMyWorkspaceDomainService = ({
                     filename
                 }))
             )
+
+        return storages.map(item => item.get({ plain: true }))
+    }
 
     return {
         RegisterServiceProvisioning,

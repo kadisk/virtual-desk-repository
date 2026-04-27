@@ -69,6 +69,8 @@ const ServiceSettingsPanelContainer = ({
 	const [ serviceData, setServiceData ] = useState(INITIAL_PROVISIONED_SERVICE)
 
 	const [ instances, setInstance ]                  = useState([])
+	const [ storages, setStorages ]                   = useState([])
+	const [ sockets, setSockets ]                     = useState([])
 	const [ containers, setContainers ]               = useState([])
 	const [ imageBuildHistory, setImageBuildHistory ] = useState([])
 
@@ -81,6 +83,9 @@ const ServiceSettingsPanelContainer = ({
 
 	useEffect(() => {
 		fetchServiceData()
+		fetchInstances()
+		fetchStorages()
+		//fetchSockets()
 		fetchInstances()
 		fetchContainers()
 		fetchServiceStatus()
@@ -113,7 +118,23 @@ const ServiceSettingsPanelContainer = ({
 		onDisconnection : () => {},
 		autoConnect     : false    
 	})
+/*
+	const storagesListSocketHandler = useWebSocket({
+		socket          : _MyServicesAPI().StorageListChange,
+		onMessage       : (storages) => setStorages(storages),
+		onConnection    : () => {},
+		onDisconnection : () => {},
+		autoConnect     : false    
+	})
 
+	const socketsListSocketHandler = useWebSocket({
+		socket          : _MyServicesAPI().SocketListChange,
+		onMessage       : (sockets) => setSockets(sockets),
+		onConnection    : () => {},
+		onDisconnection : () => {},
+		autoConnect     : false    
+	})
+*/
 	const containerListSocketHandler = useWebSocket({
 		socket          : _MyServicesAPI().ContainerListChange,
 		onMessage       : (containers) => setContainers(containers),
@@ -135,7 +156,13 @@ const ServiceSettingsPanelContainer = ({
 			
 			if(!instanceListSocketHandler.isConneted())
 				instanceListSocketHandler.connect({ serviceId: serviceData.serviceId })
-			
+/*
+			if(!storagesListSocketHandler.isConneted())
+				storagesListSocketHandler.connect({ serviceId: serviceData.serviceId })
+
+			if(!socketsListSocketHandler.isConneted())
+				socketsListSocketHandler.connect({ serviceId: serviceData.serviceId })
+*/
 			if(!containerListSocketHandler.isConneted())
 				containerListSocketHandler.connect({ serviceId: serviceData.serviceId })
 
@@ -162,6 +189,20 @@ const ServiceSettingsPanelContainer = ({
 		const api = _MyServicesAPI()
 		const response = await api.ListInstances({ serviceId })
 		setInstance(response.data)
+	}
+
+	const fetchStorages = async () => {
+		setStorages([])
+		const api = _MyServicesAPI()
+		const response = await api.ListStorages({ serviceId })
+		setStorages(response.data)
+	}
+
+	const fetchSockets = async () => {
+		setSockets([])
+		const api = _MyServicesAPI()
+		const response = await api.ListSockets({ serviceId })
+		setSockets(response.data)
 	}
 
 	const fetchContainers = async () => {
@@ -281,6 +322,50 @@ const ServiceSettingsPanelContainer = ({
 															)}
 														</td>
 														<td><code>{JSON.stringify(item.startupParams, null, 2)}</code></td>
+													</tr>
+												))
+											)}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="row row-cards mt-0">
+					<div className="col-12">
+						<div className="card">
+							<div className="card-header p-2">
+								<div className="subheader">Storages</div>
+							</div>
+							<div className="card-body p-0">
+								<div className="card-table table-responsive table-vcenter">
+									<table className="table">
+										<thead>
+											<tr>
+												<th>Status</th>
+												<th>ID</th>
+												<th>Namespace</th>
+												<th>Filename</th>
+											</tr>
+										</thead>
+										<tbody>
+											{storages.length === 0 ? (
+												<tr>
+													<td colSpan={5} className="text-center">No storage found.</td>
+												</tr>
+											) : (
+												storages.map((item: any) => (
+													<tr>
+														<td>
+															<span className={`status status-${GetColorByStatus(item.status)}`}>
+																<span className={isShowStatusDotAnimated(item.status) ? "status-dot status-dot-animated":""}></span>
+																{item.status}
+															</span>
+														</td>
+														<td>{item.storageId}</td>
+														<td>{item.namespace}</td>
+														<td>{item.filename}</td>
 													</tr>
 												))
 											)}

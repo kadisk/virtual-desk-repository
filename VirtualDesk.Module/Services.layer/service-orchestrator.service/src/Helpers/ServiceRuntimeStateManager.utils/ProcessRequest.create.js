@@ -7,13 +7,15 @@ const {
     STARTING,
     FAILURE,
     FINISHED,
-    DECOMMISSIONED 
+    DECOMMISSIONED,
+    TERMINATED
 } = require("../../Types/Status.types")
 
 const RequestTypes  = require("../../Types/Request.types")
 
 const {
     SERVICE_STATE_GROUP,
+    STORAGE_STATE_GROUP,
     INSTANCE_STATE_GROUP,
     IMAGE_BUILD_HISTORY_STATE_GROUP
 } = require("../../Types/ItemGroup.types")
@@ -24,12 +26,12 @@ const CreateAddNewBuildState = require("./AddNewBuildState.create")
 const CreateSwapRunningInstance = require("./SwapRunningInstance.create")
 const CreateReceiveInspectionData = require("./ReceiveInspectionData.create")
 
-const CreateProcessRequest = ({ getData, stateManager }) => async (requestData) => {
+const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (requestData) => {
 
-    const SwapRunningInstance = CreateSwapRunningInstance(stateManager)
-    const CreateObjectState = CreateCreateObjectState(stateManager)
-    const AddNewContainerState = CreateAddNewContainerState(stateManager)
-    const AddNewBuildState = CreateAddNewBuildState(stateManager)
+    const SwapRunningInstance   = CreateSwapRunningInstance({ stateManager, RequestData })
+    const CreateObjectState     = CreateCreateObjectState(stateManager)
+    const AddNewContainerState  = CreateAddNewContainerState(stateManager)
+    const AddNewBuildState      = CreateAddNewBuildState(stateManager)
     const ReceiveInspectionData = CreateReceiveInspectionData(stateManager)
 
     const { ChangeStatus, UpdateData } = stateManager
@@ -73,6 +75,8 @@ const CreateProcessRequest = ({ getData, stateManager }) => async (requestData) 
             if(containerData){
                 const { id:containerId, containerName  } = containerData
                 AddNewContainerState(containerId, { instanceId: requestData.instanceId, serviceId:requestData.serviceId, containerName  })
+            } else {
+                ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, TERMINATED)
             }
             break
         case RequestTypes.CONTAINER_INSPECTION_DATA:
@@ -133,7 +137,20 @@ const CreateProcessRequest = ({ getData, stateManager }) => async (requestData) 
             ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DECOMMISSIONED)
             break
         case RequestTypes.REGISTER_STORAGES:
-            ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, CREATED)
+            const storageDataList = await getData(requestType, { 
+                serviceId: requestData.serviceId,
+                instanceId: requestData.instanceId,
+                storageParams: requestData.storageParams
+            })
+            
+            storageDataList
+                    .forEach(({ id:storageId , namespace, filename }) => 
+                        CreateObjectState(STORAGE_STATE_GROUP, storageId, { 
+                            serviceId: requestData.serviceId, 
+                            instanceId: requestData.instanceId,
+                            namespace,
+                            filename
+                        }, CREATING))
         default:
             console.warn(`Unknown request type: ${requestType.description}`)
     }

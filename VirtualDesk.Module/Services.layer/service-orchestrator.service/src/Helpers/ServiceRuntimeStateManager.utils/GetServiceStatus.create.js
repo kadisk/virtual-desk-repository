@@ -1,6 +1,9 @@
+const StatusTypes = require("../../Types/Status.types")
 const ItemGroupTypes = require("../../Types/ItemGroup.types")
 
 const { SERVICE_STATE_GROUP } = ItemGroupTypes
+
+const { UNKNOWN } = StatusTypes
 
 const CreateGetServiceStatus = (stateManager) => (serviceId) => {
 

@@ -31,6 +31,8 @@ const ServiceOrchestratorManager = (params) => {
         Service             : ServiceModel,
         ImageBuildHistory   : ImageBuildHistoryModel,
         Instance            : InstanceModel,
+        Socket              : SocketModel,
+        Storage             : StorageModel,
         Container           : ContainerModel,
         ContainerEventLog   : ContainerEventLogModel
     } = MyServicesPersistentStoreManager.models
@@ -39,6 +41,8 @@ const ServiceOrchestratorManager = (params) => {
         ServiceModel,
         ImageBuildHistoryModel,
         InstanceModel,
+        SocketModel,
+        StorageModel,
         ContainerModel,
         ContainerEventLogModel
     })
@@ -69,11 +73,15 @@ const ServiceOrchestratorManager = (params) => {
         StartService,
         StopService,
         ListInstances,
+        ListStorages,
+        ListSockets,
         ListRunningInstances,
         ListContainers,
         ListImageBuildHistory,
         onChangeContainerListData,
         onChangeInstanceListData,
+        onChangeStorageListData,
+        onChangeSocketListData,
         onChangeImageBuildHistoryListData
     } = ServiceRuntimeStateManager
 
@@ -432,10 +440,14 @@ const ServiceOrchestratorManager = (params) => {
         GetService,
         ListServices,
         ListInstances,
+        ListStorages,
+        ListSockets,
         ListContainers,
         ListImageBuildHistory,
         onChangeContainerListData,
         onChangeInstanceListData,
+        onChangeStorageListData,
+        onChangeSocketListData,
         onChangeImageBuildHistoryListData,
         GetServiceStatus,
         GetNetworksSettings,
