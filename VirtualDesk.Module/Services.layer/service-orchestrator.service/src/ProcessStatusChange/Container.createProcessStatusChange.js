@@ -19,7 +19,10 @@ const {
 
 const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) => 
     (containerId) => {
-        const { status, data } = stateManager.GetState(CONTAINER_STATE_GROUP, containerId)
+
+        const { GetState, ChangeStatus } = stateManager
+
+        const { status, data } = GetState(CONTAINER_STATE_GROUP, containerId)
         switch (status) {
             case WAITING:
                 RequestData(RequestTypes.CONTAINER_INSPECTION_DATA, { 
@@ -38,22 +41,22 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
                     })
                 break
             case RUNNING:
-                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, RUNNING)
+                ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, RUNNING)
                 break
             case STOPPING:
-                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPING)
+                ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPING)
                 break
             case STOPPED:
-                const { status:instanceStatus, data:instanceData } = stateManager.GetState(INSTANCE_STATE_GROUP, data.instanceId)
+                const { status:instanceStatus, data:instanceData } = GetState(INSTANCE_STATE_GROUP, data.instanceId)
                 if(instanceStatus === TERMINATED) {
                     RequestData(RequestTypes.REMOVE_CONTAINER, { 
                         instanceId      : instanceData.instanceId,
                         containerHashId : instanceData.Id
                     })
-                } else stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPED)
+                } else ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, STOPPED)
                 break
             case TERMINATED:
-                stateManager.ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, TERMINATED)
+                ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, TERMINATED)
                 break
             default:
                 console.warn(`Container ${containerId} has an unknown status: ${status.description}`)

@@ -9,9 +9,10 @@ const { UPDATING, UPDATED } = StatusTypes
 
 const CreateUpdateServiceInStateManagement = ({ stateManager, RequestData }) => 
     (serviceId, params) => {
-        const { ChangeStatus } = stateManager
+        const { ChangeStatus, SetDataProperty } = stateManager
+        SetDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams", params)
         ChangeStatus(SERVICE_STATE_GROUP, serviceId, UPDATING)
-        RequestData(RequestTypes.SERVICE_DATA, { serviceId, nextStatus: UPDATED,  instanceParams: params })
+        RequestData(RequestTypes.SERVICE_DATA, { serviceId, nextStatus: UPDATED})
     }
 
 module.exports = CreateUpdateServiceInStateManagement

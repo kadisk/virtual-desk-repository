@@ -25,21 +25,31 @@ const {
 
 const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (instanceId) => {
 
+    const { GetState, ChangeStatus } = stateManager
+
     const ListRunningInstances = CreateListRunningInstances(stateManager)
 
-    const { status, data } = stateManager.GetState(INSTANCE_STATE_GROUP, instanceId)
+    const { status, data } = GetState(INSTANCE_STATE_GROUP, instanceId)
     const { serviceId } = data
-    const { status:serviceStatus, data: serviceData } = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
+    const { status:serviceStatus, data: serviceData } = GetState(SERVICE_STATE_GROUP, serviceId)
 
     switch (status) {
         case CREATING:
             if(serviceData.serviceName){
-                RequestData(RequestTypes.REGISTER_STORAGES, {
-                    serviceId,
-                    instanceId,
-                    storageParams: data.storageParams
-                })
-            } else setImmediate(() => CreateInstanceProcessStatusChange({ stateManager, RequestData, ListRunningInstances })(instanceId)) 
+                if(data.storageParams){
+                    RequestData(RequestTypes.REGISTER_STORAGES, {
+                        serviceId,
+                        instanceId,
+                        storageParams: data.storageParams
+                    })
+                } else {
+                    ChangeStatus(INSTANCE_STATE_GROUP, instanceId, CREATED)
+                }
+                
+            } else setImmediate(() => {
+                console.log("setImmediate -> A")
+                CreateInstanceProcessStatusChange({ stateManager, RequestData })(instanceId)
+            }) 
             break
         case CREATED:
             if(serviceData.serviceName){
@@ -54,19 +64,22 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
                     networkmode               : data.networkmode,
                     ports                     : data.ports
                 })
-            } else setImmediate(() => CreateInstanceProcessStatusChange({ stateManager, RequestData, ListRunningInstances })(instanceId))
+            } else setImmediate(() => {
+                console.log("setImmediate -> S")
+                CreateInstanceProcessStatusChange({ stateManager, RequestData })(instanceId)
+            })
             break
         case WAITING:
             RequestData(RequestTypes.CONTAINER_DATA, { serviceId, instanceId })
             break
         case RUNNING:
-            stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, RUNNING)
+            ChangeStatus(SERVICE_STATE_GROUP, serviceId, RUNNING)
             break
         case STOPPING:
         case STOPPED:
         case TERMINATED:
             if(serviceStatus !== RESTARTING && ListRunningInstances(serviceId).length === 0)
-                stateManager.ChangeStatus(SERVICE_STATE_GROUP, serviceId, status)
+                ChangeStatus(SERVICE_STATE_GROUP, serviceId, status)
             break
         case STARTING:
         case LOADING:

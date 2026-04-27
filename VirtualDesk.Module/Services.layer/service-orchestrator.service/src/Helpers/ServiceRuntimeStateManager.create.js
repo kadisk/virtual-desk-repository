@@ -15,6 +15,8 @@ const CreateServiceProcessStatusChange           = require("../ProcessStatusChan
 const CreateInstanceProcessStatusChange          = require("../ProcessStatusChange/Instance.createProcessStatusChange")
 const CreateContainerProcessStatusChange         = require("../ProcessStatusChange/Container.createProcessStatusChange")
 const CreateImageBuildHistoryProcessStatusChange = require("../ProcessStatusChange/ImageBuildHistory.createProcessStatusChange")
+const CreateStorageProcessStatusChange           = require("../ProcessStatusChange/Storage.createProcessStatusChange")
+const CreateSocketProcessStatusChange            = require("../ProcessStatusChange/Socket.createProcessStatusChange")
 
 const CreateListRunningInstances           = require("./ServiceRuntimeStateManager.utils/ListRunningInstances.create")
 const CreateOnChangeStatusTriggerService   = require("./ServiceRuntimeStateManager.utils/OnChangeStatusTriggerService.create")
@@ -48,7 +50,9 @@ const CreateServiceRuntimeStateManager = () => {
     stateManager.onChangeStatus(INSTANCE_STATE_GROUP,            ({ key: instanceId })  => CreateInstanceProcessStatusChange({ stateManager, RequestData })(instanceId))
     stateManager.onChangeStatus(CONTAINER_STATE_GROUP,           ({ key: containerId }) => CreateContainerProcessStatusChange({ stateManager, RequestData })(containerId))
     stateManager.onChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, ({ key: buildId })     => CreateImageBuildHistoryProcessStatusChange({ stateManager, RequestData })(buildId))
-    
+    stateManager.onChangeStatus(STORAGE_STATE_GROUP,             ({ key: storageId })   => CreateStorageProcessStatusChange({ stateManager, RequestData })(storageId))
+    stateManager.onChangeStatus(SOCKET_STATE_GROUP,              ({ key: socketId })    => CreateSocketProcessStatusChange({ stateManager, RequestData })(socketId))
+
     const ListInstances         = CreateListInstances(stateManager)
     const ListStorages          = CreateListStorages(stateManager)
     const ListSockets           = CreateListSockets(stateManager)

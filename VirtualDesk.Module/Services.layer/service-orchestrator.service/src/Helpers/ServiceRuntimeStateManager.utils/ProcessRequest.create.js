@@ -46,6 +46,7 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 instanceDataList
                     .forEach(({ id:instanceId , startupParams, ports, networkmode }) => 
                         CreateObjectState(INSTANCE_STATE_GROUP, instanceId, {serviceId: requestData.serviceId, startupParams, ports, networkmode}, WAITING))
+            else ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, FINISHED)
             break
         case RequestTypes.IMAGE_BUILD_DATA_LIST:
             const buildDataList = await getData(requestType, { serviceId: requestData.serviceId })
@@ -64,10 +65,9 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 originRepositoryCodePath  : serviceData.originRepositoryCodePath,
                 originPackagePath         : serviceData.originPackagePath,
             })
+
             ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, requestData.nextStatus)
-            if(requestData.nextStatus === UPDATED){
-                SwapRunningInstance(requestData.serviceId, requestData.instanceParams)
-            }
+
             break
         case RequestTypes.CONTAINER_DATA:
             ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, LOADING)

@@ -38,6 +38,18 @@ const CreateStateManager = () => {
         }
     }
 
+    const TakeDataProperty = (group, key, property) => {
+        const state = GetState(group, key)
+        
+        if (!state?.data || !(property in state.data)) {
+            return undefined
+        }
+        
+        const { [property]: removed, ...remaining } = state.data
+        state.data = remaining
+        return removed
+    }
+
     const ChangeStatus = (group, key, newStatus) => {
         const state = GetState(group, key)
         if (!state) throw new Error(`State with group ${group.description} and key ${key} does not exist`)
@@ -62,6 +74,12 @@ const CreateStateManager = () => {
     const UpdateData = (group, key, data) => {
         const state = GetState(group, key)
         state.data = { ...state.data, ...data }
+    }
+
+    const SetDataProperty = (group, key, property, value) => {
+        const state = GetState(group, key)
+        if (!state) return
+        state.data[property] = value
     }
 
     const FindKeyByPropertyData = (group, property, value) => {
@@ -104,7 +122,9 @@ const CreateStateManager = () => {
         onChangeStatus,
         SetData,
         UpdateData,
-        FindKeyByPropertyData
+        SetDataProperty,
+        FindKeyByPropertyData,
+        TakeDataProperty
     }
 }
 

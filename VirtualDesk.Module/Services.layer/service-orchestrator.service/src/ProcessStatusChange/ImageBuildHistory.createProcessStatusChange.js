@@ -23,11 +23,13 @@ const {
 const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData }) => 
     (buildId) => {
 
+        const { GetState, ChangeStatus } = stateManager
+
         const ListInstancesState = CreateListInstancesState(stateManager)
 
-        const { status, data } = stateManager.GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
-        const { status: statusService, data:serviceData } = stateManager.GetState(SERVICE_STATE_GROUP, data.serviceId)
-        const { status:instanceStatus, data:instanceData } = stateManager.GetState(INSTANCE_STATE_GROUP, data.instanceId) || {}
+        const { status, data } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
+        const { status: statusService, data:serviceData } = GetState(SERVICE_STATE_GROUP, data.serviceId)
+        const { status:instanceStatus, data:instanceData } = GetState(INSTANCE_STATE_GROUP, data.instanceId) || {}
 
         switch (status) {
             case WAITING:
@@ -46,13 +48,13 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
                     })
                     
                 } else setTimeout(() => {
-                    CreateImageBuildHistoryProcessStatusChange({ stateManager, RequestData, ListInstancesState })(buildId)
+                    CreateImageBuildHistoryProcessStatusChange({ stateManager, RequestData })(buildId)
                 }, 3000)
                 break
             case FINISHED:
                 if(instanceStatus === STARTING){
                     if(statusService === RESTARTING){
-                        stateManager.ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
+                        ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
                     } else {
                         RequestData(RequestTypes.CREATE_NEW_CONTAINER, { 
                             buildId,

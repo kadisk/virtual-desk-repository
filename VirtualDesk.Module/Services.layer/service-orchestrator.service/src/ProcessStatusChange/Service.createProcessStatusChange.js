@@ -14,10 +14,12 @@ const {
  } = ItemGroupTypes
 
 const {
+    INITIALIZING,
     CREATED,
     UPDATED,
     RESTARTING,
     WAITING,
+    CREATING,
     LOADING
 } = StatusTypes
 
@@ -25,27 +27,39 @@ const CreateServiceProcessStatusChange = ({
     stateManager,
     RequestData
 }) => (serviceId) => {
-    const { status, data } = stateManager.GetState(SERVICE_STATE_GROUP, serviceId)
+
+    const { GetState, TakeDataProperty, ChangeStatus } = stateManager
+
+    const _getInstanceParams = () => TakeDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams")
+
+    const { status, data } = GetState(SERVICE_STATE_GROUP, serviceId)
     switch (status) {
-        case CREATED:
-            if(!data.serviceName) {
-                RequestData(SERVICE_DATA, { serviceId, nextStatus: CREATED })
-            }
+        case CREATING:
+            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
+            RequestData(SERVICE_DATA, { serviceId, nextStatus: CREATED})
             break
-        case WAITING:
-            if(data.serviceName) {
-                RequestData(INSTANCE_DATA_LIST, { serviceId })
-                RequestData(IMAGE_BUILD_DATA_LIST, { serviceId })
-            } else 
-                RequestData(SERVICE_DATA, { serviceId, nextStatus: WAITING  })
+        case INITIALIZING:
+            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
+            RequestData(SERVICE_DATA, { serviceId, nextStatus: WAITING })
+            break
+        case CREATED:
+            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
+            RequestData(RequestTypes.CREATE_NEW_INSTANCE, _getInstanceParams())
             break
         case UPDATED:
+            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
+            SwapRunningInstance(serviceId, _getInstanceParams())
+            break
+        case WAITING:
+            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
+            RequestData(INSTANCE_DATA_LIST, { serviceId })
+            RequestData(IMAGE_BUILD_DATA_LIST, { serviceId })
             break
         case RESTARTING:
         case LOADING:
             break
         default:
-            console.warn(`Service ${serviceId} has an unknown status: ${stateManager.GetState(SERVICE_STATE_GROUP, serviceId).status.description}`)
+            console.warn(`Service ${serviceId} has an unknown status: ${GetState(SERVICE_STATE_GROUP, serviceId).status.description}`)
     }
 }
 

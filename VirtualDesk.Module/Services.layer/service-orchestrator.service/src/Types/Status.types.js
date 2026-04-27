@@ -1,5 +1,6 @@
 const StatusTypes = Object.freeze({
     UNKNOWN        : Symbol("UNKNOWN"),
+    INITIALIZING   : Symbol("INITIALIZING"),
     CREATING       : Symbol("CREATING"),
     CREATED        : Symbol("CREATED"),
     UPDATED        : Symbol("UPDATED"),

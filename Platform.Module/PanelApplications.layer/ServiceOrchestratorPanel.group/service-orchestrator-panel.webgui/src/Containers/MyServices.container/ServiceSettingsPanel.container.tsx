@@ -85,7 +85,7 @@ const ServiceSettingsPanelContainer = ({
 		fetchServiceData()
 		fetchInstances()
 		fetchStorages()
-		//fetchSockets()
+		fetchSockets()
 		fetchInstances()
 		fetchContainers()
 		fetchServiceStatus()
@@ -118,7 +118,7 @@ const ServiceSettingsPanelContainer = ({
 		onDisconnection : () => {},
 		autoConnect     : false    
 	})
-/*
+
 	const storagesListSocketHandler = useWebSocket({
 		socket          : _MyServicesAPI().StorageListChange,
 		onMessage       : (storages) => setStorages(storages),
@@ -134,7 +134,7 @@ const ServiceSettingsPanelContainer = ({
 		onDisconnection : () => {},
 		autoConnect     : false    
 	})
-*/
+
 	const containerListSocketHandler = useWebSocket({
 		socket          : _MyServicesAPI().ContainerListChange,
 		onMessage       : (containers) => setContainers(containers),
@@ -156,13 +156,13 @@ const ServiceSettingsPanelContainer = ({
 			
 			if(!instanceListSocketHandler.isConneted())
 				instanceListSocketHandler.connect({ serviceId: serviceData.serviceId })
-/*
+
 			if(!storagesListSocketHandler.isConneted())
 				storagesListSocketHandler.connect({ serviceId: serviceData.serviceId })
 
 			if(!socketsListSocketHandler.isConneted())
 				socketsListSocketHandler.connect({ serviceId: serviceData.serviceId })
-*/
+
 			if(!containerListSocketHandler.isConneted())
 				containerListSocketHandler.connect({ serviceId: serviceData.serviceId })
 
