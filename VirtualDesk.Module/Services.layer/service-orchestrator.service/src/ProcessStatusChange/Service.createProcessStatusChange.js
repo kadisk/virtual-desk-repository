@@ -3,6 +3,8 @@ const RequestTypes = require("../Types/Request.types")
 const ItemGroupTypes = require("../Types/ItemGroup.types")
 const StatusTypes = require("../Types/Status.types")
 
+const CreateSwapRunningInstance = require("../Helpers/ServiceRuntimeStateManager.utils/SwapRunningInstance.create")
+
 const {
     SERVICE_DATA,
     INSTANCE_DATA_LIST,
@@ -30,7 +32,9 @@ const CreateServiceProcessStatusChange = ({
 
     const { GetState, TakeDataProperty, ChangeStatus } = stateManager
 
-    const _getInstanceParams = () => TakeDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams")
+    const SwapRunningInstance = CreateSwapRunningInstance({ stateManager, RequestData })
+
+    const _TakeInstanceParams = () => TakeDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams")
 
     const { status, data } = GetState(SERVICE_STATE_GROUP, serviceId)
     switch (status) {
@@ -44,11 +48,11 @@ const CreateServiceProcessStatusChange = ({
             break
         case CREATED:
             ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
-            RequestData(RequestTypes.CREATE_NEW_INSTANCE, _getInstanceParams())
+            RequestData(RequestTypes.CREATE_NEW_INSTANCE, _TakeInstanceParams())
             break
         case UPDATED:
             ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
-            SwapRunningInstance(serviceId, _getInstanceParams())
+            SwapRunningInstance(serviceId, _TakeInstanceParams())
             break
         case WAITING:
             ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)

@@ -12,9 +12,10 @@ const {
  } = ItemGroupTypes
 
 const {
+    CREATING,
+    CREATED,
     RESTARTING,
     WAITING,
-    STARTING,
     STOPPING,
     RUNNING,
     FINISHED
@@ -23,7 +24,7 @@ const {
 const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData }) => 
     (buildId) => {
 
-        const { GetState, ChangeStatus } = stateManager
+        const { GetState, ChangeStatus, SetDataProperty} = stateManager
 
         const ListInstancesState = CreateListInstancesState(stateManager)
 
@@ -52,11 +53,11 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
                 }, 3000)
                 break
             case FINISHED:
-                if(instanceStatus === STARTING){
+                if(instanceStatus === CREATING){
                     if(statusService === RESTARTING){
                         ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
                     } else {
-                        RequestData(RequestTypes.CREATE_NEW_CONTAINER, { 
+                        SetDataProperty(INSTANCE_STATE_GROUP, data.instanceId, "containerParams", { 
                             buildId,
                             instanceId  : data.instanceId,
                             tag         : data.tag,
@@ -65,9 +66,9 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
                             networkmode : instanceData.networkmode,
                             ports       : instanceData.ports
                         })
+                        ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, CREATED)
                     }
                 }
-                /**/
                 break
             default:
         }

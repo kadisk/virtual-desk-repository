@@ -11,10 +11,10 @@ const {
  } = ItemGroupTypes
 
 const {
+    INITIALIZING,
     CREATING,
     CREATED,
     RESTARTING,
-    WAITING,
     LOADING,
     STARTING,
     STOPPING,
@@ -25,7 +25,9 @@ const {
 
 const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (instanceId) => {
 
-    const { GetState, ChangeStatus } = stateManager
+    const { GetState, ChangeStatus, TakeDataProperty } = stateManager
+
+    const _TakeContainerParams = () => TakeDataProperty(INSTANCE_STATE_GROUP, instanceId, "containerParams")
 
     const ListRunningInstances = CreateListRunningInstances(stateManager)
 
@@ -35,41 +37,30 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
 
     switch (status) {
         case CREATING:
-            if(serviceData.serviceName){
-                if(data.storageParams){
-                    RequestData(RequestTypes.REGISTER_STORAGES, {
-                        serviceId,
-                        instanceId,
-                        storageParams: data.storageParams
-                    })
-                } else {
-                    ChangeStatus(INSTANCE_STATE_GROUP, instanceId, CREATED)
-                }
-                
-            } else setImmediate(() => {
-                console.log("setImmediate -> A")
-                CreateInstanceProcessStatusChange({ stateManager, RequestData })(instanceId)
-            }) 
-            break
-        case CREATED:
-            if(serviceData.serviceName){
-                RequestData(RequestTypes.BUILD_NEW_IMAGE, {
-                    serviceId,
-                    instanceId,
-                    serviceName               : serviceData.serviceName,
-                    originRepositoryCodePath  : serviceData.originRepositoryCodePath,
-                    originRepositoryNamespace : serviceData.originRepositoryNamespace,
-                    originPackagePath         : serviceData.originPackagePath,
-                    startupParams             : data.startupParams,
-                    networkmode               : data.networkmode,
-                    ports                     : data.ports
-                })
-            } else setImmediate(() => {
-                console.log("setImmediate -> S")
-                CreateInstanceProcessStatusChange({ stateManager, RequestData })(instanceId)
+            RequestData(RequestTypes.BUILD_NEW_IMAGE, {
+                serviceId,
+                instanceId,
+                serviceName               : serviceData.serviceName,
+                originRepositoryCodePath  : serviceData.originRepositoryCodePath,
+                originRepositoryNamespace : serviceData.originRepositoryNamespace,
+                originPackagePath         : serviceData.originPackagePath,
+                startupParams             : data.startupParams,
+                networkmode               : data.networkmode,
+                ports                     : data.ports
             })
             break
-        case WAITING:
+        case CREATED:
+             if(data.storageParams){
+                RequestData(RequestTypes.REGISTER_STORAGES, {
+                    serviceId,
+                    instanceId,
+                    storageParams: data.storageParams
+                })
+            } else {
+                RequestData(RequestTypes.CREATE_NEW_CONTAINER, _TakeContainerParams())
+            }
+            break
+        case INITIALIZING:
             RequestData(RequestTypes.CONTAINER_DATA, { serviceId, instanceId })
             break
         case RUNNING:
