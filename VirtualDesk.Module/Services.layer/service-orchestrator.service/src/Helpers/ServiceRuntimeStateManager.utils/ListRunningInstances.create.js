@@ -2,11 +2,11 @@ const StatusTypes = require("../../Types/Status.types")
 
 const { RUNNING } = StatusTypes
 
-const CreateListInstancesState = require("./ListInstancesState.create")
+const CreateFilterInstancesState = require("./FilterInstancesState.create")
 
 const CreateListRunningInstances = (stateManager) => (serviceId) => {
 
-        const ListInstancesState = CreateListInstancesState(stateManager)
+        const ListInstancesState = CreateFilterInstancesState(stateManager)
         
         const instanceDataList = ListInstancesState(serviceId)
             .filter(({status}) => status === RUNNING)

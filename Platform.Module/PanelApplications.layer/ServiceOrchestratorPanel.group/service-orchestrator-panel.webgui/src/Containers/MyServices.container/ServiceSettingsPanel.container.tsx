@@ -336,6 +336,50 @@ const ServiceSettingsPanelContainer = ({
 					<div className="col-12">
 						<div className="card">
 							<div className="card-header p-2">
+								<div className="subheader">Sockets</div>
+							</div>
+							<div className="card-body p-0">
+								<div className="card-table table-responsive table-vcenter">
+									<table className="table">
+										<thead>
+											<tr>
+												<th>Status</th>
+												<th>ID</th>
+												<th>Namespace</th>
+												<th>Owner</th>
+											</tr>
+										</thead>
+										<tbody>
+											{sockets.length === 0 ? (
+												<tr>
+													<td colSpan={5} className="text-center">No socket found.</td>
+												</tr>
+											) : (
+												sockets.map((item: any) => (
+													<tr>
+														<td>
+															<span className={`status status-${GetColorByStatus(item.status)}`}>
+																<span className={isShowStatusDotAnimated(item.status) ? "status-dot status-dot-animated":""}></span>
+																{item.status}
+															</span>
+														</td>
+														<td>{item.socketId}</td>
+														<td>{item.namespace}</td>
+														<td>{item.owner}</td>
+													</tr>
+												))
+											)}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="row row-cards mt-0">
+					<div className="col-12">
+						<div className="card">
+							<div className="card-header p-2">
 								<div className="subheader">Storages</div>
 							</div>
 							<div className="card-body p-0">

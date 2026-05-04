@@ -94,7 +94,7 @@ const CreateStateManager = () => {
         return stateList.filter(s => s.group === group)
     }
 
-    const ListStatesByPropertyData = (group, property, value) => {
+    const FilterStatesByPropertyData = (group, property, value) => {
         const stateList =  ListStates(group)
         const list = stateList.filter(s => s.data[property] == value)
         if (!list) {
@@ -116,7 +116,7 @@ const CreateStateManager = () => {
         ChangeStatus,
         GetState,
         ListStates,
-        ListStatesByPropertyData,
+        FilterStatesByPropertyData,
         FindData,
         GetDataByKey,
         onChangeStatus,

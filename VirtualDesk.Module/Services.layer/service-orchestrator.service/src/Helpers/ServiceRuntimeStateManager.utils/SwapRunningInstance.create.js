@@ -11,14 +11,14 @@ const CreateListRunningInstances = require("./ListRunningInstances.create")
 
 const CreateSwapRunningInstance = ({ stateManager, RequestData }) => (serviceId, params) => {
 
-    const { ChangeStatus, ListStatesByPropertyData } = stateManager
+    const { ChangeStatus, FilterStatesByPropertyData } = stateManager
 
     const ListRunningInstances = CreateListRunningInstances(stateManager)
 
     ChangeStatus(SERVICE_STATE_GROUP, serviceId, RESTARTING)
     const runningInstances = ListRunningInstances(serviceId)
     runningInstances.forEach(({ instanceId }) => {
-        const containerStateList = ListStatesByPropertyData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
+        const containerStateList = FilterStatesByPropertyData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
         containerStateList.forEach(({ data }) => {
             RequestData(RequestTypes.STOP_CONTAINER, { 
                 instanceId, 

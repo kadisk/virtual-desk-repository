@@ -7,9 +7,9 @@ const { RUNNING } = StatusTypes
 
 const CreateGetNetworksSettings  = (stateManager) => async (serviceId) => {
 
-    const { ListStatesByPropertyData } = stateManager
+    const { FilterStatesByPropertyData } = stateManager
     
-    const containerStateList = ListStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
+    const containerStateList = FilterStatesByPropertyData(CONTAINER_STATE_GROUP, "serviceId", serviceId)
 
     const runningStateContainer = containerStateList.find(({status}) => status === RUNNING)
 
