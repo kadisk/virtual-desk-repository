@@ -151,7 +151,7 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         },
         hashId: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         instanceId: {
             type: DataTypes.INTEGER,

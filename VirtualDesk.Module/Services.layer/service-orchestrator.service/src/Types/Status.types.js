@@ -7,7 +7,6 @@ const StatusTypes = Object.freeze({
     UPDATING       : Symbol("UPDATING"),
     RESTARTING     : Symbol("RESTARTING"),
     WAITING        : Symbol("WAITING"),
-    LOADING        : Symbol("LOADING"),
     STARTING       : Symbol("STARTING"),
     STOPPING       : Symbol("STOPPING"),
     STOPPED        : Symbol("STOPPED"),

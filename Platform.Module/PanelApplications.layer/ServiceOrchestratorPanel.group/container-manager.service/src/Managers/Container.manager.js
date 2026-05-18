@@ -103,7 +103,7 @@ const ContainerManager = (params) => {
         })
     }
 
-    const CreateNewContainer = ({
+    const CreateNewContainer = async ({
         imageName,
         containerName,
         ports = [],
@@ -123,7 +123,7 @@ const ContainerManager = (params) => {
             ]
         })
 
-        return docker.createContainer({
+        const container = await docker.createContainer({
             Image: imageName,
             name: containerName,
             ExposedPorts: exposedPorts,
@@ -132,6 +132,9 @@ const ContainerManager = (params) => {
                 NetworkMode: networkmode
             }
         })
+
+        const containerInfo = await container.inspect()
+        return containerInfo
     }
 
     const RemoveContainer = async (containerIdOrName) => {
@@ -294,6 +297,26 @@ const ContainerManager = (params) => {
         }
     }
 
+    const CreateNewVolume = async ({
+        volumeName,
+        driver = 'local',
+        driverOpts = {},
+        labels = {}
+    }) => {
+        try {
+            const volume = await docker.createVolume({
+                Name: volumeName,
+                Driver: driver,
+                DriverOpts: driverOpts,
+                Labels: labels
+            })
+            return volume
+        } catch (error) {
+            console.error(`Error creating volume ${volumeName}:`, error)
+            throw error
+        }
+    }
+
     const InspectImage = async (imageIdOrName) => {
         try {
             const image = docker.getImage(imageIdOrName)
@@ -321,6 +344,7 @@ const ContainerManager = (params) => {
         InspectNetwork,
         CreateNewNetwork,
         InspectVolume,
+        CreateNewVolume,
         InspectImage
     }
 

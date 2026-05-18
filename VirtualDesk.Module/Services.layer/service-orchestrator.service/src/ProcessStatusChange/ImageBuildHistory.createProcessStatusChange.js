@@ -28,45 +28,34 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
 
         const ListInstancesState = CreateFilterInstancesState(stateManager)
 
-        const { status, data } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
-        const { status: statusService, data:serviceData } = GetState(SERVICE_STATE_GROUP, data.serviceId)
-        const { status:instanceStatus, data:instanceData } = GetState(INSTANCE_STATE_GROUP, data.instanceId) || {}
+        const { status, data: imageData } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
+        const { status: statusService, data:serviceData }  = GetState(SERVICE_STATE_GROUP, imageData.serviceId)
+        const { status:instanceStatus, data:instanceData } = GetState(INSTANCE_STATE_GROUP, imageData.instanceId) || {}
 
         switch (status) {
+            case CREATING:
+                RequestData(RequestTypes.BUILD_NEW_IMAGE, {
+                    buildId,             
+                    imageTagName              : imageData.tag,
+                    serviceName               : serviceData.serviceName,
+                    originRepositoryCodePath  : serviceData.originRepositoryCodePath,
+                    originRepositoryNamespace : serviceData.originRepositoryNamespace,
+                    originPackagePath         : serviceData.originPackagePath,
+                    startupParams             : instanceData.startupParams
+                })
+                break
             case WAITING:
-                const instanceRunningOrStoppingList = ListInstancesState(data.serviceId)
-                    .filter(({status}) => status === RUNNING || status === STOPPING)
-                
-                if(instanceRunningOrStoppingList.length === 0 ){
-                    RequestData(RequestTypes.CREATE_NEW_CONTAINER, { 
-                        buildId,
-                        instanceId  : data.instanceId,
-                        tag         : data.tag,
-                        serviceId   : data.serviceId,
-                        serviceName : serviceData.serviceName,
-                        networkmode : instanceData.networkmode,
-                        ports       : instanceData.ports
-                    })
-                    
-                } else setTimeout(() => {
-                    CreateImageBuildHistoryProcessStatusChange({ stateManager, RequestData })(buildId)
-                }, 3000)
                 break
             case FINISHED:
                 if(instanceStatus === CREATING){
                     if(statusService === RESTARTING){
-                        ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
+                        //ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, WAITING)
                     } else {
-                        SetDataProperty(INSTANCE_STATE_GROUP, data.instanceId, "containerParams", { 
+                        RequestData(RequestTypes.REGISTER_NEW_CONTAINER, { 
+                            containerName : `container_${serviceData.serviceName}-${buildId}`,
                             buildId,
-                            instanceId  : data.instanceId,
-                            tag         : data.tag,
-                            serviceId   : data.serviceId,
-                            serviceName : serviceData.serviceName,
-                            networkmode : instanceData.networkmode,
-                            ports       : instanceData.ports
+                            instanceId  : imageData.instanceId,
                         })
-                        ChangeStatus(INSTANCE_STATE_GROUP, data.instanceId, CREATED)
                     }
                 }
                 break

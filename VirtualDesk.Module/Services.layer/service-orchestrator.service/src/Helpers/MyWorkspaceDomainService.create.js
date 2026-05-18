@@ -108,7 +108,25 @@ const CreateMyWorkspaceDomainService = ({
         })
     }
 
-    const RegisterBuildedImage = ({
+    const UpdateHashIdImage = async (buildId, hashId) => {
+
+        await ImageBuildHistoryModel.update(
+            {
+                hashId
+            },
+            {
+                where: {
+                    id: buildId
+                }
+            }
+        )
+
+        const updatedRow = await ImageBuildHistoryModel.findByPk(buildId)
+
+        return updatedRow
+    }
+
+    /*const RegisterBuildedImage = ({
         instanceId,
         tag,
         hashId
@@ -117,7 +135,9 @@ const CreateMyWorkspaceDomainService = ({
                 instanceId,
                 tag,
                 hashId,
-            })
+            })*/
+
+    const RegisterBuildNewImage = ({ instanceId, tag }) => ImageBuildHistoryModel.create({ instanceId, tag })   
 
     const RegisterContainer = ({
             containerName,
@@ -196,7 +216,7 @@ const CreateMyWorkspaceDomainService = ({
         return instance ? instance.get({ plain: true }) : null
     }
 
-    const RegisterStorages = async ({
+    /*const RegisterStorages = async ({
         serviceId,
         storageList
     }) => {
@@ -211,14 +231,16 @@ const CreateMyWorkspaceDomainService = ({
             )
 
         return storages.map(item => item.get({ plain: true }))
-    }
+    }*/
 
     return {
         RegisterServiceProvisioning,
         UpdateServiceProvisioning,
         RegisterInstanceCreation,
         RegisterTerminateInstance,
-        RegisterBuildedImage,
+        UpdateHashIdImage,
+        //RegisterBuildedImage,
+        RegisterBuildNewImage,
         ListAllServiceId,
         ListServices,
         ListProvisionedServices,
@@ -231,7 +253,7 @@ const CreateMyWorkspaceDomainService = ({
         GetContainerInfoByInstanceId,
         RegisterContainer,
         MarkAsDecommissioned,
-        RegisterStorages
+        //RegisterStorages
     }
 }
 

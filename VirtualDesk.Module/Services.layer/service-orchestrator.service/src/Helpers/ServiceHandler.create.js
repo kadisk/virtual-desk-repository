@@ -15,7 +15,7 @@ const CreateServiceHandler = ({
     CreateNewContainer
 }) => {
 
-    const _CreateAndStartContainer = async ({
+    const CreateContainer = async ({
         containerName,
         imageName,
         ports = [],
@@ -24,15 +24,14 @@ const CreateServiceHandler = ({
 
         const _RemapPort = (ports) => ports.map(({ servicePort, hostPort }) => ({ containerPort:servicePort, hostPort }))
 
-        const container = await CreateNewContainer({
+        const containerInfo = await CreateNewContainer({
             imageName,
             containerName,
             ports: _RemapPort(ports),
             networkmode
         })
 
-        await container.start()
-        console.log(`[INFO] Container '${containerName}' iniciado com a imagem '${imageName}'`)
+        return containerInfo
 
     }
 
@@ -111,11 +110,11 @@ const CreateServiceHandler = ({
     }
 
     const BuildImage = async ({
+        buildId,
         imageTagName,
         repositoryCodePath,
         repositoryNamespace,
         packagePath,
-        instanceId,
         startupParams
     }) => {
 
@@ -162,38 +161,13 @@ const CreateServiceHandler = ({
         })
 
         const buildData = await MyWorkspaceDomainService
-            .RegisterBuildedImage({
-                instanceId,
-                tag: imageTagName,
-                hashId: imageInfo.Id, 
-            })
+            .UpdateHashIdImage(buildId, imageInfo.Id)
 
 
         return buildData
     }
 
-    const CreateContainer = async ({
-        containerName,
-        instanceId,
-        buildId,
-        imageName,
-        ports,
-        networkmode
-    }) => {
-
-        const containerData = await MyWorkspaceDomainService
-            .RegisterContainer({
-                containerName,
-                instanceId,
-                buildId
-            })
-
-        await _CreateAndStartContainer({ containerName, imageName, ports, networkmode })
-
-        return containerData
-    }
-
-    const RegisterStorages = async ({
+    /*const RegisterStorages = async ({
         serviceId,
         storageParams
     }) => {
@@ -209,15 +183,15 @@ const CreateServiceHandler = ({
                     })
 
         return storageListData
-    }
+    }*/
 
     return {
         UpdateService,
         CreateService,
         CreateInstance,
         BuildImage,
-        CreateContainer,
-        RegisterStorages
+        CreateContainer
+        //RegisterStorages
     }
 }
 

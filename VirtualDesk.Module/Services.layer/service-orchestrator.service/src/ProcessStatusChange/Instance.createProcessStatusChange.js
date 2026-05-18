@@ -15,7 +15,6 @@ const {
     CREATING,
     CREATED,
     RESTARTING,
-    LOADING,
     STARTING,
     STOPPING,
     STOPPED,
@@ -27,8 +26,6 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
 
     const { GetState, ChangeStatus, TakeDataProperty } = stateManager
 
-    const _TakeContainerParams = () => TakeDataProperty(INSTANCE_STATE_GROUP, instanceId, "containerParams")
-
     const ListRunningInstances = CreateListRunningInstances(stateManager)
 
     const { status, data } = GetState(INSTANCE_STATE_GROUP, instanceId)
@@ -37,28 +34,20 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
 
     switch (status) {
         case CREATING:
-            RequestData(RequestTypes.BUILD_NEW_IMAGE, {
+            RequestData(RequestTypes.REGISTER_BUILD_NEW_IMAGE, {
                 serviceId,
                 instanceId,
-                serviceName               : serviceData.serviceName,
-                originRepositoryCodePath  : serviceData.originRepositoryCodePath,
-                originRepositoryNamespace : serviceData.originRepositoryNamespace,
-                originPackagePath         : serviceData.originPackagePath,
-                startupParams             : data.startupParams,
-                networkmode               : data.networkmode,
-                ports                     : data.ports
+                serviceName : serviceData.serviceName,
+                repositoryNamespace : serviceData.originRepositoryNamespace
             })
+
+            if(data.storageParams){
+                const storageList = Object
+                .entries(storageParams)
+                .map(([key, { namespace, filename, owner }]) => ({ serviceId, namespace, filename, owner }))
+            }
             break
         case CREATED:
-             if(data.storageParams){
-                RequestData(RequestTypes.REGISTER_STORAGES, {
-                    serviceId,
-                    instanceId,
-                    storageParams: data.storageParams
-                })
-            } else {
-                RequestData(RequestTypes.CREATE_NEW_CONTAINER, _TakeContainerParams())
-            }
             break
         case INITIALIZING:
             RequestData(RequestTypes.CONTAINER_DATA, { serviceId, instanceId })
@@ -73,8 +62,6 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
                 ChangeStatus(SERVICE_STATE_GROUP, serviceId, status)
             break
         case STARTING:
-        case LOADING:
-            break
         default:
             console.warn(`Instance ${instanceId} has an unknown status: ${status.description}`)
     }

@@ -5,7 +5,7 @@ const { SERVICE_STATE_GROUP } = ItemGroupTypes
 
 const { CREATING } = StatusTypes
 
-const CreateCreateServiceInStateManagement = ({ stateManager, RequestData }) => 
+const CreateCreateServiceInStateManagement = ({ stateManager }) => 
     (serviceId, params) => {
 
         const { AddNewState, ChangeStatus, SetDataProperty } = stateManager

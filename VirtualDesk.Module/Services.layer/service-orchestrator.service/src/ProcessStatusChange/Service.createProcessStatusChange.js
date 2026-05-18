@@ -22,7 +22,6 @@ const {
     RESTARTING,
     WAITING,
     CREATING,
-    LOADING
 } = StatusTypes
 
 const CreateServiceProcessStatusChange = ({
@@ -36,32 +35,25 @@ const CreateServiceProcessStatusChange = ({
 
     const _TakeInstanceParams = () => TakeDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams")
 
-    const { status, data } = GetState(SERVICE_STATE_GROUP, serviceId)
+    const { status } = GetState(SERVICE_STATE_GROUP, serviceId)
     switch (status) {
         case CREATING:
-            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
-            RequestData(SERVICE_DATA, { serviceId, nextStatus: CREATED})
+            RequestData(SERVICE_DATA, { serviceId })
+            RequestData(RequestTypes.CREATE_NEW_INSTANCE, _TakeInstanceParams())
             break
         case INITIALIZING:
-            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
             RequestData(SERVICE_DATA, { serviceId, nextStatus: WAITING })
             break
         case CREATED:
-            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
-            RequestData(RequestTypes.CREATE_NEW_INSTANCE, _TakeInstanceParams())
             break
         case UPDATED:
-            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
             SwapRunningInstance(serviceId, _TakeInstanceParams())
             break
         case WAITING:
-            ChangeStatus(SERVICE_STATE_GROUP, serviceId, LOADING)
             RequestData(INSTANCE_DATA_LIST, { serviceId })
             RequestData(IMAGE_BUILD_DATA_LIST, { serviceId })
             break
         case RESTARTING:
-        case LOADING:
-            break
         default:
             console.warn(`Service ${serviceId} has an unknown status: ${GetState(SERVICE_STATE_GROUP, serviceId).status.description}`)
     }

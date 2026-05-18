@@ -81,7 +81,7 @@ const CreateServiceRuntimeStateManager = () => {
         GetNetworksSettings               : CreateGetNetworksSettings(stateManager),
         UpdateServiceInStateManagement    : CreateUpdateServiceInStateManagement({ stateManager, RequestData }),
         LoadServiceInStateManagement      : CreateLoadServiceInStateManagement(stateManager),
-        CreateServiceInStateManagement    : CreateCreateServiceInStateManagement({ stateManager, RequestData }),
+        CreateServiceInStateManagement    : CreateCreateServiceInStateManagement({ stateManager }),
         onChangeImageBuildHistoryListData : CreateOnChangeStatusTriggerService(stateManager, { group: IMAGE_BUILD_HISTORY_STATE_GROUP, Function: serviceId => ListImageBuildHistory(serviceId) }),
         onChangeContainerListData         : CreateOnChangeStatusTriggerService(stateManager, { group: CONTAINER_STATE_GROUP,           Function: serviceId => ListContainers(serviceId) }),
         onChangeInstanceListData          : CreateOnChangeStatusTriggerService(stateManager, { group: INSTANCE_STATE_GROUP,            Function: serviceId => ListInstances(serviceId) }),

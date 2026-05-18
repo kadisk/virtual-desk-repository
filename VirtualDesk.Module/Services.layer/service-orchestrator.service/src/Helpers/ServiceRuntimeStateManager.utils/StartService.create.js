@@ -22,7 +22,6 @@ const CreateStartService = ({ stateManager, RequestData }) => async (serviceId) 
             .forEach(({key:instanceId}) => {
                 const data = FindData(CONTAINER_STATE_GROUP, "instanceId", instanceId)
                 RequestData(RequestTypes.START_CONTAINER, {
-                    instanceId, 
                     containerHashId: data.Id
                 })
             })

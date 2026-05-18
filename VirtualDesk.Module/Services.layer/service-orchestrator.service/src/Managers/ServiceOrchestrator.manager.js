@@ -50,6 +50,7 @@ const ServiceOrchestratorManager = (params) => {
     const { 
         BuildImageFromDockerfileString,
         CreateNewContainer,
+        CreateNewVolume,
         RemoveContainer,
         InspectContainer,
         RegisterDockerEventListener,
@@ -91,7 +92,7 @@ const ServiceOrchestratorManager = (params) => {
         BuildImage,
         CreateContainer,
         CreateInstance,
-        RegisterStorages
+        //RegisterStorages
     } = CreateServiceHandler({
         absolutInstanceDataDirPath,
         MyWorkspaceDomainService,
@@ -172,37 +173,52 @@ const ServiceOrchestratorManager = (params) => {
                     })
                     return instanceData
                 case RequestTypes.REGISTER_STORAGES:
-                    const storageData = await RegisterStorages({
+                    /*const storageData = await RegisterStorages({
                         serviceId: data.serviceId,
                         storageParams: data.storageParams
-                    })
+                    })*/
                     return storageData
-                    break
                 case RequestTypes.BUILD_NEW_IMAGE:
-                    const buildData = await _BuildImage({
-                        serviceName         : data.serviceName,
-                        serviceId           : data.serviceId,
-                        instanceId          : data.instanceId,
+                    const buildData = await BuildImage({
+                        buildId             : data.buildId,
+                        imageTagName        : data.imageTagName,
+                        repositoryCodePath  : data.originRepositoryCodePath,
                         repositoryNamespace : data.originRepositoryNamespace,
                         packagePath         : data.originPackagePath,
-                        repositoryCodePath  : data.originRepositoryCodePath,
                         startupParams       : data.startupParams
                     })
                     return buildData
-                case RequestTypes.CREATE_NEW_CONTAINER:
-                    const containerData = await _CreateContainer({
-                        instanceId  : data.instanceId,
-                        buildId     : data.buildId,
-                        tag         : data.tag,
-                        serviceName : data.serviceName,
-                        networkmode : data.networkmode,
-                        ports       : data.ports
-                    })
+                case RequestTypes.REGISTER_BUILD_NEW_IMAGE:
+                    return await MyWorkspaceDomainService
+                        .RegisterBuildNewImage({
+                            instanceId: data.instanceId,
+                            tag: `ecosystem_${data.repositoryNamespace}:${data.serviceName}-${data.serviceId}`.toLowerCase(),
+                        })
 
-                    return containerData
+                case RequestTypes.CREATE_NEW_CONTAINER:
+                    return await CreateContainer({
+                        containerName : data.containerName,
+                        imageName     : data.imageName,
+                        networkmode   : data.networkmode,
+                        ports         : data.ports
+                    })
+                case RequestTypes.REGISTER_NEW_CONTAINER:
+                    return await MyWorkspaceDomainService
+                        .RegisterContainer({
+                            containerName : data.containerName,
+                            instanceId: data.instanceId,
+                            buildId: data.buildId
+                        })
+
                 case RequestTypes.MARK_AS_DECOMMISSIONED:
                     await MyWorkspaceDomainService.MarkAsDecommissioned(data.serviceId)
                     break
+                case RequestTypes.CREATE_STORAGE:
+                    CreateNewVolume({
+                        volumeName, 
+                        labels
+                    })
+                    return 
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }
@@ -216,55 +232,6 @@ const ServiceOrchestratorManager = (params) => {
     const InitializeAllServiceStateManagement = async  () => {
         const serviceIds = await MyWorkspaceDomainService.ListAllServiceId()
         serviceIds.forEach(serviceId => LoadServiceInStateManagement(serviceId))
-    }
-    
-    const _BuildImage = async ({
-        serviceName,
-        serviceId,
-        instanceId,
-        repositoryNamespace,
-        packagePath,
-        repositoryCodePath,
-        startupParams
-    }) => {
-
-        const imageTagName = `ecosystem_${repositoryNamespace}:${serviceName}-${serviceId}`.toLowerCase()
-
-        const buildData = await BuildImage({
-                imageTagName,
-                repositoryCodePath,
-                repositoryNamespace,
-                packagePath,
-                instanceId,
-                startupParams
-            })
-
-
-        return buildData
-    }
-
-    const _CreateContainer = async ({
-        buildId,
-        tag,
-        instanceId,
-        serviceName,
-        networkmode,
-        ports,
-    }) => {
-
-        const containerName = `container_${serviceName}-${buildId}`
-
-        const containerData = await CreateContainer({
-                containerName,
-                instanceId,
-                buildId,
-                imageName: tag,
-                ports,
-                networkmode
-            })
-
-        return containerData
-        
     }
 
     const ProvisionService = async ({
