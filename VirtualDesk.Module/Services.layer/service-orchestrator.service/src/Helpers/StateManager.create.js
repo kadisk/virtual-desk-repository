@@ -13,9 +13,16 @@ const CreateStateManager = () => {
         const newState = {
             group,
             key,
-            status      : defaultStatus,
-            data        : {},
-            error       : undefined
+            status        : defaultStatus,
+            statusHistory : defaultStatus ? [
+                {
+                    previous  : null,
+                    current   : defaultStatus,
+                    changedAt : new Date()
+                }
+            ] : [],
+            data          : {},
+            error         : undefined
         }
         stateList.push(newState)
     }
@@ -52,9 +59,21 @@ const CreateStateManager = () => {
 
     const ChangeStatus = (group, key, newStatus) => {
         const state = GetState(group, key)
+        
         if (!state) throw new Error(`State with group ${group.description} and key ${key} does not exist`)
+        
         if (state.status === newStatus) return
+
+        const oldStatus = state.status
+
         state.status = newStatus
+
+        state.statusHistory.unshift({
+            previous  : oldStatus,
+            current   : newStatus,
+            changedAt : new Date()
+        })
+
         eventEmitter.emit(STATUS_CHANGE_EVENT, {group, key})
     }
 
@@ -111,9 +130,59 @@ const CreateStateManager = () => {
         return state.data
     }
 
+    const GetStatusHistory = (group, key) => {
+        const state = GetState(group, key)
+
+        if (!state) {
+            return []
+        }
+
+        return state.statusHistory
+    }
+
+    const GetPreviousStatus = (group, key) => {
+        const state = GetState(group, key)
+
+        if (!state?.statusHistory?.length) {
+            return undefined
+        }
+
+        const lastHistory = state.statusHistory[state.statusHistory.length - 1]
+
+        return lastHistory.previous
+    }
+
+    const HasExecutedStatusSequence = (group, key, statusSequence) => {
+        const state = GetState(group, key)
+
+        if (!state?.statusHistory?.length) {
+            return false
+        }
+
+        if (!Array.isArray(statusSequence) || statusSequence.length === 0) {
+            return false
+        }
+
+        const historyStatuses = state.statusHistory.map(history => history.current)
+
+        for (let i = 0; i <= historyStatuses.length - statusSequence.length; i++) {
+            const sequenceMatches = statusSequence.every((status, index) => {
+                return historyStatuses[i + index] === status
+            })
+
+            if (sequenceMatches) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     return {
         AddNewState,
         ChangeStatus,
+        GetStatusHistory,
+        GetPreviousStatus,
         GetState,
         ListStates,
         FilterStatesByPropertyData,
@@ -124,7 +193,8 @@ const CreateStateManager = () => {
         UpdateData,
         SetDataProperty,
         FindKeyByPropertyData,
-        TakeDataProperty
+        TakeDataProperty,
+        HasExecutedStatusSequence
     }
 }
 

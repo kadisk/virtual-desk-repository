@@ -27,6 +27,7 @@ const CreateGetNetworksSettings            = require("./ServiceRuntimeStateManag
 const CreateStartService                   = require("./ServiceRuntimeStateManager.utils/StartService.create")
 const CreateStopService                    = require("./ServiceRuntimeStateManager.utils/StopService.create")
 const CreateNotifyContainerActivity        = require("./ServiceRuntimeStateManager.utils/NotifyContainerActivity.create")
+const CreateNotifyVolumeActivity           = require("./ServiceRuntimeStateManager.utils/NotifyVolumeActivity.create")
 const CreateSwapRunningInstance            = require("./ServiceRuntimeStateManager.utils/SwapRunningInstance.create")
 const CreateListInstances                  = require("./ServiceRuntimeStateManager.utils/ListCreators/ListInstances.create")
 const CreateListStorages                   = require("./ServiceRuntimeStateManager.utils/ListCreators/ListStorages.create")
@@ -76,6 +77,7 @@ const CreateServiceRuntimeStateManager = () => {
         ListRunningInstances              : CreateListRunningInstances(stateManager),
         TriggerDecommissioningProcess     : CreateTriggerDecommissioningProcess({ stateManager, RequestData }),
         NotifyContainerActivity           : CreateNotifyContainerActivity(stateManager),
+        NotifyVolumeActivity              : CreateNotifyVolumeActivity(stateManager),
         StartService                      : CreateStartService({ stateManager, RequestData }),
         StopService                       : CreateStopService({ stateManager, RequestData }),
         GetNetworksSettings               : CreateGetNetworksSettings(stateManager),

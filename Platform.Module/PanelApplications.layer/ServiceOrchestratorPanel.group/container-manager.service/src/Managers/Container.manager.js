@@ -3,6 +3,13 @@ const EventEmitter = require('node:events')
 
 const DOCKER_EVENT = Symbol('dockerEvent')
 
+const NormalizedLabels = (labels) => {
+    return Object.fromEntries(
+        Object.entries(labels).map(([key, value]) => [ key, value == null ? "" : String(value) ])
+    )
+}
+
+
 const ContainerManager = (params) => {
 
     const docker = new Docker({ socketPath: '/var/run/docker.sock' })
@@ -308,7 +315,7 @@ const ContainerManager = (params) => {
                 Name: volumeName,
                 Driver: driver,
                 DriverOpts: driverOpts,
-                Labels: labels
+                Labels: NormalizedLabels(labels)
             })
             return volume
         } catch (error) {

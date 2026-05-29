@@ -13,11 +13,8 @@ const {
 
 const {
     CREATING,
-    CREATED,
     RESTARTING,
     WAITING,
-    STOPPING,
-    RUNNING,
     FINISHED
 } = StatusTypes
 
@@ -31,6 +28,8 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
         const { status, data: imageData } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
         const { status: statusService, data:serviceData }  = GetState(SERVICE_STATE_GROUP, imageData.serviceId)
         const { status:instanceStatus, data:instanceData } = GetState(INSTANCE_STATE_GROUP, imageData.instanceId) || {}
+
+        console.log(`IMAGE BUILD [${buildId}] STATUS CHANGE ${status.description}`)
 
         switch (status) {
             case CREATING:

@@ -71,6 +71,7 @@ const ServiceOrchestratorManager = (params) => {
         onChangeServiceStatus,
         onRequestData,
         NotifyContainerActivity,
+        NotifyVolumeActivity,
         StartService,
         StopService,
         ListInstances,
@@ -92,7 +93,7 @@ const ServiceOrchestratorManager = (params) => {
         BuildImage,
         CreateContainer,
         CreateInstance,
-        //RegisterStorages
+        RegisterStorage
     } = CreateServiceHandler({
         absolutInstanceDataDirPath,
         MyWorkspaceDomainService,
@@ -106,10 +107,10 @@ const ServiceOrchestratorManager = (params) => {
         RegisterDockerEventListener((eventData) => {
 
             const { Type, Action, Actor } = eventData
+            const { ID, Attributes } = Actor
 
             switch(Type){
                 case "container":
-                    const { ID, Attributes } = Actor
                     NotifyContainerActivity({ ID, Action, Attributes })
                     break
                 case "network":
@@ -131,8 +132,9 @@ const ServiceOrchestratorManager = (params) => {
                         default:
                             //console.log(eventData) 
                     }
-
-                
+                case "volume":
+                    NotifyVolumeActivity({ ID, Action })
+                    break
                 default:
                     //console.log(eventData) 
             }
@@ -142,13 +144,13 @@ const ServiceOrchestratorManager = (params) => {
         onRequestData(async (requestType, data) => {
             
             switch (requestType) {
-                case RequestTypes.INSTANCE_DATA_LIST:
+                case RequestTypes.FETCH_INSTANCE_DATA_LIST:
                     return await MyWorkspaceDomainService.ListActiveInstancesByServiceId(data.serviceId)
-                case RequestTypes.IMAGE_BUILD_DATA_LIST:
+                case RequestTypes.FETCH_IMAGE_BUILD_DATA_LIST:
                     return await MyWorkspaceDomainService.ListImageBuildHistoryByServiceId(data.serviceId)
-                case RequestTypes.CONTAINER_DATA:
+                case RequestTypes.FETCH_CONTAINER_DATA:
                     return await await MyWorkspaceDomainService.GetContainerInfoByInstanceId(data.instanceId)
-                case RequestTypes.CONTAINER_INSPECTION_DATA:
+                case RequestTypes.FETCH_CONTAINER_INSPECTION_DATA:
                     return await InspectContainer(data.containerName)
                 case RequestTypes.START_CONTAINER:
                     await StartContainer(data.containerHashId)
@@ -159,7 +161,7 @@ const ServiceOrchestratorManager = (params) => {
                 case RequestTypes.REMOVE_CONTAINER:
                     await RemoveContainer(data.containerHashId)
                     break
-                case RequestTypes.SERVICE_DATA:
+                case RequestTypes.FETCH_SERVICE_DATA:
                     const serviceData = await GetService(data.serviceId)
                     return serviceData
                 case RequestTypes.CREATE_NEW_INSTANCE:
@@ -172,11 +174,12 @@ const ServiceOrchestratorManager = (params) => {
                         ports         : data.ports
                     })
                     return instanceData
-                case RequestTypes.REGISTER_STORAGES:
-                    /*const storageData = await RegisterStorages({
+                case RequestTypes.REGISTER_STORAGE:
+                    const storageData = await RegisterStorage({
                         serviceId: data.serviceId,
-                        storageParams: data.storageParams
-                    })*/
+                        namespace: data.namespace,
+                        filename: data.filename
+                    })
                     return storageData
                 case RequestTypes.BUILD_NEW_IMAGE:
                     const buildData = await BuildImage({
@@ -213,12 +216,11 @@ const ServiceOrchestratorManager = (params) => {
                 case RequestTypes.MARK_AS_DECOMMISSIONED:
                     await MyWorkspaceDomainService.MarkAsDecommissioned(data.serviceId)
                     break
-                case RequestTypes.CREATE_STORAGE:
-                    CreateNewVolume({
-                        volumeName, 
-                        labels
+                case RequestTypes.CREATE_NEW_VOLUME:
+                    return await CreateNewVolume({
+                        volumeName: data.volumeName, 
+                        labels: data.labels
                     })
-                    return 
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }

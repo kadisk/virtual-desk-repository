@@ -6,16 +6,18 @@ const CreateValidateServiceDoesNotExist = require("./ValidateServiceDoesNotExist
 
 const { SERVICE_STATE_GROUP } = ItemGroupTypes
 
-const { INITIALIZING } = StatusTypes
+const { INITIATE } = StatusTypes
 
 const CreateLoadServiceInStateManagement = (stateManager) => (serviceId) => {
+
+    console.log(`LOAD SERVICE IN STATE ${serviceId}`)
 
     const { AddNewState, ChangeStatus } = stateManager
 
     const ValidateServiceDoesNotExist = CreateValidateServiceDoesNotExist(stateManager)
     ValidateServiceDoesNotExist()
     AddNewState(SERVICE_STATE_GROUP, serviceId)
-    ChangeStatus(SERVICE_STATE_GROUP, serviceId, INITIALIZING)
+    ChangeStatus(SERVICE_STATE_GROUP, serviceId, INITIATE)
     
 }
 

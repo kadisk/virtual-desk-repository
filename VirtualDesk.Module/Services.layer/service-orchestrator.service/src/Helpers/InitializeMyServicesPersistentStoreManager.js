@@ -71,7 +71,8 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             type: DataTypes.STRING,
             allowNull: false
         }
-    })  
+    })
+
     
     const InstanceModel = sequelize.define("Instance", {
         id: {
@@ -111,6 +112,36 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         terminateDate: {
             type: DataTypes.DATE,
             allowNull: true
+        }
+    })
+
+    const StorageParamModel = sequelize.define("StorageParam", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        parameter: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        instanceId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: InstanceModel,
+                key: "id"
+            },
+            onDelete: "CASCADE"
+        },
+        storageId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: StorageModel,
+                key: "id"
+            },
+            onDelete: "CASCADE"
         }
     })
 
@@ -232,25 +263,28 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
     ContainerModel          .hasMany(ContainerEventLogModel, { foreignKey: "containerId", onDelete: "CASCADE" })
     ServiceModel            .hasMany(StorageModel,           { foreignKey: "serviceId",   onDelete: "CASCADE" })
     InstanceModel           .hasMany(SocketModel,            { foreignKey: "instanceId",  onDelete: "CASCADE" })
+    InstanceModel           .hasMany(StorageParamModel,      { foreignKey: "instanceId",  onDelete: "CASCADE" })
     
-    ContainerModel         .belongsTo(InstanceModel,            { foreignKey: "instanceId" })
-    ContainerModel         .belongsTo(ImageBuildHistoryModel,   { foreignKey: "buildId" })
-    ContainerEventLogModel .belongsTo(ImageBuildHistoryModel,   { foreignKey: "containerId" })
-    ImageBuildHistoryModel .belongsTo(InstanceModel,            { foreignKey: "instanceId" })
-    InstanceModel          .belongsTo(ServiceModel,             { foreignKey: "serviceId" })
-    StorageModel           .belongsTo(ServiceModel,             { foreignKey: "serviceId" })
-    SocketModel            .belongsTo(InstanceModel,            { foreignKey: "instanceId" })
-    
+    ContainerModel         .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
+    ContainerModel         .belongsTo(ImageBuildHistoryModel, { foreignKey: "buildId"     })
+    ContainerEventLogModel .belongsTo(ImageBuildHistoryModel, { foreignKey: "containerId" })
+    ImageBuildHistoryModel .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
+    InstanceModel          .belongsTo(ServiceModel,           { foreignKey: "serviceId"   })
+    StorageModel           .belongsTo(ServiceModel,           { foreignKey: "serviceId"   })
+    SocketModel            .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
+    StorageParamModel      .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
+    StorageParamModel      .belongsTo(StorageModel,           { foreignKey: "storageId"   })
 
     return {
         models: {
-            Service: ServiceModel,
-            ImageBuildHistory: ImageBuildHistoryModel,
-            Instance: InstanceModel,
-            Container: ContainerModel,
-            ContainerEventLog: ContainerEventLogModel,
-            Socket: SocketModel,
-            Storage: StorageModel
+            Service           : ServiceModel,
+            ImageBuildHistory : ImageBuildHistoryModel,
+            Instance          : InstanceModel,
+            Container         : ContainerModel,
+            ContainerEventLog : ContainerEventLogModel,
+            Socket            : SocketModel,
+            Storage           : StorageModel,
+            StorageParam      : StorageParamModel
         },
         ConnectAndSync: async () => {
             await sequelize.authenticate()

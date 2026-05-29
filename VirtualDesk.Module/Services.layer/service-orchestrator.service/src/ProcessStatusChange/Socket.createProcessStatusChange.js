@@ -12,6 +12,7 @@ const CreateSocketProcessStatusChange = ({ stateManager, RequestData }) =>
         
         const { status, data } = GetState(SOCKET_STATE_GROUP, socketId)
 
+        console.log(`SOCKET [${socketId}] STATUS CHANGE ${status.description}`)
         switch (status) {
             default:
                 console.warn(`Socket ${socketId} has an unknown status: ${status.description}`)

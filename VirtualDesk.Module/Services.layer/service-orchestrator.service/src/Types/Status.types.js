@@ -1,20 +1,30 @@
 const StatusTypes = Object.freeze({
     UNKNOWN        : Symbol("UNKNOWN"),
+
+    CREATE         : Symbol("CREATE"),
+    HYDRATE_DATA   : Symbol("HYDRATE_DATA"),
+    INITIATE       : Symbol("INITIATE"),
+
     INITIALIZING   : Symbol("INITIALIZING"),
     CREATING       : Symbol("CREATING"),
-    CREATED        : Symbol("CREATED"),
-    UPDATED        : Symbol("UPDATED"),
-    UPDATING       : Symbol("UPDATING"),
     RESTARTING     : Symbol("RESTARTING"),
+    UPDATING       : Symbol("UPDATING"),
     WAITING        : Symbol("WAITING"),
     STARTING       : Symbol("STARTING"),
     STOPPING       : Symbol("STOPPING"),
-    STOPPED        : Symbol("STOPPED"),
     RUNNING        : Symbol("RUNNING"),
-    FAILURE        : Symbol("FAILURE"),
-    FINISHED       : Symbol("FINISHED"),
-    TERMINATED     : Symbol("TERMINATED"),
-    DECOMMISSIONED : Symbol("DECOMMISSIONED")
+    HYDRATING_DATA : Symbol("HYDRATING_DATA"),
+
+    CREATED         : Symbol("CREATED"),
+    UPDATED         : Symbol("UPDATED"),
+    STOPPED         : Symbol("STOPPED"),
+    FAILURE         : Symbol("FAILURE"),
+    FINISHED        : Symbol("FINISHED"),
+    TERMINATED      : Symbol("TERMINATED"),
+    DESTROYED       : Symbol("DESTROYED"),
+    DECOMMISSIONED  : Symbol("DECOMMISSIONED"),
+    READY           : Symbol("READY"),
+    DATA_HYDRATED   : Symbol("DATA_HYDRATED"),
 })
 
 module.exports = StatusTypes

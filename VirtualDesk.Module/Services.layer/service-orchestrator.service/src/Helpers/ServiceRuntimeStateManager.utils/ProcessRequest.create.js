@@ -1,10 +1,11 @@
 const {
-    INITIALIZING,
+    INITIATE,
     CREATING,
     FAILURE,
     FINISHED,
     DECOMMISSIONED,
-    TERMINATED
+    TERMINATED,
+    DATA_HYDRATED
 } = require("../../Types/Status.types")
 
 const RequestTypes  = require("../../Types/Request.types")
@@ -13,37 +14,38 @@ const {
     SERVICE_STATE_GROUP,
     CONTAINER_STATE_GROUP,
     IMAGE_BUILD_HISTORY_STATE_GROUP,
-    INSTANCE_STATE_GROUP
+    INSTANCE_STATE_GROUP,
+    STORAGE_STATE_GROUP
 } = require("../../Types/ItemGroup.types")
 
 const CreateCreateObjectState = require("./CreateObjectState.create")
-const CreateReceiveInspectionData = require("./ReceiveInspectionData.create")
 
 const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (requestData) => {
 
     const CreateObjectState     = CreateCreateObjectState(stateManager)
-    const ReceiveInspectionData = CreateReceiveInspectionData(stateManager)
 
     const { ChangeStatus, UpdateData } = stateManager
         
     const { requestType } = requestData
 
+    console.log(`PROCESS REQUEST ${requestType.description}`)
+
     switch (requestType) {
-        case RequestTypes.INSTANCE_DATA_LIST:
+        case RequestTypes.FETCH_INSTANCE_DATA_LIST:
             const instanceDataList = await getData(requestType, { serviceId: requestData.serviceId })
             if(instanceDataList.length > 0)
                 instanceDataList
                     .forEach(({ id:instanceId , startupParams, ports, networkmode }) => 
-                        CreateObjectState(INSTANCE_STATE_GROUP, instanceId, {serviceId: requestData.serviceId, startupParams, ports, networkmode}, INITIALIZING))
+                        CreateObjectState(INSTANCE_STATE_GROUP, instanceId, {serviceId: requestData.serviceId, startupParams, ports, networkmode}, INITIATE))
             else ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, FINISHED)
             break
-        case RequestTypes.IMAGE_BUILD_DATA_LIST:
+        case RequestTypes.FETCH_IMAGE_BUILD_DATA_LIST:
             const buildDataList = await getData(requestType, { serviceId: requestData.serviceId })
                 buildDataList
                     .forEach(({ id:buildId , tag, hashId, instanceId }) => 
                         CreateObjectState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, { tag, hashId, instanceId, serviceId:requestData.serviceId}, FINISHED))
             break
-        case RequestTypes.SERVICE_DATA:
+        case RequestTypes.FETCH_SERVICE_DATA:
             const serviceData = await getData(requestType, { serviceId: requestData.serviceId })
 
             UpdateData(SERVICE_STATE_GROUP, requestData.serviceId, { 
@@ -55,12 +57,10 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 originPackagePath         : serviceData.originPackagePath,
             })
 
-            if(requestData.nextStatus){
-                ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, requestData.nextStatus)
-            }
+            ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DATA_HYDRATED)
 
             break
-        case RequestTypes.CONTAINER_DATA:
+        case RequestTypes.FETCH_CONTAINER_DATA:
             const containerData = await getData(requestType, { instanceId: requestData.instanceId })
             if(containerData){
                 CreateObjectState(CONTAINER_STATE_GROUP, containerData.id, {
@@ -68,18 +68,18 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                     serviceId     : requestData.serviceId,
                     containerName : containerData.containerName,
                     buildId       : containerData.buildId
-                }, INITIALIZING)
+                }, INITIATE)
             } else {
                 ChangeStatus(INSTANCE_STATE_GROUP, requestData.instanceId, TERMINATED)
             }
             break
         case RequestTypes.CREATE_NEW_CONTAINER:
-            const inspectionData_ = await getData(requestType, requestData)
-            ReceiveInspectionData({ containerId: requestData.containerId, inspectionData: inspectionData_ })
-            break
-        case RequestTypes.CONTAINER_INSPECTION_DATA:
-            const inspectionData = await getData(requestType, { containerName: requestData.containerName })
-            ReceiveInspectionData({ containerId: requestData.containerId, inspectionData })
+        case RequestTypes.FETCH_CONTAINER_INSPECTION_DATA:
+            const inspectionData = await getData(requestType, requestData)
+            if(inspectionData){
+                UpdateData(CONTAINER_STATE_GROUP, requestData.containerId, { inspectionData })
+            }  
+            ChangeStatus(CONTAINER_STATE_GROUP, requestData.containerId, DATA_HYDRATED)
             break
         case RequestTypes.START_CONTAINER:
         case RequestTypes.STOP_CONTAINER:
@@ -130,21 +130,27 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
             await getData(requestType, { serviceId: requestData.serviceId })
             ChangeStatus(SERVICE_STATE_GROUP, requestData.serviceId, DECOMMISSIONED)
             break
-        /*case RequestTypes.REGISTER_STORAGES:
-            const storageDataList = await getData(requestType, { 
+        case RequestTypes.REGISTER_STORAGE:
+
+            const storageData = await getData(requestType, { 
                 serviceId: requestData.serviceId,
-                instanceId: requestData.instanceId,
-                storageParams: requestData.storageParams
+                namespace: requestData.namespace,
+                filename: requestData.filename
             })
             
-            storageDataList
-                    .forEach(({ id:storageId , namespace, filename }) => 
-                        CreateObjectState(STORAGE_STATE_GROUP, storageId, { 
-                            serviceId: requestData.serviceId, 
-                            instanceId: requestData.instanceId,
-                            namespace,
-                            filename
-                        }, CREATING))*/
+            CreateObjectState(STORAGE_STATE_GROUP, storageData.id, { 
+                serviceId: requestData.serviceId, 
+                namespace: requestData.namespace,
+                filename: requestData.filename
+            }, CREATING)
+            break
+        case RequestTypes.CREATE_NEW_VOLUME:
+            const volumeData = await getData(requestType, { 
+                volumeName:requestData.volumeName,
+                labels: requestData.labels
+            })
+            UpdateData(STORAGE_STATE_GROUP, requestData.storageId, { volumeData } )
+            break
         default:
             console.warn(`Unknown request type: ${requestType.description}`)
     }

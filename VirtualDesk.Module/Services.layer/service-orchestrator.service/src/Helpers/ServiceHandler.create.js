@@ -167,31 +167,21 @@ const CreateServiceHandler = ({
         return buildData
     }
 
-    /*const RegisterStorages = async ({
-        serviceId,
-        storageParams
-    }) => {
-
-        const storageList = Object
-            .entries(storageParams)
-            .map(([key, { namespace, filename }]) => ({ namespace, filename }))
+    const RegisterStorage = async ({ serviceId, namespace, filename }) => {
 
         const storageListData = await MyWorkspaceDomainService
-                    .RegisterStorages({
-                        serviceId,
-                        storageList
-                    })
+        .RegisterStorage({ serviceId, namespace, filename })
 
         return storageListData
-    }*/
+    }
 
     return {
         UpdateService,
         CreateService,
         CreateInstance,
         BuildImage,
-        CreateContainer
-        //RegisterStorages
+        CreateContainer,
+        RegisterStorage
     }
 }
 

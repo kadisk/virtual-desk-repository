@@ -15,8 +15,8 @@ const CreateGetNetworksSettings  = (stateManager) => async (serviceId) => {
 
     const { data } = runningStateContainer
 
-    if(data){
-        const { NetworkSettings } = data
+    if(data.inspectionData){
+        const { NetworkSettings } = data.inspectionData
         const { Ports, Networks } = NetworkSettings
         
         return {

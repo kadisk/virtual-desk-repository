@@ -3,7 +3,7 @@ const StatusTypes = require("../../Types/Status.types")
 
 const { SERVICE_STATE_GROUP } = ItemGroupTypes
 
-const { CREATING } = StatusTypes
+const { CREATE } = StatusTypes
 
 const CreateCreateServiceInStateManagement = ({ stateManager }) => 
     (serviceId, params) => {
@@ -11,8 +11,13 @@ const CreateCreateServiceInStateManagement = ({ stateManager }) =>
         const { AddNewState, ChangeStatus, SetDataProperty } = stateManager
         
         AddNewState(SERVICE_STATE_GROUP, serviceId)
-        SetDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams", {serviceId, ...params})
-        ChangeStatus(SERVICE_STATE_GROUP, serviceId, CREATING)
+
+        const { startupParams, storageParams, ports, networkmode } = params
+
+        SetDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams", { serviceId, startupParams, storageParams, ports, networkmode })
+        SetDataProperty(SERVICE_STATE_GROUP, serviceId, "storageDataParams", { serviceId, storageParams })
+
+        ChangeStatus(SERVICE_STATE_GROUP, serviceId, CREATE)
 
     }
 
