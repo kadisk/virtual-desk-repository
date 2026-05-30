@@ -1,5 +1,17 @@
 const EventEmitter = require("events")
 
+const GetValueByPath = (data, property) => {
+    if (!data) return undefined
+
+    if (!Array.isArray(property)) {
+        return data[property]
+    }
+
+    return property.reduce((current, key) => {
+        if (current == null) return undefined
+        return current[key]
+    }, data)
+}
 
 const CreateStateManager = () => {
 
@@ -102,10 +114,14 @@ const CreateStateManager = () => {
     }
 
     const FindKeyByPropertyData = (group, property, value) => {
-        const state = ListStates(group)?.find(s => s.data[property] == value)
+        const state = ListStates(group)?.find(s => {
+            return GetValueByPath(s.data, property) == value
+        })
+
         if (!state) {
             return null
         }
+
         return state.key
     }
 
@@ -114,12 +130,11 @@ const CreateStateManager = () => {
     }
 
     const FilterStatesByPropertyData = (group, property, value) => {
-        const stateList =  ListStates(group)
-        const list = stateList.filter(s => s.data[property] == value)
-        if (!list) {
-            return []
-        }
-        return list
+        const stateList = ListStates(group)
+
+        return stateList.filter(s => {
+            return GetValueByPath(s.data, property) == value
+        })
     }
 
     const GetDataByKey = (group, key) => {

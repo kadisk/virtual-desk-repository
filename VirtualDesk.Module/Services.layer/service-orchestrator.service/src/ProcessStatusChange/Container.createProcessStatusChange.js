@@ -63,6 +63,7 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
                 }
                 
                 break
+            case STARTING:
             case INITIATE:
                 ChangeStatus(CONTAINER_STATE_GROUP, containerId, HYDRATE_DATA)
                 break
@@ -78,11 +79,9 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
             case CREATED:
                 if(instanceStatus === CREATING){
                     RequestData(RequestTypes.START_CONTAINER, {
-                        containerHashId: containerData.Id
+                        containerHashId: containerData.inspectionData.Id
                     })
                 }
-                break
-            case STARTING:
                 break
             case RUNNING:
             case STOPPING:
