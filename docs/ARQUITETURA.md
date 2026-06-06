@@ -65,12 +65,28 @@ As aplicações de plataforma e seus painéis. Dependem do Ring 0 (IAM e roteame
 | `iam-panel` | `identity-access-manager-panel.webapp` | `9999` | Painel de administração de identidades e acessos. |
 | `user-space-panel` | `user-space-panel.webapp` | `7005` | Espaço/painel do usuário. |
 | `repository-manager-panel` | `repository-manager-panel.webapp` | `7006` | Painel de administração de repositórios. |
-| `service-orchestrator` | `service-orchestrator.app` | socket | Orquestra serviços e containers (consumido pelo `service-panel`). |
-| `repository-storage-manager` | `repository-storage-manager.app` | socket | Armazena e serve o código-fonte dos repositórios importados. |
+| `service-orchestrator` | `service-orchestrator.app` | socket | **Control plane.** Orquestra serviços e containers (consumido pelo `service-panel` e pela CLI `my-services`). |
+| `repository-storage-manager` | `repository-storage-manager.app` | socket | **Control plane.** Armazena e serve o código-fonte dos repositórios importados. |
 
 > Os painéis (`webapp`) falam com as aplicações de back-end (`service-orchestrator`,
 > `repository-storage-manager`, `iam-manager`) por **socket** do supervisor — ver os
 > campos `socketParams` nos arquivos de provisionamento.
+
+#### Control plane vs serviços provisionados
+
+Há duas formas de um pacote subir, e a diferença é visível na presença (ou não) de um
+arquivo `*.provision.json`:
+
+- **Control plane** — `service-orchestrator` e `repository-storage-manager` **não têm**
+  provision file. Eles são iniciados **diretamente pelo ecossistema** (camada de
+  execução / supervisor) a partir do próprio `metadata/startup-params.json`. Têm de
+  estar no ar **antes** de qualquer provisionamento, porque o `my-services` os consome
+  por socket (ver
+  [`my-service-manager.cli/metadata/startup-params.json`](../VirtualDesk.Module/PlatformApplications.layer/my-service-manager.cli/metadata/startup-params.json)).
+  Não se provisiona o orquestrador com o próprio orquestrador.
+- **Serviços provisionados** — todos os demais (proxies, `iam-manager`, painéis,
+  `virtual-desk`, tenants) têm um `*.provision.json` e são criados/iniciados pela CLI
+  `my-services`, que delega ao `service-orchestrator`.
 
 ### Ring 2 — tenants (conteúdo publicado)
 
@@ -144,4 +160,3 @@ A convenção de portas dos containers está em [`../notes.md`](../notes.md):
 | `6XXX` | Serviços de acesso apenas interno. |
 | `4XXX` | Persistência de dados (SQLite, Neo4J, MySQL, PostgreSQL, InfluxDB…). |
 | `5XXX` | Outros serviços não-plataforma (Python, Kafka, OpenCV…). |
-</content>

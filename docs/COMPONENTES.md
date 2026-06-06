@@ -5,6 +5,35 @@ Lista de todos os pacotes do repositório, agrupados por papel. Os **executávei
 [`../metadata/applications.json`](../metadata/applications.json) e usados nos comandos
 `repo install ... --executables` e na CLI `my-services`.
 
+> **Fonte canônica:** este documento é uma visão humana do catálogo. A referência
+> técnica dos executáveis (nome, tipo `APP`/`CLI`, `packageNamespace`, socket) é o
+> arquivo [`../metadata/applications.json`](../metadata/applications.json). Em caso de
+> divergência, o JSON vence.
+
+## Nomes canônicos (executável × pacote × grupo × host × socket)
+
+Um mesmo componente aparece com nomes diferentes conforme o contexto. A tabela abaixo
+desfaz a ambiguidade (note, por exemplo, que o executável é `user-space`, mas o pacote
+é `user-space-panel.webapp` e o `serviceName` no provision file é `user-space-panel`):
+
+| Executável (`repo install`) | Pacote | Grupo | Host (`*.local`) | Porta | Socket | `serviceName` no provision |
+| --- | --- | --- | --- | --- | --- | --- |
+| `virtual-desk` | `virtual-desk.webapp` | — | `virtualdesk.app.local` | `7001` | `virtual-desk.sock` | `virtual-desk` |
+| `iam-manager` | `identity-and-access-management.app` | — | — | `iam-socket` | `iam-manager.sock` | `iam-manager` |
+| `service-orchestrator` | `service-orchestrator.app` | — | — | socket | `service-orchestrator.sock` | _(control plane, sem provision)_ |
+| `repository-storage-manager` | `repository-storage-manager.app` | — | — | socket | `repository-storage-manager.sock` | _(control plane, sem provision)_ |
+| `local-transit-proxy` | `local-transit-proxy.app` | — | _(todos)_ | `9000`→`7000` | `local-transit-proxy.sock` | `local-transit-proxy` |
+| `local-domain-router-proxy` | `local-domain-router-proxy.app` | — | `*.local` | `7000` | `local-domain-router-proxy.sock` | `local-domain-router-proxy` |
+| `iam-panel` | `identity-access-manager-panel.webapp` | `IdentityAccessManagerPanel.group` | `iam-panel.app.local` | `9999` | `iam-panel.sock` | `iam-panel` |
+| `service-panel` | `service-orchestrator-panel.webapp` | `ServiceOrchestratorPanel.group` | `service-panel.app.local` | `8545` | `service-panel.sock` | `service-panel` |
+| `repository-manager-panel` | `repository-manager-panel.webapp` | `RepositoryManagerPanel.group` | `repository-manager-panel.app.local` | `7006` | `repository-manager-panel.sock` | `repository-manager-panel` |
+| `user-space` | `user-space-panel.webapp` | `UserSpacePanel.group` | `user-space.app.local` | `7005` | `user-space.sock` | `user-space-panel` |
+
+> Todos os hosts `*.local` são acessados pelo navegador na porta única **`9000`** (o
+> `local-transit-proxy`); a coluna "Porta" acima é a porta **interna** do serviço, para
+> onde o `local-domain-router-proxy` encaminha. Ver a `routeMappingTable` em
+> [`../provisioning-data/ring0/local-domain-router-proxy.provision.json`](../provisioning-data/ring0/local-domain-router-proxy.provision.json).
+
 ## Aplicações da plataforma (`Platform.Module/Applications.layer`)
 
 | Pacote | Executável | Tipo | Descrição |
@@ -102,4 +131,3 @@ Grupos de endpoints HTTP acoplados ao `HTTPServerService` das aplicações.
 Detalhes e exemplos nos READMEs de cada CLI:
 [`my-service-manager.cli`](../VirtualDesk.Module/PlatformApplications.layer/my-service-manager.cli/README.md)
 e [`iam-tools.cli`](../VirtualDesk.Module/PlatformApplications.layer/iam-tools.cli/README.md).
-</content>

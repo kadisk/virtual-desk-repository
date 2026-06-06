@@ -51,13 +51,36 @@ O provisionamento é feito pela CLI `my-services` a partir dos arquivos
 `*.provision.json` em [`../provisioning-data/`](../provisioning-data), organizados por
 ring. Provisione **do ring mais interno para o mais externo**.
 
-### Ring 0 — infraestrutura e borda
+### Control plane (pré-requisito — antes de qualquer `provision`)
+
+`service-orchestrator` e `repository-storage-manager` **não têm provision file** e
+**não são provisionados por `my-services`**: eles são o control plane que o próprio
+`my-services` consome via socket (ver
+[`my-service-manager.cli/metadata/startup-params.json`](../VirtualDesk.Module/PlatformApplications.layer/my-service-manager.cli/metadata/startup-params.json),
+que aponta para `service-orchestrator.app.sock` e `repository-storage-manager.app.sock`).
+
+Por isso eles são **iniciados diretamente pelo ecossistema** (camada de execução /
+supervisor), usando seu próprio `metadata/startup-params.json`, e precisam estar **no
+ar antes** de rodar qualquer `my-services provision`. O mesmo vale para o
+`iam-manager`, consumido por socket pelos painéis e pelo `virtual-desk`.
+
+> Os três expõem um socket em `~/EcosystemData/sockets/` (`service-orchestrator.app.sock`,
+> `repository-storage-manager.app.sock`, `iam-socket`). Confirme que estão ativos com
+> `supervisor sockets` / `supervisor status <socket>` antes de prosseguir.
+
+### Ring 0 — borda (proxies)
+
+Com o control plane no ar, provisione a borda via `my-services`:
 
 ```bash
 my-services provision ./provisioning-data/ring0/iam-manager.provision.json
 my-services provision ./provisioning-data/ring0/local-domain-router-proxy.provision.json
 my-services provision ./provisioning-data/ring0/local-transit-proxy.provision.json
 ```
+
+> O `iam-manager` aparece aqui porque há um provision file para ele em `ring0/`. Se no
+> seu ambiente o `iam-manager` já sobe como control plane (direto pelo ecossistema),
+> pule esta linha — não provisione o mesmo serviço duas vezes.
 
 ### Ring 1 — plataforma e painéis
 
@@ -69,9 +92,10 @@ my-services provision ./provisioning-data/ring1/user-space-panel.provision.json
 my-services provision ./provisioning-data/ring1/repository-manager-panel.provision.json
 ```
 
-> O `service-panel` depende de `service-orchestrator` e `repository-storage-manager`;
-> garanta que esses estejam instalados/provisionados. O `virtual-desk` e o `iam-panel`
-> dependem do `iam-manager` (Ring 0).
+> Dependências: `service-panel` consome `service-orchestrator` e
+> `repository-storage-manager` (control plane); `repository-manager-panel` consome
+> `repository-storage-manager`; `virtual-desk`, `iam-panel` e `user-space-panel`
+> consomem o `iam-manager`. Garanta o control plane no ar antes destes.
 
 ### Ring 2 — tenants (opcional)
 
@@ -150,4 +174,3 @@ conectando os containers numa rede Docker dedicada. Requer as variáveis de ambi
 `Dockerfile`s referenciados (`dockerfiles/Dockerfile.base`,
 `dockerfiles/Dockerfile.repository`). A convenção de portas dos containers está em
 [`../notes.md`](../notes.md).
-</content>

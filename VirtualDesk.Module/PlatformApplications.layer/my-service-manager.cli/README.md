@@ -13,9 +13,9 @@ CLI para gerenciamento de serviços e suas instâncias.
 | `provision <arquivo.provision.json>` | Provisiona um novo serviço |
 | `instances <serviceId>` | Lista instâncias de um serviço |
 | `builds <serviceId>` | Mostra histórico de builds de um serviço |
-| `decommission <serviceId>` | Lista remove todas as informações sobre o serviço |
-| `update-provision <serviceId> <arquivo.provision.json>` | Atualiza o serviço baseado nos novos parametros enviados|
-| `terminate <serviceId> | Apaga os containers |
+| `decommission <serviceId>` | Remove todas as informações de um serviço parado |
+| `update-provision <serviceId> <arquivo.provision.json>` | Atualiza o provisionamento de um serviço já provisionado (o serviço deve estar parado) |
+| `terminate <serviceId>` | Encerra o provisionamento de um serviço que está em processo de provisionamento |
 
 ## Uso
 
@@ -51,10 +51,22 @@ my-services builds 12
 
 
 ### Atualizar um serviço provisionado
+O serviço precisa estar **parado** antes de atualizar o provisionamento.
 ```bash
-# Provisionar novo serviço
-my-services service 12 update ./config/meu-servico.provision.json
+# Parar, atualizar o provisionamento e iniciar novamente
+my-services stop 12
+my-services update-provision 12 ./config/meu-servico.provision.json
+my-services start 12
+```
 
+### Descomissionar e encerrar
+```bash
+# Remove um serviço parado (apaga seus dados)
+my-services decommission 12
+
+# Encerra um provisionamento em andamento
+my-services terminate 12
+```
 
 ## Parâmetros
 
