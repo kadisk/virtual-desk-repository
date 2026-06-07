@@ -145,13 +145,10 @@ delegação administrativa, ordem de avaliação deny→allow→default-deny) es
 [`../modelo_iam_avancado_estrutura_organizacional_e_escopo_enterprise.md`](../modelo_iam_avancado_estrutura_organizacional_e_escopo_enterprise.md),
 com a pesquisa de apoio em [`../Research/`](../Research).
 
-## 5. Empacotamento em containers (opcional)
+## 5. Convenção de portas (containers)
 
-Além de rodar diretamente no ecossistema, há suporte a empacotar repositórios em
-imagens Docker. O script [`../up_kadisk_platform.sh`](../up_kadisk_platform.sh) constrói
-uma imagem base do ecossistema e, a partir dela, sobe cada serviço como container
-(instalando o executável do repositório no build), conectando-os numa rede Docker.
-A convenção de portas dos containers está em [`../notes.md`](../notes.md):
+Quando os serviços são empacotados em containers, a faixa de porta indica o papel do
+container. A convenção está em [`../notes.md`](../notes.md):
 
 | Faixa | Uso |
 | --- | --- |

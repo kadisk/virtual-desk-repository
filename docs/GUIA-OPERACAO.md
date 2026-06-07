@@ -163,14 +163,3 @@ Use um arquivo existente como ponto de partida e ajuste `startupParams`,
 `socketParams` e `storageParams` conforme o novo serviço. Para adicionar um serviço
 web ao roteamento, inclua também uma entrada `host → target` na `routeMappingTable`
 do `local-domain-router-proxy`.
-
-## 7. Empacotamento em containers (alternativa)
-
-O script [`../up_kadisk_platform.sh`](../up_kadisk_platform.sh) sobe os serviços como
-containers Docker em vez de processos no ecossistema host. Ele constrói uma imagem
-base do ecossistema e, a partir dela, uma imagem por repositório/executável,
-conectando os containers numa rede Docker dedicada. Requer as variáveis de ambiente
-`KADISK_CORP_REPO__NAMESPACE`, `WORMS_SOLUTIONS__NAMESPACE` e `TEMP_DIR`, e os
-`Dockerfile`s referenciados (`dockerfiles/Dockerfile.base`,
-`dockerfiles/Dockerfile.repository`). A convenção de portas dos containers está em
-[`../notes.md`](../notes.md).

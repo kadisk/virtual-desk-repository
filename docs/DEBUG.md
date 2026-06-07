@@ -98,17 +98,3 @@ Sintoma: o navegador não abre `http://<host>.local:9000`, ou cai no serviço er
   `repository-storage-manager.app.sock` responde (passo 2).
 - Lembre: `update-provision` exige o serviço **parado**
   (ver [`GUIA-OPERACAO.md`](GUIA-OPERACAO.md#4-operação-no-dia-a-dia)).
-
-## 7. Containers (deploy alternativo)
-
-Quando usando [`../up_kadisk_platform.sh`](../up_kadisk_platform.sh):
-
-```bash
-docker ps -a                     # containers e estado
-docker logs <container>          # log de um container
-docker network inspect kadisk_project_default   # rede e aliases
-```
-
-Variáveis obrigatórias do script: `KADISK_CORP_REPO__NAMESPACE`,
-`WORMS_SOLUTIONS__NAMESPACE`, `TEMP_DIR`. Convenção de portas em
-[`../notes.md`](../notes.md).

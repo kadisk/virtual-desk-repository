@@ -82,6 +82,5 @@ Detalhes do modelo em
 - **Tenant** — organização/cliente cujos sites e aplicações são publicados *através* da
   plataforma (Ring 2), vindos de outros repositórios (ex.: `KADISKCorpRepo`,
   `WormsSolutions`).
-- **Container** — modo alternativo de deploy (Docker) via
-  [`../up_kadisk_platform.sh`](../up_kadisk_platform.sh); convenção de portas em
+- **Container** — modo alternativo de deploy (Docker); convenção de portas em
   [`../notes.md`](../notes.md).
