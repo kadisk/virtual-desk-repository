@@ -125,6 +125,24 @@ const CreateStateManager = () => {
         return state.key
     }
 
+    const FindKeyByPropertiesData = (group, criteria) => {
+        if (!Array.isArray(criteria) || criteria.length === 0) {
+            return null
+        }
+
+        const state = ListStates(group)?.find(s => {
+            return criteria.every(({ property, value }) => {
+                return GetValueByPath(s.data, property) == value
+            })
+        })
+
+        if (!state) {
+            return null
+        }
+
+        return state.key
+    }
+
     const ListStates = (group) => {
         return stateList.filter(s => s.group === group)
     }
@@ -208,6 +226,7 @@ const CreateStateManager = () => {
         UpdateData,
         SetDataProperty,
         FindKeyByPropertyData,
+        FindKeyByPropertiesData,
         TakeDataProperty,
         HasExecutedStatusSequence
     }

@@ -67,11 +67,26 @@ const CreateServiceProcessStatusChange = ({ stateManager, RequestData }) =>
                 break
             case CREATING:
                 RequestData(RequestTypes.CREATE_NEW_INSTANCE, _TakeInstanceParams())
-                    const storageDataParams = _TakeStorageDataParams()
-                    if(storageDataParams.storageParams){
-                        Object.entries(storageDataParams.storageParams)
-                        .forEach(([parameter, { namespace, filename }]) => RequestData(RequestTypes.REGISTER_STORAGE, { serviceId, namespace, filename }))
-                    }
+                const storageDataParams = _TakeStorageDataParams()
+
+                if (storageDataParams?.storageParams) {
+                    const registeredNamespaces = new Set()
+
+                    Object.entries(storageDataParams.storageParams)
+                        .forEach(([parameter, { namespace, filename }]) => {
+                            if (registeredNamespaces.has(namespace)) {
+                                return
+                            }
+
+                            registeredNamespaces.add(namespace)
+
+                            RequestData(RequestTypes.REGISTER_STORAGE, { 
+                                serviceId, 
+                                namespace, 
+                                filename 
+                            })
+                        })
+                }
                 break
             case INITIALIZING:
                 RequestData(FETCH_INSTANCE_DATA_LIST, { serviceId })

@@ -4,6 +4,7 @@ const RequestTypes = Object.freeze({
     FETCH_INSTANCE_DATA_LIST        : Symbol("FETCH_INSTANCE_DATA_LIST"),
     FETCH_IMAGE_BUILD_DATA_LIST     : Symbol("FETCH_IMAGE_BUILD_DATA_LIST"),
     REGISTER_STORAGE                : Symbol("REGISTER_STORAGE"),
+    REGISTER_STORAGE_PARAM          : Symbol("REGISTER_STORAGE_PARAM"),
     CREATE_NEW_VOLUME               : Symbol("CREATE_NEW_VOLUME"),
     CREATE_NEW_INSTANCE             : Symbol("CREATE_NEW_INSTANCE"),
     REGISTER_NEW_CONTAINER          : Symbol("REGISTER_NEW_CONTAINER"),
@@ -15,7 +16,8 @@ const RequestTypes = Object.freeze({
     START_CONTAINER                 : Symbol("START_CONTAINER"),
     STOP_CONTAINER                  : Symbol("STOP_CONTAINER"),
     REMOVE_CONTAINER                : Symbol("REMOVE_CONTAINER"),
-    MARK_AS_DECOMMISSIONED          : Symbol("MARK_AS_DECOMMISSIONED")
+    MARK_AS_DECOMMISSIONED          : Symbol("MARK_AS_DECOMMISSIONED"),
+    UPDATE_STORAGE_PARAM_STORAGE_ID : Symbol("UPDATE_STORAGE_PARAM_STORAGE_ID")
 })
 
 module.exports = RequestTypes

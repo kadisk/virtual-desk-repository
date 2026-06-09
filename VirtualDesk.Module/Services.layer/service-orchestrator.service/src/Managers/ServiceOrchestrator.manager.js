@@ -33,6 +33,7 @@ const ServiceOrchestratorManager = (params) => {
         Instance            : InstanceModel,
         Socket              : SocketModel,
         Storage             : StorageModel,
+        StorageParam        : StorageParamModel,
         Container           : ContainerModel,
         ContainerEventLog   : ContainerEventLogModel
     } = MyServicesPersistentStoreManager.models
@@ -43,6 +44,7 @@ const ServiceOrchestratorManager = (params) => {
         InstanceModel,
         SocketModel,
         StorageModel,
+        StorageParamModel,
         ContainerModel,
         ContainerEventLogModel
     })
@@ -221,6 +223,20 @@ const ServiceOrchestratorManager = (params) => {
                         volumeName: data.volumeName, 
                         labels: data.labels
                     })
+                case RequestTypes.REGISTER_STORAGE_PARAM:
+                    return await MyWorkspaceDomainService
+                        .RegisterStorageParam({
+                            namespace: data.namespace,
+                            parameter: data.parameter,
+                            instanceId: data.instanceId
+                        })
+                    break
+                case RequestTypes.UPDATE_STORAGE_PARAM_STORAGE_ID:
+                    return await MyWorkspaceDomainService
+                        .UpdateStorageParamStorageId({
+                            storageParamId: data.storageParamId,
+                            storageId: data.storageId
+                        })
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }

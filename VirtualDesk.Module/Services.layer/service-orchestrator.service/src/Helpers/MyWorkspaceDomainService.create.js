@@ -5,7 +5,8 @@ const CreateMyWorkspaceDomainService = ({
     ContainerModel,
     ContainerEventLogModel,
     SocketModel,
-    StorageModel
+    StorageModel,
+    StorageParamModel
 }) => {
 
     const ListServices = async () => {
@@ -208,6 +209,13 @@ const CreateMyWorkspaceDomainService = ({
     const RegisterStorage = ({ serviceId, namespace, filename }) => 
         StorageModel.create({ serviceId, namespace, filename })
 
+
+    const RegisterStorageParam = ({ instanceId, parameter, namespace }) =>
+        StorageParamModel.create({ instanceId, parameter, namespace })
+
+    const UpdateStorageParamStorageId = ({ storageParamId, storageId }) =>
+        StorageParamModel.update({ storageId }, { where: { id: storageParamId } })
+
     return {
         RegisterServiceProvisioning,
         UpdateServiceProvisioning,
@@ -227,7 +235,9 @@ const CreateMyWorkspaceDomainService = ({
         GetContainerInfoByInstanceId,
         RegisterContainer,
         MarkAsDecommissioned,
-        RegisterStorage
+        RegisterStorage,
+        RegisterStorageParam,
+        UpdateStorageParamStorageId
     }
 }
 

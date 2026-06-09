@@ -4,6 +4,7 @@ const StatusTypes = require("../Types/Status.types")
 
 const {
     READY,
+    CREATE,
     CREATED,
     CREATING,
 } = StatusTypes
@@ -15,16 +16,18 @@ const {
 const CreateStorageProcessStatusChange = ({ stateManager, RequestData }) => 
     (storageId) => {
 
-        const { GetState } = stateManager
+        const { GetState, ChangeStatus } = stateManager
 
         const { status, data: storageData } = GetState(STORAGE_STATE_GROUP, storageId)
 
         console.log(`STORAGE [${storageId}] STATUS CHANGE ${status.description}`)
         switch (status) {
+            case CREATE:
+                ChangeStatus(STORAGE_STATE_GROUP, storageId, CREATING)
+                break
             case CREATING:
                 const volumeName = storageData.namespace+"-"+storageId
-                UpdateData(STORAGE_STATE_GROUP, storageId, { volumeData } )
-                RequestData(RequestTypes.CREATE_NEW_VOLUME, { 
+                RequestData(RequestTypes.CREATE_NEW_VOLUME, {
                     storageId, 
                     volumeName, 
                     labels: { storageId,  serviceId: storageData.serviceId } 

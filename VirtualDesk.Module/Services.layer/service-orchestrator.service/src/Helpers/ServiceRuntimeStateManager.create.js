@@ -6,6 +6,7 @@ const {
     SERVICE_STATE_GROUP,
     INSTANCE_STATE_GROUP,
     STORAGE_STATE_GROUP,
+    STORAGE_PARAM_STATE_GROUP,
     SOCKET_STATE_GROUP,
     CONTAINER_STATE_GROUP,
     IMAGE_BUILD_HISTORY_STATE_GROUP
@@ -16,6 +17,7 @@ const CreateInstanceProcessStatusChange          = require("../ProcessStatusChan
 const CreateContainerProcessStatusChange         = require("../ProcessStatusChange/Container.createProcessStatusChange")
 const CreateImageBuildHistoryProcessStatusChange = require("../ProcessStatusChange/ImageBuildHistory.createProcessStatusChange")
 const CreateStorageProcessStatusChange           = require("../ProcessStatusChange/Storage.createProcessStatusChange")
+const CreateStorageParamProcessStatusChange      = require("../ProcessStatusChange/StorageParam.createProcessStatusChange")
 const CreateSocketProcessStatusChange            = require("../ProcessStatusChange/Socket.createProcessStatusChange")
 
 const CreateListRunningInstances           = require("./ServiceRuntimeStateManager.utils/ListRunningInstances.create")
@@ -31,6 +33,7 @@ const CreateNotifyVolumeActivity           = require("./ServiceRuntimeStateManag
 const CreateSwapRunningInstance            = require("./ServiceRuntimeStateManager.utils/SwapRunningInstance.create")
 const CreateListInstances                  = require("./ServiceRuntimeStateManager.utils/ListCreators/ListInstances.create")
 const CreateListStorages                   = require("./ServiceRuntimeStateManager.utils/ListCreators/ListStorages.create")
+const CreateListStoragesParam              = require("./ServiceRuntimeStateManager.utils/ListCreators/ListStoragesParam.create")
 const CreateListSockets                    = require("./ServiceRuntimeStateManager.utils/ListCreators/ListSockets.create")
 const CreateListContainers                 = require("./ServiceRuntimeStateManager.utils/ListCreators/ListContainers.create")
 const CreateListImageBuildHistory          = require("./ServiceRuntimeStateManager.utils/ListCreators/ListImageBuildHistory.create")
@@ -47,15 +50,17 @@ const CreateServiceRuntimeStateManager = () => {
 
     const RequestData = (requestType, requestData) => eventEmitter.emit(REQUEST_EVENT, { requestType, ... requestData})
 
-    stateManager.onChangeStatus(SERVICE_STATE_GROUP,             ({ key: serviceId })   => CreateServiceProcessStatusChange({ stateManager, RequestData }) (serviceId))
-    stateManager.onChangeStatus(INSTANCE_STATE_GROUP,            ({ key: instanceId })  => CreateInstanceProcessStatusChange({ stateManager, RequestData })(instanceId))
-    stateManager.onChangeStatus(CONTAINER_STATE_GROUP,           ({ key: containerId }) => CreateContainerProcessStatusChange({ stateManager, RequestData })(containerId))
-    stateManager.onChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, ({ key: buildId })     => CreateImageBuildHistoryProcessStatusChange({ stateManager, RequestData })(buildId))
-    stateManager.onChangeStatus(STORAGE_STATE_GROUP,             ({ key: storageId })   => CreateStorageProcessStatusChange({ stateManager, RequestData })(storageId))
-    stateManager.onChangeStatus(SOCKET_STATE_GROUP,              ({ key: socketId })    => CreateSocketProcessStatusChange({ stateManager, RequestData })(socketId))
+    stateManager.onChangeStatus(SERVICE_STATE_GROUP,             ({ key: serviceId })      => CreateServiceProcessStatusChange({ stateManager, RequestData }) (serviceId))
+    stateManager.onChangeStatus(INSTANCE_STATE_GROUP,            ({ key: instanceId })     => CreateInstanceProcessStatusChange({ stateManager, RequestData })(instanceId))
+    stateManager.onChangeStatus(CONTAINER_STATE_GROUP,           ({ key: containerId })    => CreateContainerProcessStatusChange({ stateManager, RequestData })(containerId))
+    stateManager.onChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, ({ key: buildId })        => CreateImageBuildHistoryProcessStatusChange({ stateManager, RequestData })(buildId))
+    stateManager.onChangeStatus(STORAGE_STATE_GROUP,             ({ key: storageId })      => CreateStorageProcessStatusChange({ stateManager, RequestData })(storageId))
+    stateManager.onChangeStatus(STORAGE_PARAM_STATE_GROUP,       ({ key: storageParamId }) => CreateStorageParamProcessStatusChange({ stateManager, RequestData })(storageParamId))
+    stateManager.onChangeStatus(SOCKET_STATE_GROUP,              ({ key: socketId })       => CreateSocketProcessStatusChange({ stateManager, RequestData })(socketId))
 
     const ListInstances         = CreateListInstances(stateManager)
     const ListStorages          = CreateListStorages(stateManager)
+    const ListStoragesParam     = CreateListStoragesParam(stateManager)
     const ListSockets           = CreateListSockets(stateManager)
     const ListContainers        = CreateListContainers(stateManager)
     const ListImageBuildHistory = CreateListImageBuildHistory(stateManager)
@@ -68,6 +73,7 @@ const CreateServiceRuntimeStateManager = () => {
     return {
         ListInstances,
         ListStorages,
+        ListStoragesParam,
         ListSockets,
         ListContainers,
         ListImageBuildHistory,

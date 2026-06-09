@@ -5,7 +5,8 @@ const {
     FINISHED,
     DECOMMISSIONED,
     TERMINATED,
-    DATA_HYDRATED
+    DATA_HYDRATED,
+    UPDATED
 } = require("../../Types/Status.types")
 
 const RequestTypes  = require("../../Types/Request.types")
@@ -15,7 +16,8 @@ const {
     CONTAINER_STATE_GROUP,
     IMAGE_BUILD_HISTORY_STATE_GROUP,
     INSTANCE_STATE_GROUP,
-    STORAGE_STATE_GROUP
+    STORAGE_STATE_GROUP,
+    STORAGE_PARAM_STATE_GROUP
 } = require("../../Types/ItemGroup.types")
 
 const CreateCreateObjectState = require("./CreateObjectState.create")
@@ -100,7 +102,7 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 socketParams  : data.socketParams,
                 ports         : data.ports, 
                 networkmode   : data.networkmode
-            }, CREATING)
+            }, CREATE)
             break
         case RequestTypes.REGISTER_NEW_CONTAINER:
             const newContainerData = await getData(requestType, requestData)
@@ -142,7 +144,7 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 serviceId: requestData.serviceId, 
                 namespace: requestData.namespace,
                 filename: requestData.filename
-            }, CREATING)
+            }, CREATE)
             break
         case RequestTypes.CREATE_NEW_VOLUME:
             const volumeData = await getData(requestType, { 
@@ -150,6 +152,26 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 labels: requestData.labels
             })
             UpdateData(STORAGE_STATE_GROUP, requestData.storageId, { volumeData } )
+            break
+        case RequestTypes.REGISTER_STORAGE_PARAM:
+            const storageParamData = await getData(requestType, { 
+                instanceId : requestData.instanceId, 
+                parameter  : requestData.parameter, 
+                namespace  : requestData.namespace
+            }) 
+            CreateObjectState(STORAGE_PARAM_STATE_GROUP, storageParamData.id, { 
+                instanceId : requestData.instanceId, 
+                parameter  : requestData.parameter, 
+                namespace  : requestData.namespace
+            }, CREATE)
+            break
+        case RequestTypes.UPDATE_STORAGE_PARAM_STORAGE_ID:
+            await getData(requestType, {
+                storageParamId : requestData.storageParamId,
+                storageId      : requestData.storageId
+            })
+            UpdateData(STORAGE_PARAM_STATE_GROUP, requestData.storageParamId, { storageId: requestData.storageId })
+            ChangeStatus(STORAGE_PARAM_STATE_GROUP, requestData.storageParamId, UPDATED)
             break
         default:
             console.warn(`Unknown request type: ${requestType.description}`)

@@ -121,6 +121,12 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             autoIncrement: true,
             primaryKey: true
         },
+
+        namespace: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+
         parameter: {
             type: DataTypes.STRING,
             allowNull: false
@@ -141,8 +147,16 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
                 model: StorageModel,
                 key: "id"
             },
-            onDelete: "CASCADE"
+            onDelete: "SET NULL"
         }
+    },
+    {
+        indexes: [
+            {
+                unique: true,
+                fields: ["instanceId", "namespace", "parameter"]
+            }
+        ]
     })
 
     const SocketModel = sequelize.define("Socket", {
@@ -255,25 +269,26 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         }
     })
 
-    ServiceModel            .hasMany(ImageBuildHistoryModel, { foreignKey: "serviceId",   onDelete: "CASCADE" })
-    InstanceModel           .hasMany(ImageBuildHistoryModel, { foreignKey: "instanceId",  onDelete: "CASCADE" })
-    InstanceModel           .hasMany(ContainerModel,         { foreignKey: "instanceId",  onDelete: "CASCADE" })
-    ImageBuildHistoryModel  .hasMany(ContainerModel,         { foreignKey: "buildId",     onDelete: "CASCADE" })
-    ServiceModel            .hasMany(InstanceModel,          { foreignKey: "serviceId",   onDelete: "CASCADE" })
-    ContainerModel          .hasMany(ContainerEventLogModel, { foreignKey: "containerId", onDelete: "CASCADE" })
-    ServiceModel            .hasMany(StorageModel,           { foreignKey: "serviceId",   onDelete: "CASCADE" })
-    InstanceModel           .hasMany(SocketModel,            { foreignKey: "instanceId",  onDelete: "CASCADE" })
-    InstanceModel           .hasMany(StorageParamModel,      { foreignKey: "instanceId",  onDelete: "CASCADE" })
+    InstanceModel           .hasMany(ImageBuildHistoryModel, { foreignKey: "instanceId",  onDelete: "CASCADE"  })
+    InstanceModel           .hasMany(ContainerModel,         { foreignKey: "instanceId",  onDelete: "CASCADE"  })
+    ImageBuildHistoryModel  .hasMany(ContainerModel,         { foreignKey: "buildId",     onDelete: "CASCADE"  })
+    ServiceModel            .hasMany(InstanceModel,          { foreignKey: "serviceId",   onDelete: "CASCADE"  })
+    ContainerModel          .hasMany(ContainerEventLogModel, { foreignKey: "containerId", onDelete: "CASCADE"  })
+    ServiceModel            .hasMany(StorageModel,           { foreignKey: "serviceId",   onDelete: "CASCADE"  })
+    InstanceModel           .hasMany(SocketModel,            { foreignKey: "instanceId",  onDelete: "CASCADE"  })
+    InstanceModel           .hasMany(StorageParamModel,      { foreignKey: "instanceId",  onDelete: "CASCADE"  })
+    StorageModel            .hasMany(StorageParamModel,      { foreignKey: "storageId",   onDelete: "SET NULL" })
     
     ContainerModel         .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     ContainerModel         .belongsTo(ImageBuildHistoryModel, { foreignKey: "buildId"     })
-    ContainerEventLogModel .belongsTo(ImageBuildHistoryModel, { foreignKey: "containerId" })
+    ContainerEventLogModel .belongsTo(ContainerModel,          { foreignKey: "containerId" })
     ImageBuildHistoryModel .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     InstanceModel          .belongsTo(ServiceModel,           { foreignKey: "serviceId"   })
     StorageModel           .belongsTo(ServiceModel,           { foreignKey: "serviceId"   })
     SocketModel            .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     StorageParamModel      .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     StorageParamModel      .belongsTo(StorageModel,           { foreignKey: "storageId"   })
+
 
     return {
         models: {
