@@ -52,6 +52,8 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
             case WAITING:
                 break
             case FINISHED:
+                if (!GetState(INSTANCE_STATE_GROUP, imageData.instanceId)) break
+
                 SetDataProperty(INSTANCE_STATE_GROUP, imageData.instanceId, "containerDataParams", {
                     containerName : `container_${serviceData.serviceName}-${buildId}`,
                     buildId,
