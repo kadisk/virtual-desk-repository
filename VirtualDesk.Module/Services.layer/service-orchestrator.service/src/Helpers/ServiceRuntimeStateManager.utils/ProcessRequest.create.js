@@ -8,7 +8,8 @@ const {
     DECOMMISSIONED,
     TERMINATED,
     DATA_HYDRATED,
-    UPDATED
+    UPDATED,
+    READY
 } = require("../../Types/Status.types")
 
 const RequestTypes  = require("../../Types/Request.types")
@@ -46,8 +47,25 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
         case RequestTypes.FETCH_IMAGE_BUILD_DATA_LIST:
             const buildDataList = await getData(requestType, { serviceId: requestData.serviceId })
                 buildDataList
-                    .forEach(({ id:buildId , tag, hashId, instanceId }) => 
+                    .forEach(({ id:buildId , tag, hashId, instanceId }) =>
                         CreateObjectState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId, { tag, hashId, instanceId, serviceId:requestData.serviceId}, FINISHED))
+            break
+        case RequestTypes.FETCH_STORAGE_DATA_LIST:
+            const storageDataList = await getData(requestType, { serviceId: requestData.serviceId })
+                storageDataList
+                    .forEach(({ id:storageId, namespace, filename }) =>
+                        CreateObjectState(STORAGE_STATE_GROUP, storageId, {
+                            serviceId  : requestData.serviceId,
+                            namespace,
+                            filename,
+                            volumeData : { Name: `${namespace}-${storageId}` }
+                        }, READY))
+            break
+        case RequestTypes.FETCH_STORAGE_PARAM_DATA_LIST:
+            const storageParamDataList = await getData(requestType, { instanceId: requestData.instanceId })
+                storageParamDataList
+                    .forEach(({ id:storageParamId, namespace, parameter, instanceId, storageId }) =>
+                        CreateObjectState(STORAGE_PARAM_STATE_GROUP, storageParamId, { serviceId: requestData.serviceId, instanceId, storageId, namespace, parameter }, READY))
             break
         case RequestTypes.FETCH_SERVICE_DATA:
             const serviceData = await getData(requestType, { serviceId: requestData.serviceId })
@@ -162,9 +180,10 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 parameter  : requestData.parameter, 
                 namespace  : requestData.namespace
             }) 
-            CreateObjectState(STORAGE_PARAM_STATE_GROUP, storageParamData.id, { 
-                instanceId : requestData.instanceId, 
-                parameter  : requestData.parameter, 
+            CreateObjectState(STORAGE_PARAM_STATE_GROUP, storageParamData.id, {
+                serviceId  : requestData.serviceId,
+                instanceId : requestData.instanceId,
+                parameter  : requestData.parameter,
                 namespace  : requestData.namespace
             }, CREATE)
             break

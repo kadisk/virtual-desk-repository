@@ -206,8 +206,26 @@ const CreateMyWorkspaceDomainService = ({
         return instance ? instance.get({ plain: true }) : null
     }
 
-    const RegisterStorage = ({ serviceId, namespace, filename }) => 
+    const RegisterStorage = ({ serviceId, namespace, filename }) =>
         StorageModel.create({ serviceId, namespace, filename })
+
+    const ListStoragesByServiceId = async (serviceId) => {
+        const items = await StorageModel.findAll({
+            where: {
+                serviceId
+            }
+        })
+        return items.map(item => item.get({ plain: true }))
+    }
+
+    const ListStorageParamsByInstanceId = async (instanceId) => {
+        const items = await StorageParamModel.findAll({
+            where: {
+                instanceId
+            }
+        })
+        return items.map(item => item.get({ plain: true }))
+    }
 
 
     const RegisterStorageParam = ({ instanceId, parameter, namespace }) =>
@@ -236,6 +254,8 @@ const CreateMyWorkspaceDomainService = ({
         RegisterContainer,
         MarkAsDecommissioned,
         RegisterStorage,
+        ListStoragesByServiceId,
+        ListStorageParamsByInstanceId,
         RegisterStorageParam,
         UpdateStorageParamStorageId
     }

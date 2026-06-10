@@ -13,6 +13,9 @@ CLI para gerenciamento de serviços e suas instâncias.
 | `provision <arquivo.provision.json>` | Provisiona um novo serviço |
 | `instances <serviceId>` | Lista instâncias de um serviço |
 | `builds <serviceId>` | Mostra histórico de builds de um serviço |
+| `storages <serviceId>` | Lista os storages de um serviço |
+| `storage-params <serviceId>` | Lista os parâmetros de storage de um serviço |
+| `containers <serviceId>` | Lista os containers de um serviço |
 | `decommission <serviceId>` | Remove todas as informações de um serviço parado |
 | `update-provision <serviceId> <arquivo.provision.json>` | Atualiza o provisionamento de um serviço já provisionado (o serviço deve estar parado) |
 | `terminate <serviceId>` | Encerra o provisionamento de um serviço que está em processo de provisionamento |
@@ -49,6 +52,18 @@ my-services instances 12
 my-services builds 12
 ```
 
+### Recursos de um serviço
+```bash
+# Listar os storages de um serviço
+my-services storages 12
+
+# Listar os parâmetros de storage de um serviço
+my-services storage-params 12
+
+# Listar os containers de um serviço
+my-services containers 12
+```
+
 
 ### Atualizar um serviço provisionado
 O serviço precisa estar **parado** antes de atualizar o provisionamento.
@@ -78,3 +93,6 @@ my-services terminate 12
 | `provision` | `provisionFilePath` | string | sim | Caminho do arquivo `.provision.json` |
 | `instances` | `serviceId` | number | sim | ID do serviço |
 | `builds` | `serviceId` | number | sim | ID do serviço |
+| `storages` | `serviceId` | number | sim | ID do serviço |
+| `storage-params` | `serviceId` | number | sim | ID do serviço |
+| `containers` | `serviceId` | number | sim | ID do serviço |

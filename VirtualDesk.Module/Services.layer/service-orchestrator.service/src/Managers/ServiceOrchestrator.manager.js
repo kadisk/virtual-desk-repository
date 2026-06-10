@@ -78,6 +78,7 @@ const ServiceOrchestratorManager = (params) => {
         StopService,
         ListInstances,
         ListStorages,
+        ListStoragesParam,
         ListSockets,
         ListRunningInstances,
         ListContainers,
@@ -150,6 +151,10 @@ const ServiceOrchestratorManager = (params) => {
                     return await MyWorkspaceDomainService.ListActiveInstancesByServiceId(data.serviceId)
                 case RequestTypes.FETCH_IMAGE_BUILD_DATA_LIST:
                     return await MyWorkspaceDomainService.ListImageBuildHistoryByServiceId(data.serviceId)
+                case RequestTypes.FETCH_STORAGE_DATA_LIST:
+                    return await MyWorkspaceDomainService.ListStoragesByServiceId(data.serviceId)
+                case RequestTypes.FETCH_STORAGE_PARAM_DATA_LIST:
+                    return await MyWorkspaceDomainService.ListStorageParamsByInstanceId(data.instanceId)
                 case RequestTypes.FETCH_CONTAINER_DATA:
                     return await await MyWorkspaceDomainService.GetContainerInfoByInstanceId(data.instanceId)
                 case RequestTypes.FETCH_CONTAINER_INSPECTION_DATA:
@@ -428,6 +433,7 @@ const ServiceOrchestratorManager = (params) => {
         ListServices,
         ListInstances,
         ListStorages,
+        ListStorageParams: ListStoragesParam,
         ListSockets,
         ListContainers,
         ListImageBuildHistory,

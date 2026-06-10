@@ -120,6 +120,51 @@
             "parametersToLoad": [ "commandExecutorLib" ]
 		},
 		{
+			"namespace": "ListStorages",
+			"path": "Commands/ListStorages.command",
+			"command": "storages [serviceId]",
+			"description": "Lista todos os storages de um serviço",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ListStorageParams",
+			"path": "Commands/ListStorageParams.command",
+			"command": "storage-params [serviceId]",
+			"description": "Lista todos os parâmetros de storage de um serviço",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ListContainers",
+			"path": "Commands/ListContainers.command",
+			"command": "containers [serviceId]",
+			"description": "Lista todos os containers de um serviço",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
 			"namespace": "DecommissionService",
 			"path": "Commands/DecommissionService.command",
 			"command": "decommission [serviceId]",

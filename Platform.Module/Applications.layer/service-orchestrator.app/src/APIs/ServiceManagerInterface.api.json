@@ -64,6 +64,19 @@
 			]
 		},
 		{
+			"path": "/service/storage-params",
+			"method": "GET",
+			"summary": "ListStorageParams",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/service/sockets",
 			"method": "GET",
 			"summary": "ListSockets",

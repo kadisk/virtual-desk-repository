@@ -7,7 +7,8 @@ const CreateSwapRunningInstance = require("../Helpers/ServiceRuntimeStateManager
 const {
     FETCH_SERVICE_DATA,
     FETCH_INSTANCE_DATA_LIST,
-    FETCH_IMAGE_BUILD_DATA_LIST
+    FETCH_IMAGE_BUILD_DATA_LIST,
+    FETCH_STORAGE_DATA_LIST
 } = RequestTypes
 
 const { 
@@ -90,6 +91,7 @@ const CreateServiceProcessStatusChange = ({ stateManager, RequestData }) =>
                 }
                 break
             case INITIALIZING:
+                RequestData(FETCH_STORAGE_DATA_LIST, { serviceId })
                 RequestData(FETCH_INSTANCE_DATA_LIST, { serviceId })
                 RequestData(FETCH_IMAGE_BUILD_DATA_LIST, { serviceId })
                 break

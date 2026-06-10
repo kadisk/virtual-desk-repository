@@ -71,6 +71,7 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
                         registeredParameters.add(parameter)
 
                         RequestData(RequestTypes.REGISTER_STORAGE_PARAM, {
+                            serviceId: instanceData.serviceId,
                             instanceId,
                             parameter,
                             namespace
@@ -102,9 +103,13 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
         case CREATED:
             break
         case INITIALIZING:
-            RequestData(RequestTypes.FETCH_CONTAINER_DATA, { 
-                serviceId: instanceData.serviceId, 
-                instanceId 
+            RequestData(RequestTypes.FETCH_STORAGE_PARAM_DATA_LIST, {
+                serviceId: instanceData.serviceId,
+                instanceId
+            })
+            RequestData(RequestTypes.FETCH_CONTAINER_DATA, {
+                serviceId: instanceData.serviceId,
+                instanceId
             })
             break
         case RUNNING:
