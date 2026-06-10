@@ -129,6 +129,19 @@
 			]
 		},
 		{
+			"path": "/service/storage-param-list/:serviceId",
+			"method": "WS",
+			"summary": "StorageParamListChange",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/service/socket-list/:serviceId",
 			"method": "WS",
 			"summary": "SocketListChange",

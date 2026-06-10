@@ -15,6 +15,7 @@ const GetColor = (status: string) => {
         case "RUNNING":
             return "green"
 		case "FINISHED":
+        case "READY":
             return "cyan"
         case "FAILURE":
             return "red"

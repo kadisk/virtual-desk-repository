@@ -12,6 +12,7 @@ const GetColorByStatus = (status: string) => {
         case "RUNNING":
             return "green"
 		case "FINISHED":
+		case "READY":
             return "cyan"
         case "FAILURE":
             return "red"
@@ -70,6 +71,7 @@ const ServiceSettingsPanelContainer = ({
 
 	const [ instances, setInstance ]                  = useState([])
 	const [ storages, setStorages ]                   = useState([])
+	const [ storageParams, setStorageParams ]         = useState([])
 	const [ sockets, setSockets ]                     = useState([])
 	const [ containers, setContainers ]               = useState([])
 	const [ imageBuildHistory, setImageBuildHistory ] = useState([])
@@ -85,6 +87,7 @@ const ServiceSettingsPanelContainer = ({
 		fetchServiceData()
 		fetchInstances()
 		fetchStorages()
+		fetchStorageParams()
 		fetchSockets()
 		fetchInstances()
 		fetchContainers()
@@ -124,7 +127,15 @@ const ServiceSettingsPanelContainer = ({
 		onMessage       : (storages) => setStorages(storages),
 		onConnection    : () => {},
 		onDisconnection : () => {},
-		autoConnect     : false    
+		autoConnect     : false
+	})
+
+	const storageParamsListSocketHandler = useWebSocket({
+		socket          : _MyServicesAPI().StorageParamListChange,
+		onMessage       : (storageParams) => setStorageParams(storageParams),
+		onConnection    : () => {},
+		onDisconnection : () => {},
+		autoConnect     : false
 	})
 
 	const socketsListSocketHandler = useWebSocket({
@@ -159,6 +170,9 @@ const ServiceSettingsPanelContainer = ({
 
 			if(!storagesListSocketHandler.isConneted())
 				storagesListSocketHandler.connect({ serviceId: serviceData.serviceId })
+
+			if(!storageParamsListSocketHandler.isConneted())
+				storageParamsListSocketHandler.connect({ serviceId: serviceData.serviceId })
 
 			if(!socketsListSocketHandler.isConneted())
 				socketsListSocketHandler.connect({ serviceId: serviceData.serviceId })
@@ -196,6 +210,13 @@ const ServiceSettingsPanelContainer = ({
 		const api = _MyServicesAPI()
 		const response = await api.ListStorages({ serviceId })
 		setStorages(response.data)
+	}
+
+	const fetchStorageParams = async () => {
+		setStorageParams([])
+		const api = _MyServicesAPI()
+		const response = await api.ListStorageParams({ serviceId })
+		setStorageParams(response.data)
 	}
 
 	const fetchSockets = async () => {
@@ -410,6 +431,54 @@ const ServiceSettingsPanelContainer = ({
 														<td>{item.storageId}</td>
 														<td>{item.namespace}</td>
 														<td>{item.filename}</td>
+													</tr>
+												))
+											)}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="row row-cards mt-0">
+					<div className="col-12">
+						<div className="card">
+							<div className="card-header p-2">
+								<div className="subheader">Storage Params</div>
+							</div>
+							<div className="card-body p-0">
+								<div className="card-table table-responsive table-vcenter">
+									<table className="table">
+										<thead>
+											<tr>
+												<th>Status</th>
+												<th>ID</th>
+												<th>Instance</th>
+												<th>Storage</th>
+												<th>Namespace</th>
+												<th>Parameter</th>
+											</tr>
+										</thead>
+										<tbody>
+											{storageParams.length === 0 ? (
+												<tr>
+													<td colSpan={6} className="text-center">No storage param found.</td>
+												</tr>
+											) : (
+												storageParams.map((item: any) => (
+													<tr>
+														<td>
+															<span className={`status status-${GetColorByStatus(item.status)}`}>
+																<span className={isShowStatusDotAnimated(item.status) ? "status-dot status-dot-animated":""}></span>
+																{item.status}
+															</span>
+														</td>
+														<td>{item.storageParamId}</td>
+														<td>{item.instanceId}</td>
+														<td>{item.storageId}</td>
+														<td>{item.namespace}</td>
+														<td>{item.parameter}</td>
 													</tr>
 												))
 											)}

@@ -50,6 +50,13 @@ const ServiceManagerInterfaceController = (params) => {
             })
     }
 
+    const StorageParamListChange = async (websocket, serviceId) => {
+        servicesOrchestratorService
+            .onChangeStorageParamListData(serviceId, (storageParamList) => {
+                websocket.send(JSON.stringify(storageParamList))
+            })
+    }
+
     const SocketListChange = async (websocket, serviceId) => {
         servicesOrchestratorService
             .onChangeSocketListData(serviceId, (socketList) => {
@@ -86,6 +93,7 @@ const ServiceManagerInterfaceController = (params) => {
         ServicesStatusChange,
         InstanceListChange,
         StorageListChange,
+        StorageParamListChange,
         SocketListChange,
         ContainerListChange,
         ImageBuildHistoryListChange,

@@ -59,6 +59,19 @@
 			]
 		},
 		{
+			"path": "/service/storage-params",
+			"method": "GET",
+			"summary": "ListStorageParams",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/service/sockets",
 			"method": "GET",
 			"summary": "ListSockets",
@@ -106,6 +119,19 @@
 			"path": "/service/storage-list/:serviceId",
 			"method": "WS",
 			"summary": "StorageListChange",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/service/storage-param-list/:serviceId",
+			"method": "WS",
+			"summary": "StorageParamListChange",
 			"parameters": [
 				{
 					"name": "serviceId",

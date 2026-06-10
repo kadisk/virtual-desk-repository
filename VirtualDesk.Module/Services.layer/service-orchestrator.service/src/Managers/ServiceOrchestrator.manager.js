@@ -86,6 +86,7 @@ const ServiceOrchestratorManager = (params) => {
         onChangeContainerListData,
         onChangeInstanceListData,
         onChangeStorageListData,
+        onChangeStorageParamListData,
         onChangeSocketListData,
         onChangeImageBuildHistoryListData
     } = ServiceRuntimeStateManager
@@ -440,6 +441,7 @@ const ServiceOrchestratorManager = (params) => {
         onChangeContainerListData,
         onChangeInstanceListData,
         onChangeStorageListData,
+        onChangeStorageParamListData,
         onChangeSocketListData,
         onChangeImageBuildHistoryListData,
         GetServiceStatus,

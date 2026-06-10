@@ -9,6 +9,7 @@ const GetStatusBadgeClasses = (status: string) => {
         case "RUNNING":
             return "badge bg-green-lt text-green"
         case "FINISHED":
+        case "READY":
             return "badge bg-cyan-lt text-cyan"
         case "FAILURE":
             return "badge bg-red-lt text-red"

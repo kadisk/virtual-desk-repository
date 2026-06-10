@@ -94,6 +94,7 @@ const CreateServiceRuntimeStateManager = () => {
         onChangeContainerListData         : CreateOnChangeStatusTriggerService(stateManager, { group: CONTAINER_STATE_GROUP,           Function: serviceId => ListContainers(serviceId) }),
         onChangeInstanceListData          : CreateOnChangeStatusTriggerService(stateManager, { group: INSTANCE_STATE_GROUP,            Function: serviceId => ListInstances(serviceId) }),
         onChangeStorageListData           : CreateOnChangeStatusTriggerService(stateManager, { group: STORAGE_STATE_GROUP,             Function: serviceId => ListStorages(serviceId) }),
+        onChangeStorageParamListData      : CreateOnChangeStatusTriggerService(stateManager, { group: STORAGE_PARAM_STATE_GROUP,       Function: serviceId => ListStoragesParam(serviceId) }),
         onChangeSocketListData            : CreateOnChangeStatusTriggerService(stateManager, { group: SOCKET_STATE_GROUP,              Function: serviceId => ListSockets(serviceId) }),
         onChangeServiceStatus             : (f) => { stateManager.onChangeStatus(SERVICE_STATE_GROUP, ({ key: serviceId }) => f({serviceId, status: GetServiceStatus(serviceId)})) }
     }
