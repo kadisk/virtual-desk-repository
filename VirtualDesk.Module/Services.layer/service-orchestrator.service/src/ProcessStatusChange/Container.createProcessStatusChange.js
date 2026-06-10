@@ -18,16 +18,21 @@ const {
     STOPPING,
     STOPPED,
     RUNNING,
+    WAITING,
     TERMINATED,
     HYDRATE_DATA,
     HYDRATING_DATA,
     DATA_HYDRATED
 } = StatusTypes
 
-const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) => 
+const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
+
+const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
     (containerId) => {
 
         const { GetState, ChangeStatus } = stateManager
+
+        const ResolveInstanceStorageMounts = CreateResolveInstanceStorageMounts(stateManager)
 
         const { status, data:containerData } = GetState(CONTAINER_STATE_GROUP, containerId)
         const { data: imageData } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, containerData.buildId)
@@ -68,16 +73,21 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
                 ChangeStatus(CONTAINER_STATE_GROUP, containerId, HYDRATE_DATA)
                 break
             case CREATING:
-                RequestData(RequestTypes.CREATE_NEW_CONTAINER, { 
+                const mounts = ResolveInstanceStorageMounts(containerData.instanceId)
+                    .filter(({ volumeName }) => volumeName)
+                    .map(({ volumeName, volumeTarget }) => ({ volumeName, target: volumeTarget }))
+
+                RequestData(RequestTypes.CREATE_NEW_CONTAINER, {
                     containerId,
                     containerName : containerData.containerName,
                     imageName   : imageData.tag,
                     networkmode : instanceData.networkmode,
-                    ports       : instanceData.ports
+                    ports       : instanceData.ports,
+                    mounts
                 })
                 break
             case CREATED:
-                if(instanceStatus === CREATING){
+                if(instanceStatus === WAITING || instanceStatus === CREATING){
                     RequestData(RequestTypes.START_CONTAINER, {
                         containerHashId: containerData.inspectionData.Id
                     })

@@ -7,18 +7,28 @@ const {
     CREATE,
     CREATED,
     CREATING,
+    UPDATED,
+    FAILURE
 } = StatusTypes
 
-const { 
-    STORAGE_STATE_GROUP
+const {
+    SERVICE_STATE_GROUP,
+    STORAGE_STATE_GROUP,
+    STORAGE_PARAM_STATE_GROUP
  } = ItemGroupTypes
 
 const CreateStorageProcessStatusChange = ({ stateManager, RequestData }) => 
     (storageId) => {
 
-        const { GetState, ChangeStatus } = stateManager
+        const { GetState, ChangeStatus, FilterStatesByPropertyData } = stateManager
 
         const { status, data: storageData } = GetState(STORAGE_STATE_GROUP, storageId)
+
+        const _MarkLinkedStorageParamsReady = () => {
+            FilterStatesByPropertyData(STORAGE_PARAM_STATE_GROUP, "storageId", storageId)
+                .filter(storageParam => storageParam.status === UPDATED)
+                .forEach(storageParam => ChangeStatus(STORAGE_PARAM_STATE_GROUP, storageParam.key, READY))
+        }
 
         console.log(`STORAGE [${storageId}] STATUS CHANGE ${status.description}`)
         switch (status) {
@@ -37,6 +47,10 @@ const CreateStorageProcessStatusChange = ({ stateManager, RequestData }) =>
                 ChangeStatus(STORAGE_STATE_GROUP, storageId, READY)
                 break
             case READY:
+                _MarkLinkedStorageParamsReady()
+                break
+            case FAILURE:
+                ChangeStatus(SERVICE_STATE_GROUP, storageData.serviceId, FAILURE)
                 break
             default:
                 console.warn(`Storage ${storageId} has an unknown status: ${status.description}`)

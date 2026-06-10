@@ -114,7 +114,8 @@ const ContainerManager = (params) => {
         imageName,
         containerName,
         ports = [],
-        networkmode
+        networkmode,
+        mounts = []
     }) => {
 
         const portBindings = {}
@@ -130,13 +131,22 @@ const ContainerManager = (params) => {
             ]
         })
 
+        const volumeMounts = mounts
+            .filter(({ volumeName, target }) => volumeName && target)
+            .map(({ volumeName, target }) => ({
+                Type   : "volume",
+                Source : volumeName,
+                Target : target
+            }))
+
         const container = await docker.createContainer({
             Image: imageName,
             name: containerName,
             ExposedPorts: exposedPorts,
             HostConfig: {
                 PortBindings: portBindings,
-                NetworkMode: networkmode
+                NetworkMode: networkmode,
+                Mounts: volumeMounts
             }
         })
 

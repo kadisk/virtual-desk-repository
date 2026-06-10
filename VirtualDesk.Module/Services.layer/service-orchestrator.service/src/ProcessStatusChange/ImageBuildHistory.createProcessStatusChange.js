@@ -4,6 +4,7 @@ const ItemGroupTypes = require("../Types/ItemGroup.types")
 const StatusTypes = require("../Types/Status.types")
 
 const CreateFilterInstancesState = require("../Helpers/ServiceRuntimeStateManager.utils/FilterInstancesState.create")
+const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
 
 const { 
     SERVICE_STATE_GROUP,
@@ -24,6 +25,7 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
         const { GetState, ChangeStatus, SetDataProperty} = stateManager
 
         const ListInstancesState = CreateFilterInstancesState(stateManager)
+        const ResolveInstanceStorageMounts = CreateResolveInstanceStorageMounts(stateManager)
 
         const { status, data: imageData } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
         const { status: statusService, data:serviceData }  = GetState(SERVICE_STATE_GROUP, imageData.serviceId)
@@ -33,24 +35,29 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
 
         switch (status) {
             case CREATING:
+                const storageVolumeTargets = ResolveInstanceStorageMounts(imageData.instanceId)
+                    .map(({ volumeTarget }) => volumeTarget)
+
                 RequestData(RequestTypes.BUILD_NEW_IMAGE, {
-                    buildId,             
+                    buildId,
                     imageTagName              : imageData.tag,
                     serviceName               : serviceData.serviceName,
                     originRepositoryCodePath  : serviceData.originRepositoryCodePath,
                     originRepositoryNamespace : serviceData.originRepositoryNamespace,
                     originPackagePath         : serviceData.originPackagePath,
-                    startupParams             : instanceData.startupParams
+                    startupParams             : instanceData.startupParams,
+                    storageVolumeTargets
                 })
                 break
             case WAITING:
                 break
             case FINISHED:
-                SetDataProperty(INSTANCE_STATE_GROUP, imageData.instanceId, "containerDataParams", { 
+                SetDataProperty(INSTANCE_STATE_GROUP, imageData.instanceId, "containerDataParams", {
                     containerName : `container_${serviceData.serviceName}-${buildId}`,
                     buildId,
                     instanceId  : imageData.instanceId,
                 })
+                ChangeStatus(INSTANCE_STATE_GROUP, imageData.instanceId, WAITING)
                 break
             default:
         }

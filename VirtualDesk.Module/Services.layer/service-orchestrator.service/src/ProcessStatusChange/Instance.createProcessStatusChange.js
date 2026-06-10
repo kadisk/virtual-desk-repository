@@ -4,8 +4,10 @@ const ItemGroupTypes = require("../Types/ItemGroup.types")
 const StatusTypes = require("../Types/Status.types")
 
 const CreateListRunningInstances = require("../Helpers/ServiceRuntimeStateManager.utils/ListRunningInstances.create")
+const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
+const CreateAdvanceInstanceWhenStorageReady = require("../Helpers/ServiceRuntimeStateManager.utils/AdvanceInstanceWhenStorageReady.create")
 
-const { 
+const {
     SERVICE_STATE_GROUP,
     INSTANCE_STATE_GROUP,
     STORAGE_PARAM_STATE_GROUP
@@ -14,6 +16,7 @@ const {
 const {
     INITIATE,
     INITIALIZING,
+    CREATE,
     WAITING,
     CREATING,
     CREATED,
@@ -26,16 +29,20 @@ const {
     FAILURE
 } = StatusTypes
 
+
 const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (instanceId) => {
 
-    const { 
-        GetState, 
-        ChangeStatus, 
+    const {
+        GetState,
+        ChangeStatus,
         TakeDataProperty,
+        SetDataProperty,
         HasExecutedStatusSequence
     } = stateManager
 
-    const ListRunningInstances = CreateListRunningInstances(stateManager)
+    const ListRunningInstances           = CreateListRunningInstances(stateManager)
+    const ResolveInstanceStorageMounts   = CreateResolveInstanceStorageMounts(stateManager)
+    const AdvanceInstanceWhenStorageReady = CreateAdvanceInstanceWhenStorageReady(stateManager)
 
     const { status, data: instanceData } = GetState(INSTANCE_STATE_GROUP, instanceId)
     const { status:serviceStatus, data: serviceData } = GetState(SERVICE_STATE_GROUP, instanceData.serviceId)
@@ -51,34 +58,46 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
         case CREATE:
             if(!instanceData.storageParams){
                 ChangeStatus(INSTANCE_STATE_GROUP, instanceId, CREATING)
-                RequestData(RequestTypes.REGISTER_BUILD_NEW_IMAGE, {
-                    serviceId: instanceData.serviceId,
-                    instanceId,
-                    serviceName : serviceData.serviceName,
-                    repositoryNamespace : serviceData.originRepositoryNamespace
-                })
-            } else if(instanceData.storageParams) {
+            } else {
                 ChangeStatus(INSTANCE_STATE_GROUP, instanceId, WAITING)
                 const registeredParameters = new Set()
 
-                Object.entries(storageDataParams.storageParams)
-                    .forEach(([parameter, { namespace, filename }]) => {
+                Object.entries(instanceData.storageParams)
+                    .forEach(([parameter, { namespace }]) => {
                         if (registeredParameters.has(parameter)) {
                             return
                         }
 
                         registeredParameters.add(parameter)
 
-                        RequestData(RequestTypes.REGISTER_STORAGE_PARAM, { 
-                            instanceId, 
-                            parameter, 
-                            namespace 
+                        RequestData(RequestTypes.REGISTER_STORAGE_PARAM, {
+                            instanceId,
+                            parameter,
+                            namespace
                         })
                     })
             }
             break
         case CREATING:
-            
+            const storageMounts = ResolveInstanceStorageMounts(instanceId)
+
+            if (storageMounts.length > 0) {
+                const storageStartupParams = Object.fromEntries(
+                    storageMounts.map(({ parameter, mountPath }) => [parameter, mountPath])
+                )
+
+                SetDataProperty(INSTANCE_STATE_GROUP, instanceId, "startupParams", {
+                    ...instanceData.startupParams,
+                    ...storageStartupParams
+                })
+            }
+
+            RequestData(RequestTypes.REGISTER_BUILD_NEW_IMAGE, {
+                serviceId: instanceData.serviceId,
+                instanceId,
+                serviceName : serviceData.serviceName,
+                repositoryNamespace : serviceData.originRepositoryNamespace
+            })
             break
         case CREATED:
             break
@@ -105,8 +124,11 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
                 if(containerDataParams) RequestData(RequestTypes.REGISTER_NEW_CONTAINER, containerDataParams)
                 else ChangeStatus(INSTANCE_STATE_GROUP, instanceId, FAILURE)
             } else if(HasExecutedStatusSequence(INSTANCE_STATE_GROUP, instanceId, [ WAITING, CREATE ])) {
-                //TODO precisa verificar de todos os storages estão prontos
+                AdvanceInstanceWhenStorageReady(instanceId)
             }
+            break
+        case FAILURE:
+            ChangeStatus(SERVICE_STATE_GROUP, instanceData.serviceId, FAILURE)
             break
         default:
             console.warn(`Instance ${instanceId} has an unknown status: ${status.description}`)

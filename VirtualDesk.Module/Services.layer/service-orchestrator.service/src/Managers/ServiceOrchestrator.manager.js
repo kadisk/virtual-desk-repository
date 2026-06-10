@@ -185,12 +185,13 @@ const ServiceOrchestratorManager = (params) => {
                     return storageData
                 case RequestTypes.BUILD_NEW_IMAGE:
                     const buildData = await BuildImage({
-                        buildId             : data.buildId,
-                        imageTagName        : data.imageTagName,
-                        repositoryCodePath  : data.originRepositoryCodePath,
-                        repositoryNamespace : data.originRepositoryNamespace,
-                        packagePath         : data.originPackagePath,
-                        startupParams       : data.startupParams
+                        buildId              : data.buildId,
+                        imageTagName         : data.imageTagName,
+                        repositoryCodePath   : data.originRepositoryCodePath,
+                        repositoryNamespace  : data.originRepositoryNamespace,
+                        packagePath          : data.originPackagePath,
+                        startupParams        : data.startupParams,
+                        storageVolumeTargets : data.storageVolumeTargets
                     })
                     return buildData
                 case RequestTypes.REGISTER_BUILD_NEW_IMAGE:
@@ -205,7 +206,8 @@ const ServiceOrchestratorManager = (params) => {
                         containerName : data.containerName,
                         imageName     : data.imageName,
                         networkmode   : data.networkmode,
-                        ports         : data.ports
+                        ports         : data.ports,
+                        mounts        : data.mounts
                     })
                 case RequestTypes.REGISTER_NEW_CONTAINER:
                     return await MyWorkspaceDomainService

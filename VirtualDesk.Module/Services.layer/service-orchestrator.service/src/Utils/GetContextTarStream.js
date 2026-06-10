@@ -3,17 +3,32 @@ const { join } = require("path")
 const tarStream = require('tar-stream')
 const fs = require('fs')
 
-const GetDockerfileContent = () => fs.readFileSync(join(__dirname, "Dockerfile"), {encoding:'utf8'})
+const CONTAINER_USERNAME = "myecosystem"
+
+const GetDockerfileContent = (storageVolumeTargets = []) => {
+    const dockerfileContent = fs.readFileSync(join(__dirname, "Dockerfile"), {encoding:'utf8'})
+
+    if (storageVolumeTargets.length === 0) {
+        return dockerfileContent
+    }
+
+    const targets = storageVolumeTargets.join(" ")
+    const prepareVolumesInstruction =
+        `RUN sudo mkdir -p ${targets} \\\n    && sudo chown -R ${CONTAINER_USERNAME}:${CONTAINER_USERNAME} ${targets}\n\n`
+
+    return dockerfileContent.replace(/\nCMD /, `\n${prepareVolumesInstruction}CMD `)
+}
 
 const GetContextTarStream = ({
         repositoryPathForCopy,
         packagePathForCopy,
-        startupParams
+        startupParams,
+        storageVolumeTargets = []
     }) => {
         const contextTarStream = tarStream.pack()
-        
 
-        contextTarStream.entry({ name: 'Dockerfile' }, GetDockerfileContent())
+
+        contextTarStream.entry({ name: 'Dockerfile' }, GetDockerfileContent(storageVolumeTargets))
 
         if (startupParams) {
             contextTarStream.entry({ 

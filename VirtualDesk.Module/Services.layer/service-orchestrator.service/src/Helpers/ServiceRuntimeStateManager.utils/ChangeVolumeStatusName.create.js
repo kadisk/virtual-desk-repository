@@ -10,8 +10,7 @@ const CreateChangeVolumeStatusName = (stateManager) => (volumeData, newStatus) =
     const storageId = FindKeyByPropertyData(STORAGE_STATE_GROUP, "volumeData", volumeData)
     
     if(storageId)
-        ChangeStatus(STORAGE_STATE_GROUP, containerId, newStatus)
-    else console.log(`not found`)//TODO melhor mensagem de erro
+        ChangeStatus(STORAGE_STATE_GROUP, storageId, newStatus)
     
 }
 

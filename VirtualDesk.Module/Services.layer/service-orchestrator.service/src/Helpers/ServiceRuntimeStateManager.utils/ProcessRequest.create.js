@@ -1,6 +1,8 @@
 const {
+    CREATE,
     INITIATE,
     CREATING,
+    CREATED,
     FAILURE,
     FINISHED,
     DECOMMISSIONED,
@@ -116,7 +118,7 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
         case RequestTypes.BUILD_NEW_IMAGE:
             const imageBuildData = await getData(requestType, requestData)
             UpdateData(IMAGE_BUILD_HISTORY_STATE_GROUP, requestData.buildId, { hashId: imageBuildData.hashId })
-            ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, imageBuildData.instanceId, FINISHED)
+            ChangeStatus(IMAGE_BUILD_HISTORY_STATE_GROUP, requestData.buildId, FINISHED)
             break
 
         case RequestTypes.REGISTER_BUILD_NEW_IMAGE:
@@ -147,11 +149,12 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
             }, CREATE)
             break
         case RequestTypes.CREATE_NEW_VOLUME:
-            const volumeData = await getData(requestType, { 
+            const volumeData = await getData(requestType, {
                 volumeName:requestData.volumeName,
                 labels: requestData.labels
             })
             UpdateData(STORAGE_STATE_GROUP, requestData.storageId, { volumeData } )
+            ChangeStatus(STORAGE_STATE_GROUP, requestData.storageId, CREATED)
             break
         case RequestTypes.REGISTER_STORAGE_PARAM:
             const storageParamData = await getData(requestType, { 

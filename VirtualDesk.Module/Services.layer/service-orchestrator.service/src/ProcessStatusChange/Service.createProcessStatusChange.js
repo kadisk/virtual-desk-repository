@@ -24,10 +24,11 @@ const {
     RESTARTING,
     HYDRATE_DATA,
     HYDRATING_DATA,
-    DATA_HYDRATED
+    DATA_HYDRATED,
+    FAILURE
 } = StatusTypes
 
-const CreateServiceProcessStatusChange = ({ stateManager, RequestData }) => 
+const CreateServiceProcessStatusChange = ({ stateManager, RequestData }) =>
     (serviceId) => {
 
         const { 
@@ -98,7 +99,8 @@ const CreateServiceProcessStatusChange = ({ stateManager, RequestData }) =>
                 SwapRunningInstance(serviceId, _TakeInstanceParams())
                 break
             case RESTARTING:
-            case DATA_HYDRATED:
+                break
+            case FAILURE:
                 break
             default:
                 console.warn(`Service ${serviceId} has an unknown status: ${GetState(SERVICE_STATE_GROUP, serviceId).status.description}`)

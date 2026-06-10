@@ -19,7 +19,8 @@ const CreateServiceHandler = ({
         containerName,
         imageName,
         ports = [],
-        networkmode
+        networkmode,
+        mounts = []
     }) => {
 
         const _RemapPort = (ports) => ports.map(({ servicePort, hostPort }) => ({ containerPort:servicePort, hostPort }))
@@ -28,7 +29,8 @@ const CreateServiceHandler = ({
             imageName,
             containerName,
             ports: _RemapPort(ports),
-            networkmode
+            networkmode,
+            mounts
         })
 
         return containerInfo
@@ -115,7 +117,8 @@ const CreateServiceHandler = ({
         repositoryCodePath,
         repositoryNamespace,
         packagePath,
-        startupParams
+        startupParams,
+        storageVolumeTargets = []
     }) => {
 
         const buildargs = {
@@ -127,7 +130,8 @@ const CreateServiceHandler = ({
         const contextTarStream = GetContextTarStream({
             repositoryPathForCopy: repositoryCodePath,
             packagePathForCopy: packageAbsolutPath,
-            startupParams
+            startupParams,
+            storageVolumeTargets
         })
         
         const _handleData = chunk => {
