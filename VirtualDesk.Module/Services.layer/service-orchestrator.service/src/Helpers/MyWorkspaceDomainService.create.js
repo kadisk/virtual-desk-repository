@@ -5,6 +5,7 @@ const CreateMyWorkspaceDomainService = ({
     ContainerModel,
     ContainerEventLogModel,
     SocketModel,
+    SocketParamModel,
     StorageModel,
     StorageParamModel
 }) => {
@@ -234,6 +235,44 @@ const CreateMyWorkspaceDomainService = ({
     const UpdateStorageParamStorageId = ({ storageParamId, storageId }) =>
         StorageParamModel.update({ storageId }, { where: { id: storageParamId } })
 
+    const RegisterSocket = ({ instanceId, namespace, socketPath }) =>
+        SocketModel.create({ instanceId, namespace, socketPath })
+
+    const ListSocketsByServiceId = async (serviceId) => {
+        const items = await SocketModel.findAll({
+            include: [{
+                model: InstanceModel,
+                where: { serviceId },
+                attributes: []
+            }]
+        })
+        return items.map(item => item.get({ plain: true }))
+    }
+
+    const ListSocketsByInstanceId = async (instanceId) => {
+        const items = await SocketModel.findAll({
+            where: {
+                instanceId
+            }
+        })
+        return items.map(item => item.get({ plain: true }))
+    }
+
+    const ListSocketParamsByInstanceId = async (instanceId) => {
+        const items = await SocketParamModel.findAll({
+            where: {
+                instanceId
+            }
+        })
+        return items.map(item => item.get({ plain: true }))
+    }
+
+    const RegisterSocketParam = ({ instanceId, parameter, namespace }) =>
+        SocketParamModel.create({ instanceId, parameter, namespace })
+
+    const UpdateSocketParamSocketId = ({ socketParamId, socketId }) =>
+        SocketParamModel.update({ socketId }, { where: { id: socketParamId } })
+
     return {
         RegisterServiceProvisioning,
         UpdateServiceProvisioning,
@@ -257,7 +296,13 @@ const CreateMyWorkspaceDomainService = ({
         ListStoragesByServiceId,
         ListStorageParamsByInstanceId,
         RegisterStorageParam,
-        UpdateStorageParamStorageId
+        UpdateStorageParamStorageId,
+        RegisterSocket,
+        ListSocketsByServiceId,
+        ListSocketsByInstanceId,
+        ListSocketParamsByInstanceId,
+        RegisterSocketParam,
+        UpdateSocketParamSocketId
     }
 }
 

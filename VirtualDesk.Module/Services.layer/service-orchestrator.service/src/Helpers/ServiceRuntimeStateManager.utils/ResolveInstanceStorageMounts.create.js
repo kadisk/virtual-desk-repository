@@ -3,6 +3,8 @@ const {
     STORAGE_PARAM_STATE_GROUP
 } = require("../../Types/ItemGroup.types")
 
+const NormalizeResourceParam = require("../../Utils/NormalizeResourceParam")
+
 const VOLUME_MOUNT_BASE_PATH = "/volume"
 
 const _BuildVolumeTarget = (namespace) => `${VOLUME_MOUNT_BASE_PATH}/${namespace}`
@@ -24,7 +26,8 @@ const CreateResolveInstanceStorageMounts = (stateManager) => (instanceId) => {
     const storageParamStates = FilterStatesByPropertyData(STORAGE_PARAM_STATE_GROUP, "instanceId", instanceId)
 
     return Object.entries(storageParams)
-        .map(([parameter, { namespace, filename }]) => {
+        .map(([parameter, value]) => {
+            const { namespace, filename } = NormalizeResourceParam(parameter, value)
             const storageParamState = storageParamStates.find(({ data }) => data.parameter === parameter)
             const storageId = storageParamState?.data?.storageId
             return {

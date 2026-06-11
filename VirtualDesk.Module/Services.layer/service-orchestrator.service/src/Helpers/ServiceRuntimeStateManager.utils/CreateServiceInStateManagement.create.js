@@ -12,9 +12,9 @@ const CreateCreateServiceInStateManagement = ({ stateManager }) =>
         
         AddNewState(SERVICE_STATE_GROUP, serviceId)
 
-        const { startupParams, storageParams, ports, networkmode } = params
+        const { startupParams, storageParams, socketParams, ports, networkmode } = params
 
-        SetDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams", { serviceId, startupParams, storageParams, ports, networkmode })
+        SetDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams", { serviceId, startupParams, storageParams, socketParams, ports, networkmode })
         SetDataProperty(SERVICE_STATE_GROUP, serviceId, "storageDataParams", { serviceId, storageParams })
 
         ChangeStatus(SERVICE_STATE_GROUP, serviceId, CREATE)

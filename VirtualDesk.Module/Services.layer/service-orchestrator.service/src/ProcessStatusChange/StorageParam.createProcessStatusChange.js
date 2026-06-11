@@ -20,12 +20,11 @@ const CreateAdvanceInstanceWhenStorageReady = require("../Helpers/ServiceRuntime
 const CreateStorageParamProcessStatusChange = ({ stateManager, RequestData }) =>
     (storageParamId) => {
 
-        const { GetState, ChangeStatus, FindKeyByPropertiesData, SetDataProperty } = stateManager
+        const { GetState, ChangeStatus, FindKeyByPropertyData, SetDataProperty } = stateManager
 
         const AdvanceInstanceWhenStorageReady = CreateAdvanceInstanceWhenStorageReady(stateManager)
 
         const { status, data: storageParamData } = GetState(STORAGE_PARAM_STATE_GROUP, storageParamId)
-        const { data: instanceData } = GetState(INSTANCE_STATE_GROUP, storageParamData.instanceId)
 
         const _MarkReadyIfStorageReady = (storageId) => {
             const storageState = GetState(STORAGE_STATE_GROUP, storageId)
@@ -42,10 +41,9 @@ const CreateStorageParamProcessStatusChange = ({ stateManager, RequestData }) =>
         console.log(`STORAGE_PARAM [${storageParamId}] STATUS CHANGE ${status.description}`)
         switch (status) {
             case CREATE:
-                const storageId = FindKeyByPropertiesData(STORAGE_STATE_GROUP, [
-                    { property: "namespace", value: storageParamData.namespace },
-                    { property: "serviceId", value: instanceData.serviceId }
-                ])
+                // Busca o Storage owner pelo namespace globalmente (qualquer serviço). Assim um
+                // não-owner pode referenciar um Storage criado por um owner de outro serviço.
+                const storageId = FindKeyByPropertyData(STORAGE_STATE_GROUP, "namespace", storageParamData.namespace)
 
                 if(storageId){
                     SetDataProperty(STORAGE_PARAM_STATE_GROUP, storageParamId, "storageId", storageId)

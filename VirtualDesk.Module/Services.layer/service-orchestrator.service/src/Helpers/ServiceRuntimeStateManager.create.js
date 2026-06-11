@@ -8,6 +8,7 @@ const {
     STORAGE_STATE_GROUP,
     STORAGE_PARAM_STATE_GROUP,
     SOCKET_STATE_GROUP,
+    SOCKET_PARAM_STATE_GROUP,
     CONTAINER_STATE_GROUP,
     IMAGE_BUILD_HISTORY_STATE_GROUP
 } = require("../Types/ItemGroup.types")
@@ -19,6 +20,7 @@ const CreateImageBuildHistoryProcessStatusChange = require("../ProcessStatusChan
 const CreateStorageProcessStatusChange           = require("../ProcessStatusChange/Storage.createProcessStatusChange")
 const CreateStorageParamProcessStatusChange      = require("../ProcessStatusChange/StorageParam.createProcessStatusChange")
 const CreateSocketProcessStatusChange            = require("../ProcessStatusChange/Socket.createProcessStatusChange")
+const CreateSocketParamProcessStatusChange       = require("../ProcessStatusChange/SocketParam.createProcessStatusChange")
 
 const CreateListRunningInstances           = require("./ServiceRuntimeStateManager.utils/ListRunningInstances.create")
 const CreateOnChangeStatusTriggerService   = require("./ServiceRuntimeStateManager.utils/OnChangeStatusTriggerService.create")
@@ -35,6 +37,7 @@ const CreateListInstances                  = require("./ServiceRuntimeStateManag
 const CreateListStorages                   = require("./ServiceRuntimeStateManager.utils/ListCreators/ListStorages.create")
 const CreateListStoragesParam              = require("./ServiceRuntimeStateManager.utils/ListCreators/ListStoragesParam.create")
 const CreateListSockets                    = require("./ServiceRuntimeStateManager.utils/ListCreators/ListSockets.create")
+const CreateListSocketsParam               = require("./ServiceRuntimeStateManager.utils/ListCreators/ListSocketsParam.create")
 const CreateListContainers                 = require("./ServiceRuntimeStateManager.utils/ListCreators/ListContainers.create")
 const CreateListImageBuildHistory          = require("./ServiceRuntimeStateManager.utils/ListCreators/ListImageBuildHistory.create")
 const CreateGetServiceStatus               = require("./ServiceRuntimeStateManager.utils/GetServiceStatus.create")
@@ -57,11 +60,13 @@ const CreateServiceRuntimeStateManager = () => {
     stateManager.onChangeStatus(STORAGE_STATE_GROUP,             ({ key: storageId })      => CreateStorageProcessStatusChange({ stateManager, RequestData })(storageId))
     stateManager.onChangeStatus(STORAGE_PARAM_STATE_GROUP,       ({ key: storageParamId }) => CreateStorageParamProcessStatusChange({ stateManager, RequestData })(storageParamId))
     stateManager.onChangeStatus(SOCKET_STATE_GROUP,              ({ key: socketId })       => CreateSocketProcessStatusChange({ stateManager, RequestData })(socketId))
+    stateManager.onChangeStatus(SOCKET_PARAM_STATE_GROUP,        ({ key: socketParamId })  => CreateSocketParamProcessStatusChange({ stateManager, RequestData })(socketParamId))
 
     const ListInstances         = CreateListInstances(stateManager)
     const ListStorages          = CreateListStorages(stateManager)
     const ListStoragesParam     = CreateListStoragesParam(stateManager)
     const ListSockets           = CreateListSockets(stateManager)
+    const ListSocketsParam      = CreateListSocketsParam(stateManager)
     const ListContainers        = CreateListContainers(stateManager)
     const ListImageBuildHistory = CreateListImageBuildHistory(stateManager)
     const GetServiceStatus      = CreateGetServiceStatus(stateManager)
@@ -75,6 +80,7 @@ const CreateServiceRuntimeStateManager = () => {
         ListStorages,
         ListStoragesParam,
         ListSockets,
+        ListSocketsParam,
         ListContainers,
         ListImageBuildHistory,
         GetServiceStatus,
@@ -96,6 +102,7 @@ const CreateServiceRuntimeStateManager = () => {
         onChangeStorageListData           : CreateOnChangeStatusTriggerService(stateManager, { group: STORAGE_STATE_GROUP,             Function: serviceId => ListStorages(serviceId) }),
         onChangeStorageParamListData      : CreateOnChangeStatusTriggerService(stateManager, { group: STORAGE_PARAM_STATE_GROUP,       Function: serviceId => ListStoragesParam(serviceId) }),
         onChangeSocketListData            : CreateOnChangeStatusTriggerService(stateManager, { group: SOCKET_STATE_GROUP,              Function: serviceId => ListSockets(serviceId) }),
+        onChangeSocketParamListData       : CreateOnChangeStatusTriggerService(stateManager, { group: SOCKET_PARAM_STATE_GROUP,        Function: serviceId => ListSocketsParam(serviceId) }),
         onChangeServiceStatus             : (f) => { stateManager.onChangeStatus(SERVICE_STATE_GROUP, ({ key: serviceId }) => f({serviceId, status: GetServiceStatus(serviceId)})) }
     }
 }

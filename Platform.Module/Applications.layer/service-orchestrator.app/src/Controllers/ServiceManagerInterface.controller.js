@@ -14,6 +14,7 @@ const ServiceManagerInterfaceController = (params) => {
         ListStorages,
         ListStorageParams,
         ListSockets,
+        ListSocketParams,
         ListContainers,
         GetServiceStatus,
         StartService,
@@ -64,6 +65,13 @@ const ServiceManagerInterfaceController = (params) => {
             })
     }
 
+    const SocketParamListChange = async (websocket, serviceId) => {
+        servicesOrchestratorService
+            .onChangeSocketParamListData(serviceId, (socketParamList) => {
+                websocket.send(JSON.stringify(socketParamList))
+            })
+    }
+
     const ContainerListChange = async (websocket, serviceId) => {
         servicesOrchestratorService
             .onChangeContainerListData(serviceId, (containerList) => {
@@ -89,12 +97,14 @@ const ServiceManagerInterfaceController = (params) => {
         ListStorages,
         ListStorageParams,
         ListSockets,
+        ListSocketParams,
         ListContainers,
         ServicesStatusChange,
         InstanceListChange,
         StorageListChange,
         StorageParamListChange,
         SocketListChange,
+        SocketParamListChange,
         ContainerListChange,
         ImageBuildHistoryListChange,
         GetServiceStatus,

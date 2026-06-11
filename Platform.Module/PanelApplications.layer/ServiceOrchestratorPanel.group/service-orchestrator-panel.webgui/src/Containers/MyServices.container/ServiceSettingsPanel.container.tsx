@@ -73,6 +73,7 @@ const ServiceSettingsPanelContainer = ({
 	const [ storages, setStorages ]                   = useState([])
 	const [ storageParams, setStorageParams ]         = useState([])
 	const [ sockets, setSockets ]                     = useState([])
+	const [ socketParams, setSocketParams ]           = useState([])
 	const [ containers, setContainers ]               = useState([])
 	const [ imageBuildHistory, setImageBuildHistory ] = useState([])
 
@@ -89,6 +90,7 @@ const ServiceSettingsPanelContainer = ({
 		fetchStorages()
 		fetchStorageParams()
 		fetchSockets()
+		fetchSocketParams()
 		fetchInstances()
 		fetchContainers()
 		fetchServiceStatus()
@@ -143,7 +145,15 @@ const ServiceSettingsPanelContainer = ({
 		onMessage       : (sockets) => setSockets(sockets),
 		onConnection    : () => {},
 		onDisconnection : () => {},
-		autoConnect     : false    
+		autoConnect     : false
+	})
+
+	const socketParamsListSocketHandler = useWebSocket({
+		socket          : _MyServicesAPI().SocketParamListChange,
+		onMessage       : (socketParams) => setSocketParams(socketParams),
+		onConnection    : () => {},
+		onDisconnection : () => {},
+		autoConnect     : false
 	})
 
 	const containerListSocketHandler = useWebSocket({
@@ -176,6 +186,9 @@ const ServiceSettingsPanelContainer = ({
 
 			if(!socketsListSocketHandler.isConneted())
 				socketsListSocketHandler.connect({ serviceId: serviceData.serviceId })
+
+			if(!socketParamsListSocketHandler.isConneted())
+				socketParamsListSocketHandler.connect({ serviceId: serviceData.serviceId })
 
 			if(!containerListSocketHandler.isConneted())
 				containerListSocketHandler.connect({ serviceId: serviceData.serviceId })
@@ -224,6 +237,13 @@ const ServiceSettingsPanelContainer = ({
 		const api = _MyServicesAPI()
 		const response = await api.ListSockets({ serviceId })
 		setSockets(response.data)
+	}
+
+	const fetchSocketParams = async () => {
+		setSocketParams([])
+		const api = _MyServicesAPI()
+		const response = await api.ListSocketParams({ serviceId })
+		setSocketParams(response.data)
 	}
 
 	const fetchContainers = async () => {
@@ -366,8 +386,9 @@ const ServiceSettingsPanelContainer = ({
 											<tr>
 												<th>Status</th>
 												<th>ID</th>
+												<th>Instance</th>
 												<th>Namespace</th>
-												<th>Owner</th>
+												<th>Socket Path</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -385,8 +406,57 @@ const ServiceSettingsPanelContainer = ({
 															</span>
 														</td>
 														<td>{item.socketId}</td>
+														<td>{item.instanceId}</td>
 														<td>{item.namespace}</td>
-														<td>{item.owner}</td>
+														<td>{item.socketPath}</td>
+													</tr>
+												))
+											)}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="row row-cards mt-0">
+					<div className="col-12">
+						<div className="card">
+							<div className="card-header p-2">
+								<div className="subheader">Socket Params</div>
+							</div>
+							<div className="card-body p-0">
+								<div className="card-table table-responsive table-vcenter">
+									<table className="table">
+										<thead>
+											<tr>
+												<th>Status</th>
+												<th>ID</th>
+												<th>Instance</th>
+												<th>Socket</th>
+												<th>Namespace</th>
+												<th>Parameter</th>
+											</tr>
+										</thead>
+										<tbody>
+											{socketParams.length === 0 ? (
+												<tr>
+													<td colSpan={6} className="text-center">No socket param found.</td>
+												</tr>
+											) : (
+												socketParams.map((item: any) => (
+													<tr>
+														<td>
+															<span className={`status status-${GetColorByStatus(item.status)}`}>
+																<span className={isShowStatusDotAnimated(item.status) ? "status-dot status-dot-animated":""}></span>
+																{item.status}
+															</span>
+														</td>
+														<td>{item.socketParamId}</td>
+														<td>{item.instanceId}</td>
+														<td>{item.socketId}</td>
+														<td>{item.namespace}</td>
+														<td>{item.parameter}</td>
 													</tr>
 												))
 											)}

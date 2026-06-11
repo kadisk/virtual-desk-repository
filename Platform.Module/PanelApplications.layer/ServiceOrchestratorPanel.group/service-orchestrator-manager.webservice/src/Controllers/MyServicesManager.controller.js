@@ -60,6 +60,7 @@ const MyServicesManagerController = (params) => {
     const ListStorages                   = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListStorages({ serviceId }))
     const ListStorageParams              = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListStorageParams({ serviceId }))
     const ListSockets                    = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListSockets({ serviceId }))
+    const ListSocketParams               = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListSocketParams({ serviceId }))
     const ListContainers                 = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListContainers({ serviceId }))
     const StartService                   = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.StartService({ serviceId }))
     const StopService                    = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.StopService({ serviceId }))
@@ -76,6 +77,7 @@ const MyServicesManagerController = (params) => {
     const StorageListChange           = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.StorageListChange({serviceId}))
     const StorageParamListChange      = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.StorageParamListChange({serviceId}))
     const SocketListChange            = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.SocketListChange({serviceId}))
+    const SocketParamListChange       = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.SocketParamListChange({serviceId}))
     const ContainerListChange         = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.ContainerListChange({serviceId}))
     const ImageBuildHistoryListChange = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.ImageBuildHistoryListChange({serviceId}))
 
@@ -123,12 +125,14 @@ const MyServicesManagerController = (params) => {
         ListStorages,
         ListStorageParams,
         ListSockets,
+        ListSocketParams,
         ListContainers,
         ServicesStatusChange,
         InstanceListChange,
         StorageListChange,
         StorageParamListChange,
         SocketListChange,
+        SocketParamListChange,
         ContainerListChange,
         ImageBuildHistoryListChange,
         GetServiceStatus,

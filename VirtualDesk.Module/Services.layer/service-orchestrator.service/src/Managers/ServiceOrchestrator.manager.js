@@ -32,6 +32,7 @@ const ServiceOrchestratorManager = (params) => {
         ImageBuildHistory   : ImageBuildHistoryModel,
         Instance            : InstanceModel,
         Socket              : SocketModel,
+        SocketParam         : SocketParamModel,
         Storage             : StorageModel,
         StorageParam        : StorageParamModel,
         Container           : ContainerModel,
@@ -43,6 +44,7 @@ const ServiceOrchestratorManager = (params) => {
         ImageBuildHistoryModel,
         InstanceModel,
         SocketModel,
+        SocketParamModel,
         StorageModel,
         StorageParamModel,
         ContainerModel,
@@ -80,6 +82,7 @@ const ServiceOrchestratorManager = (params) => {
         ListStorages,
         ListStoragesParam,
         ListSockets,
+        ListSocketsParam,
         ListRunningInstances,
         ListContainers,
         ListImageBuildHistory,
@@ -88,6 +91,7 @@ const ServiceOrchestratorManager = (params) => {
         onChangeStorageListData,
         onChangeStorageParamListData,
         onChangeSocketListData,
+        onChangeSocketParamListData,
         onChangeImageBuildHistoryListData
     } = ServiceRuntimeStateManager
 
@@ -156,6 +160,10 @@ const ServiceOrchestratorManager = (params) => {
                     return await MyWorkspaceDomainService.ListStoragesByServiceId(data.serviceId)
                 case RequestTypes.FETCH_STORAGE_PARAM_DATA_LIST:
                     return await MyWorkspaceDomainService.ListStorageParamsByInstanceId(data.instanceId)
+                case RequestTypes.FETCH_SOCKET_DATA_LIST:
+                    return await MyWorkspaceDomainService.ListSocketsByServiceId(data.serviceId)
+                case RequestTypes.FETCH_SOCKET_PARAM_DATA_LIST:
+                    return await MyWorkspaceDomainService.ListSocketParamsByInstanceId(data.instanceId)
                 case RequestTypes.FETCH_CONTAINER_DATA:
                     return await await MyWorkspaceDomainService.GetContainerInfoByInstanceId(data.instanceId)
                 case RequestTypes.FETCH_CONTAINER_INSPECTION_DATA:
@@ -244,6 +252,31 @@ const ServiceOrchestratorManager = (params) => {
                         .UpdateStorageParamStorageId({
                             storageParamId: data.storageParamId,
                             storageId: data.storageId
+                        })
+                case RequestTypes.REGISTER_SOCKET:
+                    return await MyWorkspaceDomainService
+                        .RegisterSocket({
+                            instanceId: data.instanceId,
+                            namespace: data.namespace,
+                            socketPath: data.socketPath
+                        })
+                case RequestTypes.CREATE_NEW_SOCKET_VOLUME:
+                    return await CreateNewVolume({
+                        volumeName: data.volumeName,
+                        labels: data.labels
+                    })
+                case RequestTypes.REGISTER_SOCKET_PARAM:
+                    return await MyWorkspaceDomainService
+                        .RegisterSocketParam({
+                            namespace: data.namespace,
+                            parameter: data.parameter,
+                            instanceId: data.instanceId
+                        })
+                case RequestTypes.UPDATE_SOCKET_PARAM_SOCKET_ID:
+                    return await MyWorkspaceDomainService
+                        .UpdateSocketParamSocketId({
+                            socketParamId: data.socketParamId,
+                            socketId: data.socketId
                         })
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
@@ -436,6 +469,7 @@ const ServiceOrchestratorManager = (params) => {
         ListStorages,
         ListStorageParams: ListStoragesParam,
         ListSockets,
+        ListSocketParams: ListSocketsParam,
         ListContainers,
         ListImageBuildHistory,
         onChangeContainerListData,
@@ -443,6 +477,7 @@ const ServiceOrchestratorManager = (params) => {
         onChangeStorageListData,
         onChangeStorageParamListData,
         onChangeSocketListData,
+        onChangeSocketParamListData,
         onChangeImageBuildHistoryListData,
         GetServiceStatus,
         GetNetworksSettings,

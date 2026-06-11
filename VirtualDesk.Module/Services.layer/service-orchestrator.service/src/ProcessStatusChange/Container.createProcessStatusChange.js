@@ -26,6 +26,7 @@ const {
 } = StatusTypes
 
 const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
+const CreateResolveInstanceSocketMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceSocketMounts.create")
 
 const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
     (containerId) => {
@@ -33,6 +34,7 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
         const { GetState, ChangeStatus } = stateManager
 
         const ResolveInstanceStorageMounts = CreateResolveInstanceStorageMounts(stateManager)
+        const ResolveInstanceSocketMounts = CreateResolveInstanceSocketMounts(stateManager)
 
         const { status, data:containerData } = GetState(CONTAINER_STATE_GROUP, containerId)
         const { data: imageData } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, containerData.buildId)
@@ -73,7 +75,10 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
                 ChangeStatus(CONTAINER_STATE_GROUP, containerId, HYDRATE_DATA)
                 break
             case CREATING:
-                const mounts = ResolveInstanceStorageMounts(containerData.instanceId)
+                const mounts = [
+                    ...ResolveInstanceStorageMounts(containerData.instanceId),
+                    ...ResolveInstanceSocketMounts(containerData.instanceId)
+                ]
                     .filter(({ volumeName }) => volumeName)
                     .map(({ volumeName, volumeTarget }) => ({ volumeName, target: volumeTarget }))
 

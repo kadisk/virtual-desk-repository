@@ -5,7 +5,11 @@ const StatusTypes = require("../Types/Status.types")
 
 const CreateListRunningInstances = require("../Helpers/ServiceRuntimeStateManager.utils/ListRunningInstances.create")
 const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
+const CreateResolveInstanceSocketMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceSocketMounts.create")
 const CreateAdvanceInstanceWhenStorageReady = require("../Helpers/ServiceRuntimeStateManager.utils/AdvanceInstanceWhenStorageReady.create")
+
+const NormalizeResourceParam = require("../Utils/NormalizeResourceParam")
+const { BuildSocketPath } = require("../Utils/SocketMountPaths")
 
 const {
     SERVICE_STATE_GROUP,
@@ -29,7 +33,12 @@ const {
     FAILURE
 } = StatusTypes
 
-
+/**
+ * Storage pertence ao serviço; Socket pertence à instância. Ambos seguem o mesmo objetivo:
+ * o owner cria o recurso (volume) e os demais (owner ou não) montam o volume através de um
+ * Param (StorageParam/SocketParam). A instância só avança de WAITING para CREATING quando todos
+ * os Params (storage e socket) estão READY.
+ */
 const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (instanceId) => {
 
     const {
@@ -40,8 +49,9 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
         HasExecutedStatusSequence
     } = stateManager
 
-    const ListRunningInstances           = CreateListRunningInstances(stateManager)
-    const ResolveInstanceStorageMounts   = CreateResolveInstanceStorageMounts(stateManager)
+    const ListRunningInstances            = CreateListRunningInstances(stateManager)
+    const ResolveInstanceStorageMounts    = CreateResolveInstanceStorageMounts(stateManager)
+    const ResolveInstanceSocketMounts     = CreateResolveInstanceSocketMounts(stateManager)
     const AdvanceInstanceWhenStorageReady = CreateAdvanceInstanceWhenStorageReady(stateManager)
 
     const { status, data: instanceData } = GetState(INSTANCE_STATE_GROUP, instanceId)
@@ -56,21 +66,67 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
             ChangeStatus(INSTANCE_STATE_GROUP, instanceId, INITIALIZING)
             break
         case CREATE:
-            if(!instanceData.storageParams){
+            const storageParams = instanceData.storageParams ?? {}
+            const socketParams  = instanceData.socketParams ?? {}
+            const hasStorageParams = Object.keys(storageParams).length > 0
+            const hasSocketParams  = Object.keys(socketParams).length > 0
+
+            if(!hasStorageParams && !hasSocketParams){
                 ChangeStatus(INSTANCE_STATE_GROUP, instanceId, CREATING)
             } else {
                 ChangeStatus(INSTANCE_STATE_GROUP, instanceId, WAITING)
-                const registeredParameters = new Set()
 
-                Object.entries(instanceData.storageParams)
-                    .forEach(([parameter, { namespace }]) => {
-                        if (registeredParameters.has(parameter)) {
+                // Sockets pertencem à instância: o owner cria o Socket (volume) antes dos params.
+                const ownerSocketNamespaces = new Set()
+                Object.entries(socketParams)
+                    .map(([parameter, value]) => NormalizeResourceParam(parameter, value))
+                    .filter(({ owner }) => owner)
+                    .forEach(({ namespace }) => {
+                        if (ownerSocketNamespaces.has(namespace)) {
                             return
                         }
 
-                        registeredParameters.add(parameter)
+                        ownerSocketNamespaces.add(namespace)
+
+                        RequestData(RequestTypes.REGISTER_SOCKET, {
+                            serviceId : instanceData.serviceId,
+                            instanceId,
+                            namespace,
+                            socketPath: BuildSocketPath(namespace)
+                        })
+                    })
+
+                const registeredStorageParameters = new Set()
+                Object.entries(storageParams)
+                    .forEach(([parameter, value]) => {
+                        if (registeredStorageParameters.has(parameter)) {
+                            return
+                        }
+
+                        registeredStorageParameters.add(parameter)
+
+                        const { namespace } = NormalizeResourceParam(parameter, value)
 
                         RequestData(RequestTypes.REGISTER_STORAGE_PARAM, {
+                            serviceId: instanceData.serviceId,
+                            instanceId,
+                            parameter,
+                            namespace
+                        })
+                    })
+
+                const registeredSocketParameters = new Set()
+                Object.entries(socketParams)
+                    .forEach(([parameter, value]) => {
+                        if (registeredSocketParameters.has(parameter)) {
+                            return
+                        }
+
+                        registeredSocketParameters.add(parameter)
+
+                        const { namespace } = NormalizeResourceParam(parameter, value)
+
+                        RequestData(RequestTypes.REGISTER_SOCKET_PARAM, {
                             serviceId: instanceData.serviceId,
                             instanceId,
                             parameter,
@@ -81,15 +137,20 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
             break
         case CREATING:
             const storageMounts = ResolveInstanceStorageMounts(instanceId)
+            const socketMounts  = ResolveInstanceSocketMounts(instanceId)
 
-            if (storageMounts.length > 0) {
+            if (storageMounts.length > 0 || socketMounts.length > 0) {
                 const storageStartupParams = Object.fromEntries(
                     storageMounts.map(({ parameter, mountPath }) => [parameter, mountPath])
+                )
+                const socketStartupParams = Object.fromEntries(
+                    socketMounts.map(({ parameter, socketPath }) => [parameter, socketPath])
                 )
 
                 SetDataProperty(INSTANCE_STATE_GROUP, instanceId, "startupParams", {
                     ...instanceData.startupParams,
-                    ...storageStartupParams
+                    ...storageStartupParams,
+                    ...socketStartupParams
                 })
             }
 
@@ -104,6 +165,10 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
             break
         case INITIALIZING:
             RequestData(RequestTypes.FETCH_STORAGE_PARAM_DATA_LIST, {
+                serviceId: instanceData.serviceId,
+                instanceId
+            })
+            RequestData(RequestTypes.FETCH_SOCKET_PARAM_DATA_LIST, {
                 serviceId: instanceData.serviceId,
                 instanceId
             })

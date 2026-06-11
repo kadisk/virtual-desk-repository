@@ -150,6 +150,36 @@
             "parametersToLoad": [ "commandExecutorLib" ]
 		},
 		{
+			"namespace": "ListSockets",
+			"path": "Commands/ListSockets.command",
+			"command": "sockets [serviceId]",
+			"description": "Lista todos os sockets de um serviço",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
+			"namespace": "ListSocketParams",
+			"path": "Commands/ListSocketParams.command",
+			"command": "socket-params [serviceId]",
+			"description": "Lista todos os parâmetros de socket de um serviço",
+			"parameters": [
+				{
+					"key": "serviceId",
+					"paramType": "positional",
+					"valueType": "number",
+					"describe": "ID do serviço"
+				}
+			],
+            "parametersToLoad": [ "commandExecutorLib" ]
+		},
+		{
 			"namespace": "ListContainers",
 			"path": "Commands/ListContainers.command",
 			"command": "containers [serviceId]",

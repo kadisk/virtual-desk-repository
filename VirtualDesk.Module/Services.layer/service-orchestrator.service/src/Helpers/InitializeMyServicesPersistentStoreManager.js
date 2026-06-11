@@ -184,6 +184,50 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         }
     })
 
+    const SocketParamModel = sequelize.define("SocketParam", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+
+        namespace: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+
+        parameter: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        instanceId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: InstanceModel,
+                key: "id"
+            },
+            onDelete: "CASCADE"
+        },
+        socketId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: SocketModel,
+                key: "id"
+            },
+            onDelete: "SET NULL"
+        }
+    },
+    {
+        indexes: [
+            {
+                unique: true,
+                fields: ["instanceId", "namespace", "parameter"]
+            }
+        ]
+    })
+
     const ImageBuildHistoryModel = sequelize.define("ImageBuildHistory", {
         id: {
             type: DataTypes.INTEGER,
@@ -277,8 +321,10 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
     ServiceModel            .hasMany(StorageModel,           { foreignKey: "serviceId",   onDelete: "CASCADE"  })
     InstanceModel           .hasMany(SocketModel,            { foreignKey: "instanceId",  onDelete: "CASCADE"  })
     InstanceModel           .hasMany(StorageParamModel,      { foreignKey: "instanceId",  onDelete: "CASCADE"  })
+    InstanceModel           .hasMany(SocketParamModel,       { foreignKey: "instanceId",  onDelete: "CASCADE"  })
     StorageModel            .hasMany(StorageParamModel,      { foreignKey: "storageId",   onDelete: "SET NULL" })
-    
+    SocketModel             .hasMany(SocketParamModel,       { foreignKey: "socketId",    onDelete: "SET NULL" })
+
     ContainerModel         .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     ContainerModel         .belongsTo(ImageBuildHistoryModel, { foreignKey: "buildId"     })
     ContainerEventLogModel .belongsTo(ContainerModel,          { foreignKey: "containerId" })
@@ -288,6 +334,8 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
     SocketModel            .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     StorageParamModel      .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     StorageParamModel      .belongsTo(StorageModel,           { foreignKey: "storageId"   })
+    SocketParamModel       .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
+    SocketParamModel       .belongsTo(SocketModel,            { foreignKey: "socketId"    })
 
 
     return {
@@ -298,6 +346,7 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             Container         : ContainerModel,
             ContainerEventLog : ContainerEventLogModel,
             Socket            : SocketModel,
+            SocketParam       : SocketParamModel,
             Storage           : StorageModel,
             StorageParam      : StorageParamModel
         },

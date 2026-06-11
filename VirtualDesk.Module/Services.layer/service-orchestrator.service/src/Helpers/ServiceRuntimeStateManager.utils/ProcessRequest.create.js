@@ -20,7 +20,9 @@ const {
     IMAGE_BUILD_HISTORY_STATE_GROUP,
     INSTANCE_STATE_GROUP,
     STORAGE_STATE_GROUP,
-    STORAGE_PARAM_STATE_GROUP
+    STORAGE_PARAM_STATE_GROUP,
+    SOCKET_STATE_GROUP,
+    SOCKET_PARAM_STATE_GROUP
 } = require("../../Types/ItemGroup.types")
 
 const CreateCreateObjectState = require("./CreateObjectState.create")
@@ -66,6 +68,24 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                 storageParamDataList
                     .forEach(({ id:storageParamId, namespace, parameter, instanceId, storageId }) =>
                         CreateObjectState(STORAGE_PARAM_STATE_GROUP, storageParamId, { serviceId: requestData.serviceId, instanceId, storageId, namespace, parameter }, READY))
+            break
+        case RequestTypes.FETCH_SOCKET_DATA_LIST:
+            const socketDataList = await getData(requestType, { serviceId: requestData.serviceId })
+                socketDataList
+                    .forEach(({ id:socketId, instanceId, namespace, socketPath }) =>
+                        CreateObjectState(SOCKET_STATE_GROUP, socketId, {
+                            serviceId  : requestData.serviceId,
+                            instanceId,
+                            namespace,
+                            socketPath,
+                            volumeData : { Name: `${namespace}-${socketId}` }
+                        }, READY))
+            break
+        case RequestTypes.FETCH_SOCKET_PARAM_DATA_LIST:
+            const socketParamDataList = await getData(requestType, { instanceId: requestData.instanceId })
+                socketParamDataList
+                    .forEach(({ id:socketParamId, namespace, parameter, instanceId, socketId }) =>
+                        CreateObjectState(SOCKET_PARAM_STATE_GROUP, socketParamId, { serviceId: requestData.serviceId, instanceId, socketId, namespace, parameter }, READY))
             break
         case RequestTypes.FETCH_SERVICE_DATA:
             const serviceData = await getData(requestType, { serviceId: requestData.serviceId })
@@ -194,6 +214,50 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
             })
             UpdateData(STORAGE_PARAM_STATE_GROUP, requestData.storageParamId, { storageId: requestData.storageId })
             ChangeStatus(STORAGE_PARAM_STATE_GROUP, requestData.storageParamId, UPDATED)
+            break
+        case RequestTypes.REGISTER_SOCKET:
+
+            const socketData = await getData(requestType, {
+                instanceId: requestData.instanceId,
+                namespace : requestData.namespace,
+                socketPath: requestData.socketPath
+            })
+
+            CreateObjectState(SOCKET_STATE_GROUP, socketData.id, {
+                serviceId : requestData.serviceId,
+                instanceId: requestData.instanceId,
+                namespace : requestData.namespace,
+                socketPath: requestData.socketPath
+            }, CREATE)
+            break
+        case RequestTypes.CREATE_NEW_SOCKET_VOLUME:
+            const socketVolumeData = await getData(requestType, {
+                volumeName: requestData.volumeName,
+                labels: requestData.labels
+            })
+            UpdateData(SOCKET_STATE_GROUP, requestData.socketId, { volumeData: socketVolumeData })
+            ChangeStatus(SOCKET_STATE_GROUP, requestData.socketId, CREATED)
+            break
+        case RequestTypes.REGISTER_SOCKET_PARAM:
+            const socketParamData = await getData(requestType, {
+                instanceId : requestData.instanceId,
+                parameter  : requestData.parameter,
+                namespace  : requestData.namespace
+            })
+            CreateObjectState(SOCKET_PARAM_STATE_GROUP, socketParamData.id, {
+                serviceId  : requestData.serviceId,
+                instanceId : requestData.instanceId,
+                parameter  : requestData.parameter,
+                namespace  : requestData.namespace
+            }, CREATE)
+            break
+        case RequestTypes.UPDATE_SOCKET_PARAM_SOCKET_ID:
+            await getData(requestType, {
+                socketParamId : requestData.socketParamId,
+                socketId      : requestData.socketId
+            })
+            UpdateData(SOCKET_PARAM_STATE_GROUP, requestData.socketParamId, { socketId: requestData.socketId })
+            ChangeStatus(SOCKET_PARAM_STATE_GROUP, requestData.socketParamId, UPDATED)
             break
         default:
             console.warn(`Unknown request type: ${requestType.description}`)

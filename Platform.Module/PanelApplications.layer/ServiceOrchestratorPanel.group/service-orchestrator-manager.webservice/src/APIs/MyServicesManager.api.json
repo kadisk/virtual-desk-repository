@@ -85,6 +85,19 @@
 			]
 		},
 		{
+			"path": "/service/socket-params",
+			"method": "GET",
+			"summary": "ListSocketParams",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/service/containers",
 			"method": "GET",
 			"summary": "ListContainers",
@@ -145,6 +158,19 @@
 			"path": "/service/sockets-list/:serviceId",
 			"method": "WS",
 			"summary": "SocketListChange",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/service/socket-param-list/:serviceId",
+			"method": "WS",
+			"summary": "SocketParamListChange",
 			"parameters": [
 				{
 					"name": "serviceId",

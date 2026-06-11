@@ -5,6 +5,7 @@ const StatusTypes = require("../Types/Status.types")
 
 const CreateFilterInstancesState = require("../Helpers/ServiceRuntimeStateManager.utils/FilterInstancesState.create")
 const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
+const CreateResolveInstanceSocketMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceSocketMounts.create")
 
 const { 
     SERVICE_STATE_GROUP,
@@ -26,6 +27,7 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
 
         const ListInstancesState = CreateFilterInstancesState(stateManager)
         const ResolveInstanceStorageMounts = CreateResolveInstanceStorageMounts(stateManager)
+        const ResolveInstanceSocketMounts = CreateResolveInstanceSocketMounts(stateManager)
 
         const { status, data: imageData } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, buildId)
         const { status: statusService, data:serviceData }  = GetState(SERVICE_STATE_GROUP, imageData.serviceId)
@@ -35,8 +37,10 @@ const CreateImageBuildHistoryProcessStatusChange = ({ stateManager, RequestData 
 
         switch (status) {
             case CREATING:
-                const storageVolumeTargets = ResolveInstanceStorageMounts(imageData.instanceId)
-                    .map(({ volumeTarget }) => volumeTarget)
+                const storageVolumeTargets = [
+                    ...ResolveInstanceStorageMounts(imageData.instanceId),
+                    ...ResolveInstanceSocketMounts(imageData.instanceId)
+                ].map(({ volumeTarget }) => volumeTarget)
 
                 RequestData(RequestTypes.BUILD_NEW_IMAGE, {
                     buildId,
