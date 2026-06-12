@@ -13,24 +13,28 @@ const CreateGetNetworksSettings  = (stateManager) => async (serviceId) => {
 
     const runningStateContainer = containerStateList.find(({status}) => status === RUNNING)
 
+    // Sem container em execução (serviço parado/terminado) não há network settings.
+    if (!runningStateContainer) return null
+
     const { data } = runningStateContainer
 
-    if(data.inspectionData){
-        const { NetworkSettings } = data.inspectionData
-        const { Ports, Networks } = NetworkSettings
-        
-        return {
-            ports: Ports,
-            networks: Object.keys(Networks)
-                .map(networkName => {
-                    const network = Networks[networkName]
-                    return {
-                        name: networkName,
-                        ipAddress: network.IPAddress,
-                        gateway: network.Gateway
-                    }
-                })
-        }
+    const { NetworkSettings } = data?.inspectionData ?? {}
+
+    if (!NetworkSettings) return null
+
+    const { Ports, Networks } = NetworkSettings
+
+    return {
+        ports: Ports,
+        networks: Object.keys(Networks ?? {})
+            .map(networkName => {
+                const network = Networks[networkName]
+                return {
+                    name: networkName,
+                    ipAddress: network.IPAddress,
+                    gateway: network.Gateway
+                }
+            })
     }
 }
 

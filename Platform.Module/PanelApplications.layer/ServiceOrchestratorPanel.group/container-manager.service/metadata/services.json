@@ -1,6 +1,7 @@
 [
     {
         "namespace": "ContainerManager",
-        "path": "Managers/Container.manager"
+        "path": "Managers/Container.manager",
+        "params": ["socketPath"]
     }
 ]

@@ -13,10 +13,8 @@
         "isWatch"                           : true,
         "repositoryStorageServerManagerUrl" : "/server-manager/status"
     },
-    "socketParams":{
-        "repositoryStorageSocketPath" : "repository-storage-manager-socket"
-    },
-    "storageParams":{
+    "hostMountParams":{
+        "repositoryStorageSocketPath" : "repository-storage-manager-socket",
         "uploadDirPath" : "repository-manager-repositories-storage"
     },
     "ports": [],

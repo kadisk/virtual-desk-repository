@@ -61,6 +61,7 @@ const CreateRepositoryStorageDomainService = ({
                 attributes: [],
                 where: { namespace: repositoryNamespace }
             }],
+            order: [['createdAt', 'DESC']],
             raw: true
         })
     }

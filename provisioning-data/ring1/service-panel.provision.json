@@ -17,7 +17,8 @@
     "hostMountParams": {
         "serviceOrchestratorSocketPath" : "service-orchestrator-socket",
         "repositoryStorageSocketPath": "repository-storage-manager-socket",
-        "uploadDirPath" : "repository-manager-repositories-storage"
+        "uploadDirPath" : "repository-manager-repositories-storage",
+        "dockerSocketPath" : "docker-socket"
     },
     "ports": [],
     "networkmode": "host"

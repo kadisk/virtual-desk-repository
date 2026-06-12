@@ -12,13 +12,15 @@ const NormalizedLabels = (labels) => {
 
 const ContainerManager = (params) => {
 
-    const docker = new Docker({ socketPath: '/var/run/docker.sock' })
-
+    
     const eventEmitter = new EventEmitter()
-
+    
     const {
-        onReady
+        onReady,
+        socketPath
     } = params
+    
+    const docker = new Docker({ socketPath })
 
     const _Start = async () => {
 
@@ -149,6 +151,13 @@ const ContainerManager = (params) => {
                 BindOptions: { CreateMountpoint: true }
             }))
 
+        // O container roda com o UID/GID do host (via Dockerfile). Aqui adicionamos também os
+        // grupos suplementares do processo do host (ex.: grupo "docker") para que bind mounts de
+        // recursos group-owned do host (como /var/run/docker.sock) sejam acessíveis sem EACCES.
+        const groupAdd = typeof process.getgroups === "function"
+            ? process.getgroups().map(String)
+            : []
+
         const container = await docker.createContainer({
             Image: imageName,
             name: containerName,
@@ -156,7 +165,8 @@ const ContainerManager = (params) => {
             HostConfig: {
                 PortBindings: portBindings,
                 NetworkMode: networkmode,
-                Mounts: [...volumeMounts, ...bindMounts]
+                Mounts: [...volumeMounts, ...bindMounts],
+                GroupAdd: groupAdd
             }
         })
 

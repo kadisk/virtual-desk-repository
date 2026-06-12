@@ -9,7 +9,8 @@
         "serviceOrchestratorSocketPath",
         "serviceOrchestratorServerManagerUrl",
         "repositoryStorageSocketPath",
-        "repositoryStorageServerManagerUrl"
+        "repositoryStorageServerManagerUrl",
+        "dockerSocketPath"
     ],
     "services": [
         {
@@ -22,7 +23,10 @@
         },
         {
             "namespace": "@@/container-manager-service",
-            "dependency": "@/container-manager.service/services/ContainerManager"
+            "dependency": "@/container-manager.service/services/ContainerManager",
+            "params":{
+                "socketPath": "{{dockerSocketPath}}"
+            }
         }
     ],
     "endpoints": [

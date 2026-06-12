@@ -3,7 +3,8 @@
         "socket", 
         "serverName",
         "serviceStorageFilePath",
-        "servicesInstanceDataDirPath"
+        "servicesInstanceDataDirPath",
+        "dockerSocketPath"
     ],
     "services": [
         {
@@ -16,7 +17,10 @@
         },
         {
             "namespace": "@@/container-manager-service",
-            "dependency": "@/container-manager.service/services/ContainerManager"
+            "dependency": "@/container-manager.service/services/ContainerManager",
+            "params":{
+                "socketPath": "{{dockerSocketPath}}"
+            }
         },
         {
             "namespace": "@@/service-orchestrator-service",
