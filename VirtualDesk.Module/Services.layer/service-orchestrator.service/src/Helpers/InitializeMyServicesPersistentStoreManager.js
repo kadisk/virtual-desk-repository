@@ -69,11 +69,11 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         },
         filename: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         }
     })
 
-    
+
     const InstanceModel = sequelize.define("Instance", {
         id: {
             type: DataTypes.INTEGER,
@@ -85,6 +85,10 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             allowNull: true
         },
         socketParams: {
+            type: DataTypes.JSON,
+            allowNull: true
+        },
+        hostMountParams: {
             type: DataTypes.JSON,
             allowNull: true
         },
@@ -228,6 +232,69 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
         ]
     })
 
+    const HostMountModel = sequelize.define("HostMount", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        namespace: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        hostPath: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        type: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }
+    })
+
+    const HostMountParamModel = sequelize.define("HostMountParam", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        namespace: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        parameter: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        instanceId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: InstanceModel,
+                key: "id"
+            },
+            onDelete: "CASCADE"
+        },
+        hostMountId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: HostMountModel,
+                key: "id"
+            },
+            onDelete: "SET NULL"
+        }
+    },
+    {
+        indexes: [
+            {
+                unique: true,
+                fields: ["instanceId", "namespace", "parameter"]
+            }
+        ]
+    })
+
     const ImageBuildHistoryModel = sequelize.define("ImageBuildHistory", {
         id: {
             type: DataTypes.INTEGER,
@@ -322,8 +389,10 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
     InstanceModel           .hasMany(SocketModel,            { foreignKey: "instanceId",  onDelete: "CASCADE"  })
     InstanceModel           .hasMany(StorageParamModel,      { foreignKey: "instanceId",  onDelete: "CASCADE"  })
     InstanceModel           .hasMany(SocketParamModel,       { foreignKey: "instanceId",  onDelete: "CASCADE"  })
+    InstanceModel           .hasMany(HostMountParamModel,    { foreignKey: "instanceId",  onDelete: "CASCADE"  })
     StorageModel            .hasMany(StorageParamModel,      { foreignKey: "storageId",   onDelete: "SET NULL" })
     SocketModel             .hasMany(SocketParamModel,       { foreignKey: "socketId",    onDelete: "SET NULL" })
+    HostMountModel          .hasMany(HostMountParamModel,    { foreignKey: "hostMountId", onDelete: "SET NULL" })
 
     ContainerModel         .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     ContainerModel         .belongsTo(ImageBuildHistoryModel, { foreignKey: "buildId"     })
@@ -336,6 +405,8 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
     StorageParamModel      .belongsTo(StorageModel,           { foreignKey: "storageId"   })
     SocketParamModel       .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
     SocketParamModel       .belongsTo(SocketModel,            { foreignKey: "socketId"    })
+    HostMountParamModel    .belongsTo(InstanceModel,          { foreignKey: "instanceId"  })
+    HostMountParamModel    .belongsTo(HostMountModel,         { foreignKey: "hostMountId" })
 
 
     return {
@@ -348,7 +419,9 @@ const InitializeMyServicesPersistentStoreManager = (storage) => {
             Socket            : SocketModel,
             SocketParam       : SocketParamModel,
             Storage           : StorageModel,
-            StorageParam      : StorageParamModel
+            StorageParam      : StorageParamModel,
+            HostMount         : HostMountModel,
+            HostMountParam    : HostMountParamModel
         },
         ConnectAndSync: async () => {
             await sequelize.authenticate()

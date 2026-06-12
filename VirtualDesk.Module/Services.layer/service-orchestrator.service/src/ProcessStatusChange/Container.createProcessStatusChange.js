@@ -27,6 +27,7 @@ const {
 
 const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
 const CreateResolveInstanceSocketMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceSocketMounts.create")
+const CreateResolveInstanceHostMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceHostMounts.create")
 
 const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
     (containerId) => {
@@ -35,6 +36,7 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
 
         const ResolveInstanceStorageMounts = CreateResolveInstanceStorageMounts(stateManager)
         const ResolveInstanceSocketMounts = CreateResolveInstanceSocketMounts(stateManager)
+        const ResolveInstanceHostMounts = CreateResolveInstanceHostMounts(stateManager)
 
         const { status, data:containerData } = GetState(CONTAINER_STATE_GROUP, containerId)
         const { data: imageData } = GetState(IMAGE_BUILD_HISTORY_STATE_GROUP, containerData.buildId)
@@ -75,12 +77,18 @@ const CreateContainerProcessStatusChange = ({ stateManager, RequestData }) =>
                 ChangeStatus(CONTAINER_STATE_GROUP, containerId, HYDRATE_DATA)
                 break
             case CREATING:
-                const mounts = [
+                const volumeMounts = [
                     ...ResolveInstanceStorageMounts(containerData.instanceId),
                     ...ResolveInstanceSocketMounts(containerData.instanceId)
                 ]
                     .filter(({ volumeName }) => volumeName)
                     .map(({ volumeName, volumeTarget }) => ({ volumeName, target: volumeTarget }))
+
+                const bindMounts = ResolveInstanceHostMounts(containerData.instanceId)
+                    .filter(({ hostPath, target }) => hostPath && target)
+                    .map(({ hostPath, target }) => ({ hostPath, target }))
+
+                const mounts = [...volumeMounts, ...bindMounts]
 
                 RequestData(RequestTypes.CREATE_NEW_CONTAINER, {
                     containerId,

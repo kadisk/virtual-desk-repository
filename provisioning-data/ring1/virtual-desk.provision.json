@@ -17,8 +17,10 @@
         "repositoryStorageServerManagerUrl" : "/server-manager/status",
         "iamStorageServerManagerUrl"        : "/server-manager/status"
     },
+    "hostMountParams": {
+        "repositoryStorageSocketPath": "repository-storage-manager-socket"
+    },
     "socketParams":{
-        "repositoryStorageSocketPath": "repository-storage-manager-socket",
         "iamStorageSocketPath": "iam-socket"
     },
     "storageParams":{

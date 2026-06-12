@@ -103,6 +103,43 @@
 			]
 		},
 		{
+			"path": "/host-mount",
+			"method": "POST",
+			"summary": "RegisterHostMount",
+			"parameters": [
+				{
+					"name": "namespace",
+					"in": "body",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "hostPath",
+					"in": "body",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/host-mounts",
+			"method": "GET",
+			"summary": "ListHostMounts"
+		},
+		{
+			"path": "/service/host-mount-params",
+			"method": "GET",
+			"summary": "ListHostMountParams",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "query",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
 			"path": "/service/containers",
 			"method": "GET",
 			"summary": "ListContainers",
@@ -171,6 +208,32 @@
 			"path": "/service/socket-param-list/:serviceId",
 			"method": "WS",
 			"summary": "SocketParamListChange",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/host-mount-list/:serviceId",
+			"method": "WS",
+			"summary": "HostMountListChange",
+			"parameters": [
+				{
+					"name": "serviceId",
+					"in": "path",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"path": "/service/host-mount-param-list/:serviceId",
+			"method": "WS",
+			"summary": "HostMountParamListChange",
 			"parameters": [
 				{
 					"name": "serviceId",
@@ -390,6 +453,12 @@
 				{
 					"in": "body",
 					"name": "storageParams",
+					"type": "json",
+					"required": false
+				},
+				{
+					"in": "body",
+					"name": "hostMountParams",
 					"type": "json",
 					"required": false
 				},

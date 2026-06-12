@@ -130,9 +130,6 @@ const CreateServiceProcessStatusChange = ({ stateManager, RequestData }) =>
         const _TakeInstanceParams = () => TakeDataProperty(SERVICE_STATE_GROUP, serviceId, "instanceParams")
         const _TakeStorageDataParams = () => TakeDataProperty(SERVICE_STATE_GROUP, serviceId, "storageDataParams")
 
-        // Todo namespace de recurso owner (Storage/Socket) é único globalmente. Se um owner tentar
-        // criar um recurso para um namespace já existente em qualquer serviço, retorna o namespace
-        // duplicado (para sinalizar FALHA); caso contrário, retorna null.
         const _FindDuplicatedOwnerNamespace = ({ storageParams = {}, socketParams = {} }) => {
             const storageDuplicated = Object.entries(storageParams)
                 .map(([parameter, value]) => NormalizeResourceParam(parameter, value))
@@ -190,8 +187,6 @@ const CreateServiceProcessStatusChange = ({ stateManager, RequestData }) =>
                 if (storageDataParams?.storageParams) {
                     const registeredNamespaces = new Set()
 
-                    // O Storage (pertence ao serviço) só é criado quando o parâmetro é owner.
-                    // Os não-owner apenas referenciam um Storage existente pelo namespace.
                     Object.entries(storageDataParams.storageParams)
                         .map(([parameter, value]) => NormalizeResourceParam(parameter, value))
                         .filter(({ owner }) => owner)

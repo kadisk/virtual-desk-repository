@@ -138,6 +138,7 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
     renderParamsSection('PARÂMETROS DE INICIALIZAÇÃO', provisionData.startupParams)
     renderParamsSection('PARÂMETROS DE SOCKET', provisionData.socketParams)
     renderParamsSection('PARÂMETROS DE STORAGE', provisionData.storageParams)
+    renderParamsSection('PARÂMETROS DE HOST MOUNT', provisionData.hostMountParams)
     
     console.log('-'.repeat(70).label)
     console.log('')
@@ -202,6 +203,7 @@ const ProvisionServiceCommand = async ({ args, startupParams, params }) => {
             startupParams             : provisionData.startupParams,
             socketParams              : provisionData.socketParams,
             storageParams             : provisionData.storageParams,
+            hostMountParams           : provisionData.hostMountParams,
             ports                     : provisionData.ports,
             networkmode               : provisionData.networkmode,
         }))

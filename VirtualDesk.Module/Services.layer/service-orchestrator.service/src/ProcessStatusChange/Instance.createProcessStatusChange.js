@@ -6,6 +6,7 @@ const StatusTypes = require("../Types/Status.types")
 const CreateListRunningInstances = require("../Helpers/ServiceRuntimeStateManager.utils/ListRunningInstances.create")
 const CreateResolveInstanceStorageMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceStorageMounts.create")
 const CreateResolveInstanceSocketMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceSocketMounts.create")
+const CreateResolveInstanceHostMounts = require("../Helpers/ServiceRuntimeStateManager.utils/ResolveInstanceHostMounts.create")
 const CreateAdvanceInstanceWhenStorageReady = require("../Helpers/ServiceRuntimeStateManager.utils/AdvanceInstanceWhenStorageReady.create")
 
 const NormalizeResourceParam = require("../Utils/NormalizeResourceParam")
@@ -52,6 +53,7 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
     const ListRunningInstances            = CreateListRunningInstances(stateManager)
     const ResolveInstanceStorageMounts    = CreateResolveInstanceStorageMounts(stateManager)
     const ResolveInstanceSocketMounts     = CreateResolveInstanceSocketMounts(stateManager)
+    const ResolveInstanceHostMounts       = CreateResolveInstanceHostMounts(stateManager)
     const AdvanceInstanceWhenStorageReady = CreateAdvanceInstanceWhenStorageReady(stateManager)
 
     const { status, data: instanceData } = GetState(INSTANCE_STATE_GROUP, instanceId)
@@ -66,17 +68,18 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
             ChangeStatus(INSTANCE_STATE_GROUP, instanceId, INITIALIZING)
             break
         case CREATE:
-            const storageParams = instanceData.storageParams ?? {}
-            const socketParams  = instanceData.socketParams ?? {}
-            const hasStorageParams = Object.keys(storageParams).length > 0
-            const hasSocketParams  = Object.keys(socketParams).length > 0
+            const storageParams   = instanceData.storageParams ?? {}
+            const socketParams    = instanceData.socketParams ?? {}
+            const hostMountParams = instanceData.hostMountParams ?? {}
+            const hasStorageParams   = Object.keys(storageParams).length > 0
+            const hasSocketParams    = Object.keys(socketParams).length > 0
+            const hasHostMountParams = Object.keys(hostMountParams).length > 0
 
-            if(!hasStorageParams && !hasSocketParams){
+            if(!hasStorageParams && !hasSocketParams && !hasHostMountParams){
                 ChangeStatus(INSTANCE_STATE_GROUP, instanceId, CREATING)
             } else {
                 ChangeStatus(INSTANCE_STATE_GROUP, instanceId, WAITING)
 
-                // Sockets pertencem à instância: o owner cria o Socket (volume) antes dos params.
                 const ownerSocketNamespaces = new Set()
                 Object.entries(socketParams)
                     .map(([parameter, value]) => NormalizeResourceParam(parameter, value))
@@ -133,24 +136,48 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
                             namespace
                         })
                     })
+
+                const registeredHostMountParameters = new Set()
+                Object.entries(hostMountParams)
+                    .forEach(([parameter, value]) => {
+                        if (registeredHostMountParameters.has(parameter)) {
+                            return
+                        }
+
+                        registeredHostMountParameters.add(parameter)
+
+                        const { namespace } = NormalizeResourceParam(parameter, value)
+
+                        RequestData(RequestTypes.REGISTER_HOST_MOUNT_PARAM, {
+                            serviceId: instanceData.serviceId,
+                            instanceId,
+                            parameter,
+                            namespace
+                        })
+                    })
             }
             break
         case CREATING:
-            const storageMounts = ResolveInstanceStorageMounts(instanceId)
-            const socketMounts  = ResolveInstanceSocketMounts(instanceId)
+            const storageMounts   = ResolveInstanceStorageMounts(instanceId)
+            const socketMounts    = ResolveInstanceSocketMounts(instanceId)
+            const hostMountMounts = ResolveInstanceHostMounts(instanceId)
 
-            if (storageMounts.length > 0 || socketMounts.length > 0) {
+            if (storageMounts.length > 0 || socketMounts.length > 0 || hostMountMounts.length > 0) {
                 const storageStartupParams = Object.fromEntries(
                     storageMounts.map(({ parameter, mountPath }) => [parameter, mountPath])
                 )
                 const socketStartupParams = Object.fromEntries(
                     socketMounts.map(({ parameter, socketPath }) => [parameter, socketPath])
                 )
+                const hostMountStartupParams = Object.fromEntries(
+                    hostMountMounts.map(({ parameter, mountPath }) => [parameter, mountPath])
+                )
 
                 SetDataProperty(INSTANCE_STATE_GROUP, instanceId, "startupParams", {
                     ...instanceData.startupParams,
                     ...storageStartupParams,
-                    ...socketStartupParams
+                    ...socketStartupParams,
+                    ...hostMountStartupParams
                 })
             }
 
@@ -169,6 +196,10 @@ const CreateInstanceProcessStatusChange = ({ stateManager, RequestData }) => (in
                 instanceId
             })
             RequestData(RequestTypes.FETCH_SOCKET_PARAM_DATA_LIST, {
+                serviceId: instanceData.serviceId,
+                instanceId
+            })
+            RequestData(RequestTypes.FETCH_HOST_MOUNT_PARAM_DATA_LIST, {
                 serviceId: instanceData.serviceId,
                 instanceId
             })

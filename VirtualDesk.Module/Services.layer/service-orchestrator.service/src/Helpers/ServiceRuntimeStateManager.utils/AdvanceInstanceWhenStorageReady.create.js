@@ -1,7 +1,8 @@
 const {
     INSTANCE_STATE_GROUP,
     STORAGE_PARAM_STATE_GROUP,
-    SOCKET_PARAM_STATE_GROUP
+    SOCKET_PARAM_STATE_GROUP,
+    HOST_MOUNT_PARAM_STATE_GROUP
 } = require("../../Types/ItemGroup.types")
 
 const {
@@ -19,18 +20,21 @@ const CreateAdvanceInstanceWhenStorageReady = (stateManager) => (instanceId) => 
 
     if (!instanceState || instanceState.status !== WAITING) return
 
-    const expectedStorageParamCount = Object.keys(instanceState.data?.storageParams ?? {}).length
-    const expectedSocketParamCount  = Object.keys(instanceState.data?.socketParams ?? {}).length
+    const expectedStorageParamCount   = Object.keys(instanceState.data?.storageParams ?? {}).length
+    const expectedSocketParamCount    = Object.keys(instanceState.data?.socketParams ?? {}).length
+    const expectedHostMountParamCount = Object.keys(instanceState.data?.hostMountParams ?? {}).length
 
-    if (expectedStorageParamCount + expectedSocketParamCount === 0) return
+    if (expectedStorageParamCount + expectedSocketParamCount + expectedHostMountParamCount === 0) return
 
-    const storageParamStates = FilterStatesByPropertyData(STORAGE_PARAM_STATE_GROUP, "instanceId", instanceId)
-    const socketParamStates  = FilterStatesByPropertyData(SOCKET_PARAM_STATE_GROUP, "instanceId", instanceId)
+    const storageParamStates   = FilterStatesByPropertyData(STORAGE_PARAM_STATE_GROUP, "instanceId", instanceId)
+    const socketParamStates    = FilterStatesByPropertyData(SOCKET_PARAM_STATE_GROUP, "instanceId", instanceId)
+    const hostMountParamStates = FilterStatesByPropertyData(HOST_MOUNT_PARAM_STATE_GROUP, "instanceId", instanceId)
 
     if (storageParamStates.length < expectedStorageParamCount) return
     if (socketParamStates.length < expectedSocketParamCount) return
+    if (hostMountParamStates.length < expectedHostMountParamCount) return
 
-    const allReady = [...storageParamStates, ...socketParamStates]
+    const allReady = [...storageParamStates, ...socketParamStates, ...hostMountParamStates]
         .every(({ status }) => status === READY)
 
     if (allReady) {

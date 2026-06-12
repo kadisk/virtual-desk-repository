@@ -7,6 +7,10 @@ ARG STARTUP_JSON=/context_data/startup-params.json
 ARG PACKAGE_PATH=/context_data/package
 
 ARG USERNAME=myecosystem
+# UID/GID do usuário do host (dono dos sockets/arquivos montados via HostMount).
+# O container roda com esse UID/GID para acessar bind mounts do host sem EACCES.
+ARG HOST_UID=1000
+ARG HOST_GID=1000
 ARG HOME_DIR_PATH=/home/${USERNAME}
 ARG ECOSYSTEM_DATA_PATH=${HOME_DIR_PATH}/EcosystemData
 ARG NODEJS_DEPS_PATH=${ECOSYSTEM_DATA_PATH}/npm-dependencies
@@ -15,7 +19,16 @@ ARG ECOSYSTEM_DEFAULT=${ECOSYSTEM_DATA_PATH}/config-files/ecosystem-defaults.jso
 RUN apt-get update && apt-get install -y sudo wget git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -ms /bin/bash ${USERNAME} \
+# O myecosystem roda com o UID/GID do host (dono dos sockets montados via HostMount).
+# A imagem node:22 já ocupa o UID/GID 1000 com o usuário "node"; removemos qualquer usuário/grupo
+# que ocupe o UID/GID alvo para que o myecosystem seja o ÚNICO dono desse UID (senão sudo/whoami
+# resolvem para o outro nome e o NOPASSWD não se aplica).
+RUN existing_user="$(getent passwd ${HOST_UID} | cut -d: -f1)"; \
+    [ -n "$existing_user" ] && userdel -r "$existing_user" 2>/dev/null || true; \
+    existing_group="$(getent group ${HOST_GID} | cut -d: -f1)"; \
+    [ -n "$existing_group" ] && groupdel "$existing_group" 2>/dev/null || true; \
+    groupadd -g ${HOST_GID} ${USERNAME} \
+    && useradd -m -s /bin/bash -u ${HOST_UID} -g ${HOST_GID} ${USERNAME} \
     && usermod -aG sudo ${USERNAME} \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 

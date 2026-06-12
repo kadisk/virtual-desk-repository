@@ -74,6 +74,8 @@ const ServiceSettingsPanelContainer = ({
 	const [ storageParams, setStorageParams ]         = useState([])
 	const [ sockets, setSockets ]                     = useState([])
 	const [ socketParams, setSocketParams ]           = useState([])
+	const [ hostMounts, setHostMounts ]               = useState([])
+	const [ hostMountParams, setHostMountParams ]     = useState([])
 	const [ containers, setContainers ]               = useState([])
 	const [ imageBuildHistory, setImageBuildHistory ] = useState([])
 
@@ -91,6 +93,8 @@ const ServiceSettingsPanelContainer = ({
 		fetchStorageParams()
 		fetchSockets()
 		fetchSocketParams()
+		fetchHostMounts()
+		fetchHostMountParams()
 		fetchInstances()
 		fetchContainers()
 		fetchServiceStatus()
@@ -156,6 +160,22 @@ const ServiceSettingsPanelContainer = ({
 		autoConnect     : false
 	})
 
+	const hostMountsListSocketHandler = useWebSocket({
+		socket          : _MyServicesAPI().HostMountListChange,
+		onMessage       : (hostMounts) => setHostMounts(hostMounts),
+		onConnection    : () => {},
+		onDisconnection : () => {},
+		autoConnect     : false
+	})
+
+	const hostMountParamsListSocketHandler = useWebSocket({
+		socket          : _MyServicesAPI().HostMountParamListChange,
+		onMessage       : (hostMountParams) => setHostMountParams(hostMountParams),
+		onConnection    : () => {},
+		onDisconnection : () => {},
+		autoConnect     : false
+	})
+
 	const containerListSocketHandler = useWebSocket({
 		socket          : _MyServicesAPI().ContainerListChange,
 		onMessage       : (containers) => setContainers(containers),
@@ -189,6 +209,12 @@ const ServiceSettingsPanelContainer = ({
 
 			if(!socketParamsListSocketHandler.isConneted())
 				socketParamsListSocketHandler.connect({ serviceId: serviceData.serviceId })
+
+			if(!hostMountsListSocketHandler.isConneted())
+				hostMountsListSocketHandler.connect({ serviceId: serviceData.serviceId })
+
+			if(!hostMountParamsListSocketHandler.isConneted())
+				hostMountParamsListSocketHandler.connect({ serviceId: serviceData.serviceId })
 
 			if(!containerListSocketHandler.isConneted())
 				containerListSocketHandler.connect({ serviceId: serviceData.serviceId })
@@ -244,6 +270,20 @@ const ServiceSettingsPanelContainer = ({
 		const api = _MyServicesAPI()
 		const response = await api.ListSocketParams({ serviceId })
 		setSocketParams(response.data)
+	}
+
+	const fetchHostMounts = async () => {
+		setHostMounts([])
+		const api = _MyServicesAPI()
+		const response = await api.ListHostMounts()
+		setHostMounts(response.data)
+	}
+
+	const fetchHostMountParams = async () => {
+		setHostMountParams([])
+		const api = _MyServicesAPI()
+		const response = await api.ListHostMountParams({ serviceId })
+		setHostMountParams(response.data)
 	}
 
 	const fetchContainers = async () => {
@@ -455,6 +495,100 @@ const ServiceSettingsPanelContainer = ({
 														<td>{item.socketParamId}</td>
 														<td>{item.instanceId}</td>
 														<td>{item.socketId}</td>
+														<td>{item.namespace}</td>
+														<td>{item.parameter}</td>
+													</tr>
+												))
+											)}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="row row-cards mt-0">
+					<div className="col-12">
+						<div className="card">
+							<div className="card-header p-2">
+								<div className="subheader">Host Mounts</div>
+							</div>
+							<div className="card-body p-0">
+								<div className="card-table table-responsive table-vcenter">
+									<table className="table">
+										<thead>
+											<tr>
+												<th>Status</th>
+												<th>ID</th>
+												<th>Namespace</th>
+												<th>Type</th>
+												<th>Host Path</th>
+											</tr>
+										</thead>
+										<tbody>
+											{hostMounts.length === 0 ? (
+												<tr>
+													<td colSpan={5} className="text-center">No host mount found.</td>
+												</tr>
+											) : (
+												hostMounts.map((item: any) => (
+													<tr>
+														<td>
+															<span className={`status status-${GetColorByStatus(item.status)}`}>
+																<span className={isShowStatusDotAnimated(item.status) ? "status-dot status-dot-animated":""}></span>
+																{item.status}
+															</span>
+														</td>
+														<td>{item.hostMountId}</td>
+														<td>{item.namespace}</td>
+														<td>{item.type}</td>
+														<td>{item.hostPath}</td>
+													</tr>
+												))
+											)}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="row row-cards mt-0">
+					<div className="col-12">
+						<div className="card">
+							<div className="card-header p-2">
+								<div className="subheader">Host Mount Params</div>
+							</div>
+							<div className="card-body p-0">
+								<div className="card-table table-responsive table-vcenter">
+									<table className="table">
+										<thead>
+											<tr>
+												<th>Status</th>
+												<th>ID</th>
+												<th>Instance</th>
+												<th>Host Mount</th>
+												<th>Namespace</th>
+												<th>Parameter</th>
+											</tr>
+										</thead>
+										<tbody>
+											{hostMountParams.length === 0 ? (
+												<tr>
+													<td colSpan={6} className="text-center">No host mount param found.</td>
+												</tr>
+											) : (
+												hostMountParams.map((item: any) => (
+													<tr>
+														<td>
+															<span className={`status status-${GetColorByStatus(item.status)}`}>
+																<span className={isShowStatusDotAnimated(item.status) ? "status-dot status-dot-animated":""}></span>
+																{item.status}
+															</span>
+														</td>
+														<td>{item.hostMountParamId}</td>
+														<td>{item.instanceId}</td>
+														<td>{item.hostMountId}</td>
 														<td>{item.namespace}</td>
 														<td>{item.parameter}</td>
 													</tr>

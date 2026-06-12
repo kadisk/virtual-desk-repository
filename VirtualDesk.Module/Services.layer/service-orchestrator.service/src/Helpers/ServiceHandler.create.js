@@ -94,6 +94,7 @@ const CreateServiceHandler = ({
         startupParams,
         socketParams,
         storageParams,
+        hostMountParams,
         ports,
         networkmode
     }) => {
@@ -104,6 +105,7 @@ const CreateServiceHandler = ({
                 startupParams,
                 socketParams,
                 storageParams,
+                hostMountParams,
                 ports,
                 networkmode
             })
@@ -122,7 +124,9 @@ const CreateServiceHandler = ({
     }) => {
 
         const buildargs = {
-            REPOSITORY_NAMESPACE: repositoryNamespace
+            REPOSITORY_NAMESPACE: repositoryNamespace,
+            HOST_UID: String(typeof process.getuid === "function" ? process.getuid() : 1000),
+            HOST_GID: String(typeof process.getgid === "function" ? process.getgid() : 1000)
         }
 
         const packageAbsolutPath = join(repositoryCodePath, packagePath)

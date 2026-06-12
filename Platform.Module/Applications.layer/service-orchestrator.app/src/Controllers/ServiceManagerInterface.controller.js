@@ -15,6 +15,9 @@ const ServiceManagerInterfaceController = (params) => {
         ListStorageParams,
         ListSockets,
         ListSocketParams,
+        ListHostMounts,
+        ListHostMountParams,
+        RegisterHostMount,
         ListContainers,
         GetServiceStatus,
         StartService,
@@ -72,6 +75,20 @@ const ServiceManagerInterfaceController = (params) => {
             })
     }
 
+    const HostMountListChange = async (websocket, serviceId) => {
+        servicesOrchestratorService
+            .onChangeHostMountListData(serviceId, (hostMountList) => {
+                websocket.send(JSON.stringify(hostMountList))
+            })
+    }
+
+    const HostMountParamListChange = async (websocket, serviceId) => {
+        servicesOrchestratorService
+            .onChangeHostMountParamListData(serviceId, (hostMountParamList) => {
+                websocket.send(JSON.stringify(hostMountParamList))
+            })
+    }
+
     const ContainerListChange = async (websocket, serviceId) => {
         servicesOrchestratorService
             .onChangeContainerListData(serviceId, (containerList) => {
@@ -98,6 +115,9 @@ const ServiceManagerInterfaceController = (params) => {
         ListStorageParams,
         ListSockets,
         ListSocketParams,
+        ListHostMounts,
+        ListHostMountParams,
+        RegisterHostMount,
         ListContainers,
         ServicesStatusChange,
         InstanceListChange,
@@ -105,6 +125,8 @@ const ServiceManagerInterfaceController = (params) => {
         StorageParamListChange,
         SocketListChange,
         SocketParamListChange,
+        HostMountListChange,
+        HostMountParamListChange,
         ContainerListChange,
         ImageBuildHistoryListChange,
         GetServiceStatus,

@@ -41,8 +41,6 @@ const CreateStorageParamProcessStatusChange = ({ stateManager, RequestData }) =>
         console.log(`STORAGE_PARAM [${storageParamId}] STATUS CHANGE ${status.description}`)
         switch (status) {
             case CREATE:
-                // Busca o Storage owner pelo namespace globalmente (qualquer serviço). Assim um
-                // não-owner pode referenciar um Storage criado por um owner de outro serviço.
                 const storageId = FindKeyByPropertyData(STORAGE_STATE_GROUP, "namespace", storageParamData.namespace)
 
                 if(storageId){

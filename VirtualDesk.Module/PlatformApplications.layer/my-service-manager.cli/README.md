@@ -17,6 +17,9 @@ CLI para gerenciamento de serviços e suas instâncias.
 | `storage-params <serviceId>` | Lista os parâmetros de storage de um serviço |
 | `sockets <serviceId>` | Lista os sockets de um serviço |
 | `socket-params <serviceId>` | Lista os parâmetros de socket de um serviço |
+| `host-mount <namespace> <hostPath>` | Registra um host mount (bind mount de diretório/arquivo do host) |
+| `host-mounts` | Lista todos os host mounts registrados |
+| `host-mount-params <serviceId>` | Lista os parâmetros de host mount de um serviço |
 | `containers <serviceId>` | Lista os containers de um serviço |
 | `decommission <serviceId>` | Remove todas as informações de um serviço parado |
 | `update-provision <serviceId> <arquivo.provision.json>` | Atualiza o provisionamento de um serviço já provisionado (o serviço deve estar parado) |
@@ -68,6 +71,15 @@ my-services sockets 12
 # Listar os parâmetros de socket de um serviço
 my-services socket-params 12
 
+# Registrar um host mount (bind mount de um diretório ou arquivo do host)
+my-services host-mount serviceOrchestratorSocketPath /home/kadisk/EcosystemData/sockets/service-orchestrator.app.sock
+
+# Listar todos os host mounts registrados
+my-services host-mounts
+
+# Listar os parâmetros de host mount de um serviço
+my-services host-mount-params 12
+
 # Listar os containers de um serviço
 my-services containers 12
 ```
@@ -105,4 +117,7 @@ my-services terminate 12
 | `storage-params` | `serviceId` | number | sim | ID do serviço |
 | `sockets` | `serviceId` | number | sim | ID do serviço |
 | `socket-params` | `serviceId` | number | sim | ID do serviço |
+| `host-mount` | `namespace` | string | sim | Namespace único do host mount |
+| `host-mount` | `hostPath` | string | sim | Caminho no host (diretório ou arquivo) |
+| `host-mount-params` | `serviceId` | number | sim | ID do serviço |
 | `containers` | `serviceId` | number | sim | ID do serviço |

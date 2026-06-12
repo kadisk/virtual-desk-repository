@@ -9,6 +9,8 @@ const {
     STORAGE_PARAM_STATE_GROUP,
     SOCKET_STATE_GROUP,
     SOCKET_PARAM_STATE_GROUP,
+    HOST_MOUNT_STATE_GROUP,
+    HOST_MOUNT_PARAM_STATE_GROUP,
     CONTAINER_STATE_GROUP,
     IMAGE_BUILD_HISTORY_STATE_GROUP
 } = require("../Types/ItemGroup.types")
@@ -21,11 +23,14 @@ const CreateStorageProcessStatusChange           = require("../ProcessStatusChan
 const CreateStorageParamProcessStatusChange      = require("../ProcessStatusChange/StorageParam.createProcessStatusChange")
 const CreateSocketProcessStatusChange            = require("../ProcessStatusChange/Socket.createProcessStatusChange")
 const CreateSocketParamProcessStatusChange       = require("../ProcessStatusChange/SocketParam.createProcessStatusChange")
+const CreateHostMountProcessStatusChange         = require("../ProcessStatusChange/HostMount.createProcessStatusChange")
+const CreateHostMountParamProcessStatusChange    = require("../ProcessStatusChange/HostMountParam.createProcessStatusChange")
 
 const CreateListRunningInstances           = require("./ServiceRuntimeStateManager.utils/ListRunningInstances.create")
 const CreateOnChangeStatusTriggerService   = require("./ServiceRuntimeStateManager.utils/OnChangeStatusTriggerService.create")
 const CreateCreateServiceInStateManagement = require("./ServiceRuntimeStateManager.utils/CreateServiceInStateManagement.create")
 const CreateLoadServiceInStateManagement   = require("./ServiceRuntimeStateManager.utils/LoadServiceInStateManagement.create")
+const CreateLoadHostMountInStateManagement = require("./ServiceRuntimeStateManager.utils/LoadHostMountInStateManagement.create")
 const CreateUpdateServiceInStateManagement = require("./ServiceRuntimeStateManager.utils/UpdateServiceInStateManagement.create")
 const CreateGetNetworksSettings            = require("./ServiceRuntimeStateManager.utils/GetNetworksSettings.create")
 const CreateStartService                   = require("./ServiceRuntimeStateManager.utils/StartService.create")
@@ -38,6 +43,8 @@ const CreateListStorages                   = require("./ServiceRuntimeStateManag
 const CreateListStoragesParam              = require("./ServiceRuntimeStateManager.utils/ListCreators/ListStoragesParam.create")
 const CreateListSockets                    = require("./ServiceRuntimeStateManager.utils/ListCreators/ListSockets.create")
 const CreateListSocketsParam               = require("./ServiceRuntimeStateManager.utils/ListCreators/ListSocketsParam.create")
+const CreateListHostMounts                 = require("./ServiceRuntimeStateManager.utils/ListCreators/ListHostMounts.create")
+const CreateListHostMountsParam            = require("./ServiceRuntimeStateManager.utils/ListCreators/ListHostMountsParam.create")
 const CreateListContainers                 = require("./ServiceRuntimeStateManager.utils/ListCreators/ListContainers.create")
 const CreateListImageBuildHistory          = require("./ServiceRuntimeStateManager.utils/ListCreators/ListImageBuildHistory.create")
 const CreateGetServiceStatus               = require("./ServiceRuntimeStateManager.utils/GetServiceStatus.create")
@@ -61,12 +68,16 @@ const CreateServiceRuntimeStateManager = () => {
     stateManager.onChangeStatus(STORAGE_PARAM_STATE_GROUP,       ({ key: storageParamId }) => CreateStorageParamProcessStatusChange({ stateManager, RequestData })(storageParamId))
     stateManager.onChangeStatus(SOCKET_STATE_GROUP,              ({ key: socketId })       => CreateSocketProcessStatusChange({ stateManager, RequestData })(socketId))
     stateManager.onChangeStatus(SOCKET_PARAM_STATE_GROUP,        ({ key: socketParamId })  => CreateSocketParamProcessStatusChange({ stateManager, RequestData })(socketParamId))
+    stateManager.onChangeStatus(HOST_MOUNT_STATE_GROUP,          ({ key: hostMountId })      => CreateHostMountProcessStatusChange({ stateManager, RequestData })(hostMountId))
+    stateManager.onChangeStatus(HOST_MOUNT_PARAM_STATE_GROUP,    ({ key: hostMountParamId }) => CreateHostMountParamProcessStatusChange({ stateManager, RequestData })(hostMountParamId))
 
     const ListInstances         = CreateListInstances(stateManager)
     const ListStorages          = CreateListStorages(stateManager)
     const ListStoragesParam     = CreateListStoragesParam(stateManager)
     const ListSockets           = CreateListSockets(stateManager)
     const ListSocketsParam      = CreateListSocketsParam(stateManager)
+    const ListHostMounts        = CreateListHostMounts(stateManager)
+    const ListHostMountsParam   = CreateListHostMountsParam(stateManager)
     const ListContainers        = CreateListContainers(stateManager)
     const ListImageBuildHistory = CreateListImageBuildHistory(stateManager)
     const GetServiceStatus      = CreateGetServiceStatus(stateManager)
@@ -81,10 +92,13 @@ const CreateServiceRuntimeStateManager = () => {
         ListStoragesParam,
         ListSockets,
         ListSocketsParam,
+        ListHostMounts,
+        ListHostMountsParam,
         ListContainers,
         ListImageBuildHistory,
         GetServiceStatus,
         onRequestData,
+        LoadHostMountInStateManagement    : CreateLoadHostMountInStateManagement(stateManager),
         SwapRunningInstance               : CreateSwapRunningInstance({ stateManager, RequestData }),
         ListRunningInstances              : CreateListRunningInstances(stateManager),
         TriggerDecommissioningProcess     : CreateTriggerDecommissioningProcess({ stateManager, RequestData }),
@@ -103,6 +117,8 @@ const CreateServiceRuntimeStateManager = () => {
         onChangeStorageParamListData      : CreateOnChangeStatusTriggerService(stateManager, { group: STORAGE_PARAM_STATE_GROUP,       Function: serviceId => ListStoragesParam(serviceId) }),
         onChangeSocketListData            : CreateOnChangeStatusTriggerService(stateManager, { group: SOCKET_STATE_GROUP,              Function: serviceId => ListSockets(serviceId) }),
         onChangeSocketParamListData       : CreateOnChangeStatusTriggerService(stateManager, { group: SOCKET_PARAM_STATE_GROUP,        Function: serviceId => ListSocketsParam(serviceId) }),
+        onChangeHostMountParamListData    : CreateOnChangeStatusTriggerService(stateManager, { group: HOST_MOUNT_PARAM_STATE_GROUP,    Function: serviceId => ListHostMountsParam(serviceId) }),
+        onChangeHostMountListData         : (serviceId, f) => { stateManager.onChangeStatus(HOST_MOUNT_STATE_GROUP, () => f(ListHostMounts())) },
         onChangeServiceStatus             : (f) => { stateManager.onChangeStatus(SERVICE_STATE_GROUP, ({ key: serviceId }) => f({serviceId, status: GetServiceStatus(serviceId)})) }
     }
 }

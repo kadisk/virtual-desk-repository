@@ -14,11 +14,9 @@
         "serviceOrchestratorServerManagerUrl" : "/server-manager/status",
         "repositoryStorageServerManagerUrl"   : "/server-manager/status"
     },
-    "socketParams":{
+    "hostMountParams": {
         "serviceOrchestratorSocketPath" : "service-orchestrator-socket",
-        "repositoryStorageSocketPath": "repository-storage-manager-socket"
-    },
-    "storageParams":{
+        "repositoryStorageSocketPath": "repository-storage-manager-socket",
         "uploadDirPath" : "repository-manager-repositories-storage"
     },
     "ports": [],

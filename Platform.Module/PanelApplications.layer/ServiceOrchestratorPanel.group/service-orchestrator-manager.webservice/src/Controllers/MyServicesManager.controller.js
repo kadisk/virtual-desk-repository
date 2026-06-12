@@ -61,6 +61,8 @@ const MyServicesManagerController = (params) => {
     const ListStorageParams              = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListStorageParams({ serviceId }))
     const ListSockets                    = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListSockets({ serviceId }))
     const ListSocketParams               = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListSocketParams({ serviceId }))
+    const ListHostMounts                 = ( )                            => ServiceOrchestratorCommand((API) => API.ListHostMounts())
+    const ListHostMountParams            = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListHostMountParams({ serviceId }))
     const ListContainers                 = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.ListContainers({ serviceId }))
     const StartService                   = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.StartService({ serviceId }))
     const StopService                    = ( serviceId )                  => ServiceOrchestratorCommand((API) => API.StopService({ serviceId }))
@@ -78,6 +80,8 @@ const MyServicesManagerController = (params) => {
     const StorageParamListChange      = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.StorageParamListChange({serviceId}))
     const SocketListChange            = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.SocketListChange({serviceId}))
     const SocketParamListChange       = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.SocketParamListChange({serviceId}))
+    const HostMountListChange         = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.HostMountListChange({serviceId}))
+    const HostMountParamListChange    = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.HostMountParamListChange({serviceId}))
     const ContainerListChange         = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.ContainerListChange({serviceId}))
     const ImageBuildHistoryListChange = (websocket, serviceId) => ServiceManagerSocketBridgeCommand(websocket, (API) => API.ImageBuildHistoryListChange({serviceId}))
 
@@ -88,28 +92,30 @@ const MyServicesManagerController = (params) => {
         startupParams,
         socketParams,
         storageParams,
+        hostMountParams,
         ports,
         networkmode
     }) => {
 
         const packageData = await RepositoryStorageCommand((API) => API.GetPackageById({ packageId }))
-        
-        const { 
+
+        const {
             repositoryNamespace,
             repositoryCodePath,
             packagePath
         } = packageData
 
-        await ServiceOrchestratorCommand((API) => 
+        await ServiceOrchestratorCommand((API) =>
             API.ProvisionService({
                 serviceName,
                 serviceDescription,
                 originRepositoryNamespace: repositoryNamespace,
                 originRepositoryCodePath: repositoryCodePath,
                 originPackagePath: packagePath,
-                startupParams, 
+                startupParams,
                 socketParams,
                 storageParams,
+                hostMountParams,
                 ports,
                 networkmode
             }))
@@ -126,6 +132,8 @@ const MyServicesManagerController = (params) => {
         ListStorageParams,
         ListSockets,
         ListSocketParams,
+        ListHostMounts,
+        ListHostMountParams,
         ListContainers,
         ServicesStatusChange,
         InstanceListChange,
@@ -133,6 +141,8 @@ const MyServicesManagerController = (params) => {
         StorageParamListChange,
         SocketListChange,
         SocketParamListChange,
+        HostMountListChange,
+        HostMountParamListChange,
         ContainerListChange,
         ImageBuildHistoryListChange,
         GetServiceStatus,

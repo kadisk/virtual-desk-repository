@@ -22,7 +22,8 @@ const {
     STORAGE_STATE_GROUP,
     STORAGE_PARAM_STATE_GROUP,
     SOCKET_STATE_GROUP,
-    SOCKET_PARAM_STATE_GROUP
+    SOCKET_PARAM_STATE_GROUP,
+    HOST_MOUNT_PARAM_STATE_GROUP
 } = require("../../Types/ItemGroup.types")
 
 const CreateCreateObjectState = require("./CreateObjectState.create")
@@ -87,6 +88,12 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
                     .forEach(({ id:socketParamId, namespace, parameter, instanceId, socketId }) =>
                         CreateObjectState(SOCKET_PARAM_STATE_GROUP, socketParamId, { serviceId: requestData.serviceId, instanceId, socketId, namespace, parameter }, READY))
             break
+        case RequestTypes.FETCH_HOST_MOUNT_PARAM_DATA_LIST:
+            const hostMountParamDataList = await getData(requestType, { instanceId: requestData.instanceId })
+                hostMountParamDataList
+                    .forEach(({ id:hostMountParamId, namespace, parameter, instanceId, hostMountId }) =>
+                        CreateObjectState(HOST_MOUNT_PARAM_STATE_GROUP, hostMountParamId, { serviceId: requestData.serviceId, instanceId, hostMountId, namespace, parameter }, READY))
+            break
         case RequestTypes.FETCH_SERVICE_DATA:
             const serviceData = await getData(requestType, { serviceId: requestData.serviceId })
 
@@ -136,12 +143,13 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
         case RequestTypes.CREATE_NEW_INSTANCE:
             const data = await getData(requestType, requestData)
             CreateObjectState(INSTANCE_STATE_GROUP, data.id, {
-                serviceId     : requestData.serviceId, 
-                startupParams : data.startupParams,
-                storageParams : data.storageParams,
-                socketParams  : data.socketParams,
-                ports         : data.ports, 
-                networkmode   : data.networkmode
+                serviceId       : requestData.serviceId,
+                startupParams   : data.startupParams,
+                storageParams   : data.storageParams,
+                socketParams    : data.socketParams,
+                hostMountParams : data.hostMountParams,
+                ports           : data.ports,
+                networkmode     : data.networkmode
             }, CREATE)
             break
         case RequestTypes.REGISTER_NEW_CONTAINER:
@@ -258,6 +266,27 @@ const CreateProcessRequest = ({ getData, stateManager, RequestData}) => async (r
             })
             UpdateData(SOCKET_PARAM_STATE_GROUP, requestData.socketParamId, { socketId: requestData.socketId })
             ChangeStatus(SOCKET_PARAM_STATE_GROUP, requestData.socketParamId, UPDATED)
+            break
+        case RequestTypes.REGISTER_HOST_MOUNT_PARAM:
+            const hostMountParamData = await getData(requestType, {
+                instanceId : requestData.instanceId,
+                parameter  : requestData.parameter,
+                namespace  : requestData.namespace
+            })
+            CreateObjectState(HOST_MOUNT_PARAM_STATE_GROUP, hostMountParamData.id, {
+                serviceId  : requestData.serviceId,
+                instanceId : requestData.instanceId,
+                parameter  : requestData.parameter,
+                namespace  : requestData.namespace
+            }, CREATE)
+            break
+        case RequestTypes.UPDATE_HOST_MOUNT_PARAM_HOST_MOUNT_ID:
+            await getData(requestType, {
+                hostMountParamId : requestData.hostMountParamId,
+                hostMountId      : requestData.hostMountId
+            })
+            UpdateData(HOST_MOUNT_PARAM_STATE_GROUP, requestData.hostMountParamId, { hostMountId: requestData.hostMountId })
+            ChangeStatus(HOST_MOUNT_PARAM_STATE_GROUP, requestData.hostMountParamId, UPDATED)
             break
         default:
             console.warn(`Unknown request type: ${requestType.description}`)

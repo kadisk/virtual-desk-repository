@@ -139,6 +139,16 @@ const ContainerManager = (params) => {
                 Target : target
             }))
 
+        // Bind mounts: monta um caminho EXTERNO do host (dir ou arquivo) direto no container.
+        const bindMounts = mounts
+            .filter(({ hostPath, target }) => hostPath && target)
+            .map(({ hostPath, target }) => ({
+                Type   : "bind",
+                Source : hostPath,
+                Target : target,
+                BindOptions: { CreateMountpoint: true }
+            }))
+
         const container = await docker.createContainer({
             Image: imageName,
             name: containerName,
@@ -146,7 +156,7 @@ const ContainerManager = (params) => {
             HostConfig: {
                 PortBindings: portBindings,
                 NetworkMode: networkmode,
-                Mounts: volumeMounts
+                Mounts: [...volumeMounts, ...bindMounts]
             }
         })
 

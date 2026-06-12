@@ -7,7 +7,9 @@ const CreateMyWorkspaceDomainService = ({
     SocketModel,
     SocketParamModel,
     StorageModel,
-    StorageParamModel
+    StorageParamModel,
+    HostMountModel,
+    HostMountParamModel
 }) => {
 
     const ListServices = async () => {
@@ -141,8 +143,8 @@ const CreateMyWorkspaceDomainService = ({
             buildId
         })
 
-    const RegisterInstanceCreation = ({ serviceId, startupParams, storageParams, socketParams, ports, networkmode}) => 
-            InstanceModel.create({ serviceId, startupParams, storageParams, socketParams, ports, networkmode })
+    const RegisterInstanceCreation = ({ serviceId, startupParams, storageParams, socketParams, hostMountParams, ports, networkmode}) =>
+            InstanceModel.create({ serviceId, startupParams, storageParams, socketParams, hostMountParams, ports, networkmode })
 
     const RegisterTerminateInstance = async (instanceId) => 
         InstanceModel.update({ terminateDate: new Date() },{ where: { id: instanceId } })
@@ -273,6 +275,34 @@ const CreateMyWorkspaceDomainService = ({
     const UpdateSocketParamSocketId = ({ socketParamId, socketId }) =>
         SocketParamModel.update({ socketId }, { where: { id: socketParamId } })
 
+    const RegisterHostMount = ({ namespace, hostPath, type }) =>
+        HostMountModel.create({ namespace, hostPath, type })
+
+    const GetHostMountByNamespace = async (namespace) => {
+        const hostMount = await HostMountModel.findOne({ where: { namespace } })
+        return hostMount ? hostMount.get({ plain: true }) : null
+    }
+
+    const ListHostMounts = async () => {
+        const items = await HostMountModel.findAll()
+        return items.map(item => item.get({ plain: true }))
+    }
+
+    const ListHostMountParamsByInstanceId = async (instanceId) => {
+        const items = await HostMountParamModel.findAll({
+            where: {
+                instanceId
+            }
+        })
+        return items.map(item => item.get({ plain: true }))
+    }
+
+    const RegisterHostMountParam = ({ instanceId, parameter, namespace }) =>
+        HostMountParamModel.create({ instanceId, parameter, namespace })
+
+    const UpdateHostMountParamHostMountId = ({ hostMountParamId, hostMountId }) =>
+        HostMountParamModel.update({ hostMountId }, { where: { id: hostMountParamId } })
+
     return {
         RegisterServiceProvisioning,
         UpdateServiceProvisioning,
@@ -302,7 +332,13 @@ const CreateMyWorkspaceDomainService = ({
         ListSocketsByInstanceId,
         ListSocketParamsByInstanceId,
         RegisterSocketParam,
-        UpdateSocketParamSocketId
+        UpdateSocketParamSocketId,
+        RegisterHostMount,
+        GetHostMountByNamespace,
+        ListHostMounts,
+        ListHostMountParamsByInstanceId,
+        RegisterHostMountParam,
+        UpdateHostMountParamHostMountId
     }
 }
 

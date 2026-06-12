@@ -35,6 +35,8 @@ const ServiceOrchestratorManager = (params) => {
         SocketParam         : SocketParamModel,
         Storage             : StorageModel,
         StorageParam        : StorageParamModel,
+        HostMount           : HostMountModel,
+        HostMountParam      : HostMountParamModel,
         Container           : ContainerModel,
         ContainerEventLog   : ContainerEventLogModel
     } = MyServicesPersistentStoreManager.models
@@ -47,6 +49,8 @@ const ServiceOrchestratorManager = (params) => {
         SocketParamModel,
         StorageModel,
         StorageParamModel,
+        HostMountModel,
+        HostMountParamModel,
         ContainerModel,
         ContainerEventLogModel
     })
@@ -83,6 +87,9 @@ const ServiceOrchestratorManager = (params) => {
         ListStoragesParam,
         ListSockets,
         ListSocketsParam,
+        ListHostMounts,
+        ListHostMountsParam,
+        LoadHostMountInStateManagement,
         ListRunningInstances,
         ListContainers,
         ListImageBuildHistory,
@@ -92,6 +99,8 @@ const ServiceOrchestratorManager = (params) => {
         onChangeStorageParamListData,
         onChangeSocketListData,
         onChangeSocketParamListData,
+        onChangeHostMountListData,
+        onChangeHostMountParamListData,
         onChangeImageBuildHistoryListData
     } = ServiceRuntimeStateManager
 
@@ -164,6 +173,8 @@ const ServiceOrchestratorManager = (params) => {
                     return await MyWorkspaceDomainService.ListSocketsByServiceId(data.serviceId)
                 case RequestTypes.FETCH_SOCKET_PARAM_DATA_LIST:
                     return await MyWorkspaceDomainService.ListSocketParamsByInstanceId(data.instanceId)
+                case RequestTypes.FETCH_HOST_MOUNT_PARAM_DATA_LIST:
+                    return await MyWorkspaceDomainService.ListHostMountParamsByInstanceId(data.instanceId)
                 case RequestTypes.FETCH_CONTAINER_DATA:
                     return await await MyWorkspaceDomainService.GetContainerInfoByInstanceId(data.instanceId)
                 case RequestTypes.FETCH_CONTAINER_INSPECTION_DATA:
@@ -182,12 +193,13 @@ const ServiceOrchestratorManager = (params) => {
                     return serviceData
                 case RequestTypes.CREATE_NEW_INSTANCE:
                     const instanceData = await CreateInstance({
-                        serviceId     : data.serviceId,
-                        startupParams : data.startupParams,
-                        socketParams  : data.socketParams,
-                        storageParams : data.storageParams,
-                        networkmode   : data.networkmode,
-                        ports         : data.ports
+                        serviceId       : data.serviceId,
+                        startupParams   : data.startupParams,
+                        socketParams    : data.socketParams,
+                        storageParams   : data.storageParams,
+                        hostMountParams : data.hostMountParams,
+                        networkmode     : data.networkmode,
+                        ports           : data.ports
                     })
                     return instanceData
                 case RequestTypes.REGISTER_STORAGE:
@@ -278,11 +290,25 @@ const ServiceOrchestratorManager = (params) => {
                             socketParamId: data.socketParamId,
                             socketId: data.socketId
                         })
+                case RequestTypes.REGISTER_HOST_MOUNT_PARAM:
+                    return await MyWorkspaceDomainService
+                        .RegisterHostMountParam({
+                            namespace: data.namespace,
+                            parameter: data.parameter,
+                            instanceId: data.instanceId
+                        })
+                case RequestTypes.UPDATE_HOST_MOUNT_PARAM_HOST_MOUNT_ID:
+                    return await MyWorkspaceDomainService
+                        .UpdateHostMountParamHostMountId({
+                            hostMountParamId: data.hostMountParamId,
+                            hostMountId: data.hostMountId
+                        })
                 default:
                     console.warn(`Unknown request type: ${requestType.description}`)
             }
         })
 
+        await InitializeAllHostMounts()
         await InitializeAllServiceStateManagement()
         onReady()
 
@@ -291,6 +317,31 @@ const ServiceOrchestratorManager = (params) => {
     const InitializeAllServiceStateManagement = async  () => {
         const serviceIds = await MyWorkspaceDomainService.ListAllServiceId()
         serviceIds.forEach(serviceId => LoadServiceInStateManagement(serviceId))
+    }
+
+    const InitializeAllHostMounts = async () => {
+        const hostMounts = await MyWorkspaceDomainService.ListHostMounts()
+        hostMounts.forEach(({ id, namespace, hostPath, type }) =>
+            LoadHostMountInStateManagement(id, { namespace, hostPath, type }))
+    }
+
+    const RegisterHostMount = async ({ namespace, hostPath }) => {
+        const existing = await MyWorkspaceDomainService.GetHostMountByNamespace(namespace)
+        if (existing) {
+            throw new Error(`HostMount com namespace "${namespace}" já existe`)
+        }
+
+        let type = "unknown"
+        try {
+            const stats = require("fs").statSync(hostPath)
+            type = stats.isDirectory() ? "directory" : (stats.isFile() ? "file" : "other")
+        } catch (e) {
+            console.warn(`HostMount "${namespace}": caminho "${hostPath}" não existe ainda no host`)
+        }
+
+        const hostMountData = await MyWorkspaceDomainService.RegisterHostMount({ namespace, hostPath, type })
+        LoadHostMountInStateManagement(hostMountData.id, { namespace, hostPath, type })
+        return { hostMountId: hostMountData.id, namespace, hostPath, type }
     }
 
     const ProvisionService = async ({
@@ -302,6 +353,7 @@ const ServiceOrchestratorManager = (params) => {
         startupParams,
         socketParams,
         storageParams,
+        hostMountParams,
         ports = [],
         networkmode= "bridge"
     }) => {
@@ -318,6 +370,7 @@ const ServiceOrchestratorManager = (params) => {
             startupParams,
             socketParams,
             storageParams,
+            hostMountParams,
             ports,
             networkmode
         })
@@ -470,6 +523,9 @@ const ServiceOrchestratorManager = (params) => {
         ListStorageParams: ListStoragesParam,
         ListSockets,
         ListSocketParams: ListSocketsParam,
+        ListHostMounts,
+        ListHostMountParams: ListHostMountsParam,
+        RegisterHostMount,
         ListContainers,
         ListImageBuildHistory,
         onChangeContainerListData,
@@ -478,6 +534,8 @@ const ServiceOrchestratorManager = (params) => {
         onChangeStorageParamListData,
         onChangeSocketListData,
         onChangeSocketParamListData,
+        onChangeHostMountListData,
+        onChangeHostMountParamListData,
         onChangeImageBuildHistoryListData,
         GetServiceStatus,
         GetNetworksSettings,

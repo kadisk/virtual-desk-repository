@@ -41,8 +41,6 @@ const CreateSocketParamProcessStatusChange = ({ stateManager, RequestData }) =>
         console.log(`SOCKET_PARAM [${socketParamId}] STATUS CHANGE ${status.description}`)
         switch (status) {
             case CREATE:
-                // Busca o Socket owner pelo namespace globalmente (qualquer serviço/instância).
-                // Assim um não-owner pode se conectar ao socket criado por um owner de outro serviço.
                 const socketId = FindKeyByPropertyData(SOCKET_STATE_GROUP, "namespace", socketParamData.namespace)
 
                 if(socketId){
