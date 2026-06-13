@@ -3,6 +3,7 @@
     "serverName"                            : "RepositoryStorageManagerAppInstance",
     "ecosystemDefaultsFileRelativePath"     : "./config-files/ecosystem-defaults.json",
     "importedRepositoriesSourceCodeDirPath" : "~/virtual-desk-state/local-app-data/my-services-imported-repositories",
+    "uploadDirPath"                         : "~/virtual-desk-state/local-app-data/my-services-uploded-repositories",
     "repositoryStorageFilePath"             : "~/virtual-desk-state/local-databases/repository-storage-manager-service.sqlite",
     "installDataDirPath"                    : "~/EcosystemData"
 }

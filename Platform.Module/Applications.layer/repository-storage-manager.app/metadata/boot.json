@@ -4,6 +4,7 @@
         "serverName",
         "ecosystemDefaultsFileRelativePath",
         "importedRepositoriesSourceCodeDirPath",
+        "uploadDirPath",
         "repositoryStorageFilePath",
         "installDataDirPath"
     ],
@@ -22,6 +23,7 @@
             "params":{
                 "ecosystemDefaultsFileRelativePath": "{{ecosystemDefaultsFileRelativePath}}",
                 "importedRepositoriesSourceCodeDirPath": "{{importedRepositoriesSourceCodeDirPath}}",
+                "uploadDirPath": "{{uploadDirPath}}",
                 "repositoryStorageFilePath": "{{repositoryStorageFilePath}}"
             },
             "bound-params":{

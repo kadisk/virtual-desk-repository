@@ -65,7 +65,8 @@ const RepositoryServiceManagerController = (params) => {
         onUpload
     }) => {
         
-        const repositoriesDirPath = join(uploadAbsolutDirPath, crypto.randomUUID())
+        const repositoryDirName = crypto.randomUUID()
+        const repositoriesDirPath = join(uploadAbsolutDirPath, repositoryDirName)
 
         if (!fs.existsSync(repositoriesDirPath)) fs.mkdirSync(repositoriesDirPath, { recursive: true })
 
@@ -88,8 +89,15 @@ const RepositoryServiceManagerController = (params) => {
             }
             const repositoryFilePath = join(repositoriesDirPath, request.file.originalname)
             fs.renameSync(request.file.path, repositoryFilePath)
-            const data = await onUpload(repositoryFilePath)
-            return response.json(data)
+            
+            const repositoryFileRelativePath = join(repositoryDirName, request.file.originalname)
+
+            try {
+                const data = await onUpload(repositoryFileRelativePath)
+                return response.json(data)
+            } catch (uploadError) {
+                return next(uploadError)
+            }
         })
     }
     

@@ -19,6 +19,7 @@ const RepositoryStorageManagerService = (params) => {
         onReady,
         ecosystemDefaultsFileRelativePath,
         importedRepositoriesSourceCodeDirPath,
+        uploadDirPath,
         repositoryStorageFilePath,
         ecosystemdataHandlerService,
         extractTarGzLib,
@@ -34,6 +35,7 @@ const RepositoryStorageManagerService = (params) => {
 
     const absolutRepositoryStorageFilePath = ConvertPathToAbsolutPath(repositoryStorageFilePath)
     const absolutImportedRepositoriesSourceCodeDirPath = ConvertPathToAbsolutPath(importedRepositoriesSourceCodeDirPath)
+    const absolutUploadDirPath = ConvertPathToAbsolutPath(uploadDirPath)
     const RepositoryPersistentStoreManager = InitializeRepositoryPersistentStoreManager(absolutRepositoryStorageFilePath)
 
     const {
@@ -164,10 +166,14 @@ const RepositoryStorageManagerService = (params) => {
     }
 
     const ExtractAndRegisterRepository = async ({ namespaceId, repositoryNamespace, repositoryFilePath }) => {
-        
+
         const repositoriesCodePath = _MountPathImportedRepositoriesSourceCodeDirPath({ repositoryNamespace })
-        
-        const newRepositoryCodePath = await ExtractTarGz(repositoryFilePath, repositoriesCodePath)
+
+        // O caller (webservice em container) envia o caminho relativo ao diretório de upload.
+        // O storage manager roda no host, então resolve contra seu próprio uploadDirPath.
+        const absolutRepositoryFilePath = join(absolutUploadDirPath, repositoryFilePath)
+
+        const newRepositoryCodePath = await ExtractTarGz(absolutRepositoryFilePath, repositoriesCodePath)
 
         const repositoryImportedData = await RegisterImportedRepository({
             namespaceId,

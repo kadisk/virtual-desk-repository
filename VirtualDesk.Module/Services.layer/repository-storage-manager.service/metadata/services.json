@@ -2,9 +2,10 @@
 	{
 		"namespace": "RepositoryStorageManager",
 		"path": "Services/RepositoryStorageManager.service",
-		"params": [ 
+		"params": [
 			"repositoryStorageFilePath",
-			"importedRepositoriesSourceCodeDirPath", 
+			"importedRepositoriesSourceCodeDirPath",
+			"uploadDirPath",
 			"ecosystemDefaultsFileRelativePath"
 		],
 		"bound-params": [

@@ -24,4 +24,8 @@ my-services provision ./provisioning-data/ring1/iam-panel.provision.json
 my-services provision ./provisioning-data/ring1/repository-manager-panel.provision.json
 my-services provision ./provisioning-data/ring1/user-space-panel.provision.json
 my-services provision ./provisioning-data/ring1/virtual-desk.provision.json
+
+
+
+my-services provision ./provisioning-data/ring2/kadisk-com.provision.json
 ```
